@@ -23,7 +23,7 @@ class PgVectorEmbeddingStorageTest {
     @BeforeEach
     void setUp() throws Exception {
         mockStore = Mockito.mock(PgVectorEmbeddingStore.class);
-        storage = new PgVectorEmbeddingStorage("localhost", 5432, "postgres", "postgres", "postgres1234", "embeddings", 1536);
+        storage = new PgVectorEmbeddingStorage("localhost", 5432, "vectors", "postgres", "postgres1234", "embeddings", 1536);
         Field field = PgVectorEmbeddingStorage.class.getDeclaredField("embeddingStore");
         field.setAccessible(true);
         field.set(storage, mockStore);

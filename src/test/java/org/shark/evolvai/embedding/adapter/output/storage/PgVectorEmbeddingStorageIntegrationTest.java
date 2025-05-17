@@ -26,18 +26,34 @@ class PgVectorEmbeddingStorageIntegrationTest {
             throw new RuntimeException(e);
         }
         storage = new PgVectorEmbeddingStorage(
-                "localhost", 5432, "vectors", "postgres", "postgres1234", "embeddings", 2
+                "localhost", 5432, "vectors", "postgres", "postgres1234", "embeddings", 1536
         );
     }
 
     @Test
     void testStoreAndFindSimilar() {
-        Embedding emb1 = Embedding.from(new float[]{1.0f, 2.0f});
-        Embedding emb2 = Embedding.from(new float[]{1.1f, 2.1f});
+        // Crea vectores de 1536 dimensiones
+        float[] vector1 = new float[1536];
+        vector1[0] = 1.0f;
+        vector1[1] = 2.0f;
+
+        float[] vector2 = new float[1536];
+        vector2[0] = 1.1f;
+        vector2[1] = 2.1f;
+
+        Embedding emb1 = Embedding.from(vector1);
+        Embedding emb2 = Embedding.from(vector2);
+
+        // UUID válidos (hexadecimales)
         String id1 = "b3b8c7e2-8c2a-4e2a-9b2a-1b2a3c4d5e6f";
-        String id2 = "c4d5e6f7-1a2b-3c4d-5e6f-7a8b9c0d1e2f";
-        storage.store(id1, emb1, "texto1");
-        storage.store(id2, emb2, "texto2");
+        String id2 = "c4c9d8e2-9d3b-5f3b-ac3b-2c3b4d5e6f7f"; // Corregido: 'g' → 'f'
+
+        // O mejor usa:
+        // String id1 = java.util.UUID.randomUUID().toString();
+        // String id2 = java.util.UUID.randomUUID().toString();
+
+        storage.store(id1, emb1, "texto de prueba 1");
+        storage.store(id2, emb2, "texto de prueba 2");
 
         List<EmbeddingMatch<String>> matches = storage.findSimilar(emb1, 2, 0.0);
 

@@ -2,10 +2,11 @@
 
 ## Descripción
 
+## Descripción
+
 EvolvAI RAG es un sistema de Generación Aumentada por Recuperación (RAG) implementado en Java que permite crear aplicaciones conversacionales con acceso a información contextual. El sistema utiliza una arquitectura hexagonal (puertos y adaptadores) que separa claramente las responsabilidades y facilita tanto el mantenimiento como las pruebas.
 
-El proyecto combina la potencia de modelos de embeddings para vectorización de texto, almacenamiento eficiente de vectores con búsqueda semántica y modelos de lenguaje (LLM) para generar respuestas contextualizadas de alta calidad.
-
+El proyecto combina la potencia de modelos de embeddings para vectorización de texto, almacenamiento eficiente de vectores con búsqueda semántica y modelos de lenguaje (LLM) para generar respuestas contextualizadas de alta calidad. Además, aprovecha el framework LangChain4j para abstraer la lógica subyacente, permitiendo un diseño altamente modular y desacoplado de las tecnologías específicas. Esta abstracción facilita la integración con diferentes proveedores de embeddings, bases de datos vectoriales y modelos de lenguaje, haciendo que el sistema sea adaptable a nuevas tecnologías sin modificar la lógica central de la aplicación.
 ## Arquitectura
 
 ![Arquitectura RAG](./images/Arquitectura_RAG.png)
@@ -87,7 +88,7 @@ LLM: Configuración del proveedor de LLM (Llama via LocalAI)
 Chat Memory: Persistencia del historial de conversaciones
 Base de datos: Configuración de conexión a PostgreSQL para almacenamiento de vectores
 
-##Estructura del proyecto
+## Estructura del proyecto
 ``` bash
 src/
 ├── main/

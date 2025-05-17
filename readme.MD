@@ -120,3 +120,56 @@ mvn test -Dtest=*Test
 # Ejecutar pruebas de integración
 mvn test -Dtest=*IntegrationTest
 ```
+
+## Docker Compose
+
+El proyecto utiliza Docker Compose para proporcionar los servicios de infraestructura necesarios:
+
+### Servicios incluidos
+
+1. **pgvector**: Base de datos PostgreSQL con la extensión pgvector
+   - Proporciona almacenamiento vectorial para embeddings con capacidad de búsqueda por similitud
+   - Persiste datos en un volumen dedicado
+   - Se inicializa automáticamente con la estructura necesaria mediante `init_pgvector.sql`
+
+2. **localai**: Servidor de inferencia local para modelos LLM
+   - Permite ejecutar modelos de lenguaje localmente sin dependencias externas
+   - Expone una API compatible con OpenAI para la generación de texto
+   - Monta los modelos desde `src/main/resources/model`
+
+### Configuración
+
+El archivo `docker-compose.yml` está preconfigurado con:
+- Puertos: 5432 para PostgreSQL+pgvector y 8000 para LocalAI
+- Credenciales por defecto para la base de datos
+- Volúmenes para persistencia de datos
+- Configuración optimizada para modelos Llama2
+
+### Uso
+
+
+Para iniciar los servicios:
+
+```bash
+# Iniciar en segundo plano
+docker-compose up -d
+
+# Ver logs de los servicios
+docker-compose logs -f
+
+# Detener servicios
+docker-compose down
+
+# Detener y eliminar volúmenes (borra datos persistentes)
+docker-compose down -v
+```
+
+Nota: Asegúrate de tener los modelos descargados en src/main/resources/model antes de iniciar los servicios.
+
+### Base de datos compartida: La instancia de PostgreSQL proporcionada a través de Docker Compose cumple una doble función:
+ 
+1. #### Almacenamiento de embeddings: Mediante la extensión pgvector, permite almacenar y realizar búsquedas por similitud en vectores de embeddings con alto rendimiento.
+2. #### Persistencia del historial de conversaciones: Cuando se configura el chatmemory-persistence.provider como "jpa" en el archivo application.yaml, el sistema utiliza la misma instancia de PostgreSQL para almacenar el historial de conversaciones en una tabla dedicada, aprovechando una única infraestructura de base de datos para múltiples necesidades de persistencia.
+
+
+Esta configuración dual simplifica la arquitectura de despliegue mientras mantiene la separación lógica entre los diferentes dominios de la aplicación.

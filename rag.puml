@@ -1,0 +1,95 @@
+@startuml "Arquitectura RAG"
+
+package "org.shark.evolvai" {
+    package "embedding" {
+        package "port.output" {
+            interface "EmbeddingGenerator" as EmbGen {
+                + generateEmbedding(text: String): Embedding
+            }
+            interface "EmbeddingStorage" as EmbStore {
+                + store(id: String, embedding: Embedding, text: String)
+                + findSimilar(embedding: Embedding, maxResults: int, minScore: double): List<EmbeddingMatch>
+            }
+        }
+
+        package "adapter.output" {
+            package "generator" {
+                class "ONNXEmbeddingGenerator" as ONNXGen
+            }
+            package "storage" {
+                class "PgVectorEmbeddingStorage" as PgVectorStore
+                class "InMemoryEmbeddingStorage" as InMemoryStore
+            }
+        }
+    }
+
+    package "llm" {
+        package "port.out" {
+            interface "LlmProvider" as LlmProv {
+                + generateResponse(context: String, query: String): String
+                + send(messages: List<ChatMessage>): ChatMessage
+            }
+        }
+
+        package "adapter.out" {
+            class "LlamaLlmProvider" as LlamaProv
+        }
+    }
+
+    package "inference" {
+        package "port.input" {
+            interface "InferenceUseCase" as InferUC {
+                + query(request: QueryRequest): QueryResponse
+            }
+        }
+
+        package "service" {
+            class "InferenceService" as InferServ
+        }
+
+        package "controller" {
+            class "InferenceController" as InferCtrl
+            class "QueryRequest" as QReq
+            class "QueryResponse" as QResp
+        }
+    }
+
+    package "chathistory" {
+        package "port.output" {
+            interface "ChatHistoryRepository" as ChatRepo {
+                + saveInteraction(query: String, response: String)
+                + getHistory(): List<ChatInteraction>
+            }
+        }
+
+        package "adapter.output" {
+            class "MemoryChatHistoryRepository" as MemChatRepo
+        }
+    }
+
+    InferServ ..|> InferUC
+    ONNXGen ..|> EmbGen
+    PgVectorStore ..|> EmbStore
+    InMemoryStore ..|> EmbStore
+    LlamaProv ..|> LlmProv
+    MemChatRepo ..|> ChatRepo
+
+    InferServ --> EmbGen : usa para vectorizar consultas
+    InferServ --> EmbStore : usa para búsqueda de documentos similares
+    InferServ --> LlmProv : usa para generar respuesta con contexto
+    InferServ --> ChatRepo : usa para guardar interacciones
+    InferCtrl --> InferUC : usa para procesar consultas
+}
+
+note right of InferServ
+  Flujo RAG:
+  1. Recibe consulta
+  2. Genera embedding
+  3. Busca documentos similares
+  4. Construye contexto
+  5. Consulta LLM
+  6. Guarda historial
+  7. Devuelve respuesta
+end note
+
+@enduml

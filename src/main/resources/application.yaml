@@ -1,0 +1,73 @@
+# Configuración general
+name: carl
+
+# Configuración de embeddings
+embedding:
+  storage:
+    type: inMemory  # Opciones: inMemory, pgVector
+  generator:
+    type: onnx      # Opciones: onnx, [otros a futuro]
+  pgvector:
+    host: localhost
+    port: 5432
+    database: postgres
+    user: my_user
+    password: my_password
+    tableName: embeddings
+    dimensions: 1536
+  onnx:
+    model-path: ./model/all-MiniLM-L6-v2.onnx
+
+# Configuración del LLM
+llm:
+  provider: "amazon-bedrock"
+  amazon-bedrock:
+    accessKeyId: "${AWS_ACCESS_KEY_ID:REDACTED_AWS}"
+    secretAccessKey: "${AWS_SECRET_ACCESS_KEY:aGF9+4Wv46G8FsdaOKz8mRWGLn6HiVlxhRGn4nLK}"
+    region: "us-east-1"
+    modelId: "anthropic.claude-3-haiku-20240307-v1:0"
+    temperature: 0.8
+    maxTokens: 600
+
+# Configuración de persistencia de chat memory
+chatmemory-persistence:
+  provider: "memory"
+
+# Configuración de Spring
+spring:
+  profiles:
+    active: default
+  main:
+    allow-bean-definition-overriding: true
+  # Configuración de base de datos necesaria para los tests
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        format_sql: true
+
+# Docker compose (debería estar en un archivo separado)
+# Usar --- para separar documentos YAML
+---
+services:
+  pgvector:
+    image: "pgvector/pgvector:pg17"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres1234"
+      POSTGRES_DB: "vectors"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgvector-data:/var/lib/postgresql/data
+      - ./init_pgvector.sql:/docker-entrypoint-initdb.d/init_pgvector.sql
+
+volumes:
+  pgvector-data:

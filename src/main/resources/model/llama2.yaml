@@ -1,0 +1,6 @@
+name: llama2
+backend: llama-cpp
+parameters:
+  model: ggml-model.gguf
+  temperature: 0.7
+  n_ctx: 1024

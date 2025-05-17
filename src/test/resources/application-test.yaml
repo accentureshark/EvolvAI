@@ -11,7 +11,24 @@ spring:
     hibernate:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.H2Dialect
+# Añade esto al application-test.yaml existente
+embedding:
+  pgvector:
+    host: localhost
+    port: 5432
+    database: vectors
+    user: postgres
+    password: postgres1234
+    tableName: embeddings
+    dimensions: 1536
 
 # Asegurar que usamos el proveedor de memoria para tests
 chatmemory-persistence:
   provider: memory
+
+llm:
+  provider: "llama"
+  llama:
+    base-url: "http://localhost:8000/v1"
+    api-key: "test_api_key"
+    model: "llama-2-7b-chat"

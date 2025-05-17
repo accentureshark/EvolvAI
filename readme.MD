@@ -129,7 +129,7 @@ El proyecto utiliza Docker Compose para proporcionar los servicios de infraestru
 
 1. **pgvector**: Base de datos PostgreSQL con la extensión pgvector
    - Proporciona almacenamiento vectorial para embeddings con capacidad de búsqueda por similitud
-   -  Proporciona almacenamiento estamdar para el memoria del historial de chat/
+   -  Proporciona almacenamiento estandard para la memoria del historial de chat.
    - Persiste datos en un volumen dedicado
    - Se inicializa automáticamente con la estructura necesaria mediante `init_pgvector.sql`
 

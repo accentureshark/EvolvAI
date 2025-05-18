@@ -1,0 +1,119 @@
+@startuml
+entity "organization" as Organization {
+  * id : UUID <<PK>>
+  --
+  name : String
+  // Hereda de legal_person
+  business_name : String
+  tax_id : String
+  registration_number : String
+}
+
+entity "area" as Area {
+  * id : UUID <<PK>>
+  --
+  name : String
+  organization_id : UUID <<FK>>
+}
+
+entity "role" as Role {
+  * id : UUID <<PK>>
+  --
+  name : String
+  area_id : UUID <<FK>>
+}
+
+entity "person" as Person {
+  * id : UUID <<PK>>
+  --
+  display_name : String
+  type : String
+  // Herencia SINGLE_TABLE
+  first_name : String
+  last_name : String
+  national_id : String
+  birth_date : date
+  business_name : String
+  tax_id : String
+  registration_number : String
+}
+
+entity "user" as User {
+  * id : UUID <<PK>>
+  --
+  email : String
+  password : String
+  active : boolean
+  role_id : UUID <<FK>>
+  person_id : UUID <<FK>>
+}
+
+entity "area_assignment" as AreaAssignment {
+  * id : UUID <<PK>>
+  --
+  area_id : UUID <<FK>>
+  person_id : UUID <<FK>>
+  assigned_at : date
+  local_role : String
+}
+
+entity "embedding_source" as EmbeddingSource {
+  * id : UUID <<PK>>
+  --
+  name : String
+  description : String
+  path : String
+}
+
+entity "prompt" as Prompt {
+  * id : UUID <<PK>>
+  --
+  title : String
+  description : String
+  version : String
+}
+
+entity "prompt_message" as PromptMessage {
+  * id : UUID <<PK>>
+  --
+  role : String
+  content : String
+  prompt_id : UUID <<FK>>
+}
+
+entity "inference_configuration" as InferenceConfig {
+  * id : UUID <<PK>>
+  --
+  context_type : String
+  context_id : UUID
+  ai_role : String
+}
+
+entity "inference_configuration_prompt" as IC_Prompt {
+  * config_id : UUID <<FK>>
+  * prompt_id : UUID <<FK>>
+}
+
+entity "inference_configuration_embedding_source" as IC_Embed {
+  * config_id : UUID <<FK>>
+  * source_id : UUID <<FK>>
+}
+
+Organization ||--o{ Area : "1:N"
+Area }o--|| Organization : ""
+Area ||--o{ Role : "1:N"
+Role }o--|| Area : ""
+Role ||--o{ User : "1:N"
+User }o--|| Role : ""
+User }o--|| Person : "1:1"
+Area ||--o{ AreaAssignment : "1:N"
+AreaAssignment }o--|| Area : ""
+Person ||--o{ AreaAssignment : "1:N"
+AreaAssignment }o--|| Person : ""
+Prompt ||--o{ PromptMessage : "1:N"
+PromptMessage }o--|| Prompt : ""
+InferenceConfig }o--o{ IC_Prompt : ""
+Prompt }o--o{ IC_Prompt : ""
+InferenceConfig }o--o{ IC_Embed : ""
+EmbeddingSource }o--o{ IC_Embed : ""
+@enduml

@@ -15,25 +15,30 @@ La arquitectura del sistema está diseñada siguiendo el patrón hexagonal, sepa
 
 ### Componentes principales
 
-1. **Embedding**:
-    - Vectorización de textos con modelos ONNX pre-entrenados
-    - Almacenamiento y recuperación de embeddings mediante PgVector o en memoria
-    - Búsqueda semántica para encontrar contenido relevante
+- **Admin:**
+   - Gestión de usuarios, roles, personas físicas y jurídicas, organizaciones, áreas y asignaciones.
+   - Configuración personalizada de inferencia (prompts, fuentes de embedding) por usuario, área u organización.
+   - Scripts SQL para inicialización y datos de ejemplo.
 
-2. **LLM**:
-    - Integración con modelos de lenguaje como Llama mediante LocalAI
-    - Generación de respuestas basadas en contexto recuperado
-    - Procesamiento de prompts estructurados con contexto
+- **Embedding:**
+   - Vectorización de textos con modelos ONNX pre-entrenados.
+   - Almacenamiento y recuperación de embeddings mediante PgVector o en memoria.
+   - Búsqueda semántica eficiente sobre los datos vectorizados.
 
-3. **Inference**:
-    - Orquestación del flujo RAG completo
-    - Recepción de consultas y entrega de respuestas
-    - Coordinación entre componentes (embeddings, almacenamiento, LLM)
+- **LLM:**
+   - Integración con modelos de lenguaje (ej. Llama) a través de LocalAI.
+   - Generación de respuestas contextualizadas.
+   - Procesamiento de prompts estructurados y mensajes con roles semánticos.
 
-4. **Chat History**:
-    - Almacenamiento del historial de interacciones
-    - Persistencia configurable (memoria o base de datos)
-    - Mantenimiento del contexto conversacional
+- **Inference:**
+   - Orquestación del flujo RAG completo.
+   - Recepción de consultas, recuperación de contexto y entrega de respuestas.
+   - Coordinación entre componentes: embeddings, almacenamiento, LLM y configuración de inferencia.
+
+- **Chat History:**
+   - Almacenamiento del historial de interacciones.
+   - Persistencia configurable (en memoria o base de datos).
+   - Mantenimiento y recuperación del contexto conversacional.
 
 ## 📚 Documentación
 
@@ -93,21 +98,30 @@ Chat Memory: Persistencia del historial de conversaciones
 Base de datos: Configuración de conexión a PostgreSQL para almacenamiento de vectores
 
 ## Estructura del proyecto
-``` bash
+```bash
 src/
 ├── main/
 │   ├── java/org/shark/evolvai/
-│   │   ├── embedding/           # Vectorización y almacenamiento
-│   │   ├── llm/                 # Integración con modelos de lenguaje
-│   │   ├── inference/           # Orquestación del flujo RAG
-│   │   ├── chathistory/         # Gestión del historial de conversaciones
-│   │   └── config/              # Configuraciones de Spring
+│   │   ├── admin/
+│   │   │   ├── model/
+│   │   │   │   ├── common/         # Entidades y enums base (Person, MessageRole, etc.)
+│   │   │   │   ├── organization/   # Organización, Área, Asignaciones
+│   │   │   │   ├── person/         # Personas físicas y jurídicas, roles
+│   │   │   │   ├── prompt/         # Prompts y mensajes de prompt
+│   │   │   │   ├── inference/      # Configuración de inferencia y enums IA
+│   │   │   │   └── EmbeddingSource.java
+│   │   │   └── scripts/            # Scripts SQL de inicialización y datos
+│   │   ├── embedding/              # Vectorización y almacenamiento
+│   │   ├── llm/                    # Integración con modelos de lenguaje
+│   │   ├── inference/              # Orquestación del flujo RAG
+│   │   ├── chathistory/            # Gestión del historial de conversaciones
+│   │   └── config/                 # Configuraciones de Spring
 │   └── resources/
-│       ├── model/               # Modelos LLM y embedding
-│       └── application.yaml     # Configuración de la aplicación
+│       ├── model/                  # Modelos LLM y embedding
+│       └── application.yaml        # Configuración de la aplicación
 └── test/
-├── java/                    # Tests unitarios e integración
-└── resources/               # Configuración de tests
+    ├── java/                       # Tests unitarios e integración
+    └── resources/                  # Configuración de tests
 ```
 
 ## Pruebas

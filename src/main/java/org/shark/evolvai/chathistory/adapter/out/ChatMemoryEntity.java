@@ -1,19 +1,38 @@
 package org.shark.evolvai.chathistory.adapter.out;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "chat_memory")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class ChatMemoryEntity {
+
     @Id
     private String id;
 
-    @Lob
-    @Column(name = "memory_json", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String memoryJson;
+
+    public ChatMemoryEntity() {
+    }
+
+    public ChatMemoryEntity(String id, String memoryJson) {
+        this.id = id;
+        this.memoryJson = memoryJson;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getMemoryJson() {
+        return memoryJson;
+    }
+
+    public void setMemoryJson(String memoryJson) {
+        this.memoryJson = memoryJson;
+    }
 }

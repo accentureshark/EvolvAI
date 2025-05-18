@@ -1,7 +1,8 @@
 package org.shark.evolvai.inference.service;
 
-import org.shark.evolvai.inference.controller.QueryRequest;
+import org.shark.evolvai.inference.controller.RagQueryRequest;
 import org.shark.evolvai.inference.controller.QueryResponse;
+// Eliminar importación duplicada
 import org.shark.evolvai.inference.port.input.InferenceUseCase;
 import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
 import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
@@ -12,6 +13,7 @@ import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class InferenceService implements InferenceUseCase {
@@ -34,25 +36,51 @@ public class InferenceService implements InferenceUseCase {
     }
 
     @Override
-    public QueryResponse query(QueryRequest request) {
+    public QueryResponse query(RagQueryRequest request) {
+        // Implementación existente para compatibilidad
+        Embedding queryEmbedding = embeddingGenerator.generateEmbedding(request.getQuery());
+        List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(queryEmbedding, 5, 0.7);
+        String context = matches.stream()
+                .map(EmbeddingMatch::embedded)
+                .reduce("", (a, b) -> a + "\n" + b);
+        String answer = llmProvider.generateResponse(context, request.getQuery());
+        chatHistoryRepository.saveInteraction(request.getQuery(), answer);
+        return new QueryResponse(answer, matches);
+    }
+
+    @Override
+    public QueryResponse advancedQuery(RagQueryRequest request) {
         // 1. Generar embedding de la consulta
         Embedding queryEmbedding = embeddingGenerator.generateEmbedding(request.getQuery());
 
-        // 2. Buscar documentos similares
-        List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(queryEmbedding, 5, 0.7);
+        // 2. Buscar documentos similares con parámetros personalizados
+        List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(
+                queryEmbedding,
+                request.getMaxResults(),
+                request.getMinSimilarity()
+        );
 
         // 3. Concatenar textos relevantes
         String context = matches.stream()
                 .map(EmbeddingMatch::embedded)
                 .reduce("", (a, b) -> a + "\n" + b);
 
-        // 4. Consultar al LLM con el contexto
-        String answer = llmProvider.generateResponse(context, request.getQuery());
+        // 4. Obtener historial de conversación si existe ID
+        String conversationId = request.getConversationId();
+        if (conversationId == null || conversationId.isEmpty()) {
+            conversationId = UUID.randomUUID().toString();
+        }
+        String conversationHistory = chatHistoryRepository.getConversationHistory(conversationId);
 
-        // 5. Guardar en historial
-        chatHistoryRepository.saveInteraction(request.getQuery(), answer);
+        // 5. Consultar al LLM con el contexto y el historial
+        String answer = llmProvider.generateResponseWithHistory(context, request.getQuery(), conversationHistory);
 
-        // 6. Devolver respuesta
-        return new QueryResponse(answer, matches);
+        // 6. Guardar en historial con ID de conversación
+        chatHistoryRepository.saveInteractionWithId(conversationId, request.getQuery(), answer);
+
+        // 7. Devolver respuesta con o sin matches según configuración
+        QueryResponse response = new QueryResponse(answer,
+                request.isIncludeMatches() ? matches : null);
+        return response;
     }
 }

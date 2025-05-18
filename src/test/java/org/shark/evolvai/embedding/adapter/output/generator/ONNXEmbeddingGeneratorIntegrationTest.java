@@ -19,8 +19,8 @@ public class ONNXEmbeddingGeneratorIntegrationTest {
     static void setUp() throws Exception {
         // Cargar el modelo ONNX desde el classpath
         ClassLoader classLoader = ONNXEmbeddingGeneratorIntegrationTest.class.getClassLoader();
-        URL resource = classLoader.getResource("model/all-MiniLM-L6-v2.onnx");
-        assertNotNull(resource, "No se encontró el modelo ONNX en resources/model/");
+        URL resource = classLoader.getResource("all-MiniLM-L6-v2.onnx");
+        assertNotNull(resource, "No se encontró el modelo ONNX en resources");
         String modelPath = Paths.get(resource.toURI()).toString();
 
         // Instanciar el provider y setear el path manualmente

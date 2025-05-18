@@ -29,4 +29,34 @@ public class InMemoryChatHistoryRepository implements ChatHistoryRepository {
         messages.add(new AiMessage(answer));
         chatMemoryStore.updateMessages(sessionId, messages);
     }
+
+    @Override
+    public String getConversationHistory(String conversationId) {
+        List<ChatMessage> messages = chatMemoryStore.getMessages(conversationId);
+        if (messages == null || messages.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder history = new StringBuilder();
+        for (ChatMessage message : messages) {
+            if (message instanceof UserMessage) {
+                history.append("Usuario: ").append(message.text()).append("\n");
+            } else if (message instanceof AiMessage) {
+                history.append("AI: ").append(message.text()).append("\n");
+            }
+        }
+        return history.toString();
+    }
+
+    @Override
+    public void saveInteractionWithId(String conversationId, String query, String answer) {
+        List<ChatMessage> messages = chatMemoryStore.getMessages(conversationId);
+        if (messages == null) {
+            messages = new ArrayList<>();
+        }
+
+        messages.add(new UserMessage(query));
+        messages.add(new AiMessage(answer));
+        chatMemoryStore.updateMessages(conversationId, messages);
+    }
 }

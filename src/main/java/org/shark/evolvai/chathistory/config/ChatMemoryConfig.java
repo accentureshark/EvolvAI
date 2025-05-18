@@ -9,8 +9,11 @@ import jakarta.annotation.PreDestroy;
 @Configuration
 public class ChatMemoryConfig {
 
+    @Autowired(required = false)
+    private MapDbChatMemoryStore mapDbStore;
+
     @PreDestroy
-    public void closeResources(@Autowired(required = false) MapDbChatMemoryStore mapDbStore) {
+    public void closeResources() {
         if (mapDbStore != null) {
             mapDbStore.close();
         }

@@ -35,6 +35,10 @@ La arquitectura del sistema está diseñada siguiendo el patrón hexagonal, sepa
     - Persistencia configurable (memoria o base de datos)
     - Mantenimiento del contexto conversacional
 
+## 📚 Documentación
+
+Consulta la documentación completa del modelo de administrador en [Admin Domain Model](./readme.MD).
+
 ## Tecnologías
 
 - **Backend**: Java 17, Spring Boot

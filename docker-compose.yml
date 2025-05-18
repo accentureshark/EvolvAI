@@ -7,10 +7,12 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres1234
-      POSTGRES_DB: vectors
+      POSTGRES_DB: evolvai
     volumes:
       - pgvector_data:/var/lib/postgresql/data
-      - ./init_pgvector.sql:/docker-entrypoint-initdb.d/init_pgvector.sql
+      - ./src/main/sql/init_pgvector.sql:/docker-entrypoint-initdb.d/init_pgvector.sql
+      - ./src/main/sql/init_adm_tables.sql:/docker-entrypoint-initdb.d/init_adm_tables.sql
+
 
   localai:
     image: quay.io/go-skynet/local-ai:latest

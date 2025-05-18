@@ -1,19 +1,21 @@
+server:
+  port: 8081
 # Configuración de embeddings
 embedding:
   storage:
-    type: inMemory  # Opciones: inMemory, pgVector
+    type: pgVector  # Opciones: inMemory, pgVector
   generator:
     type: onnx      # Opciones: onnx, [otros a futuro]
   pgvector:
     host: localhost
     port: 5432
-    database: postgres
-    user: my_user
-    password: my_password
+    database: vectors
+    user: postgres
+    password: postgres1234
     tableName: embeddings
     dimensions: 1536
   onnx:
-    model-path: ./model/all-MiniLM-L6-v2.onnx
+    model-path: ./models/all-MiniLM-L6-v2.onnx
 
 # Configuración del LLM
 llm:
@@ -26,7 +28,7 @@ llm:
 # Configuración de persistencia de chat memory
 # Configuración de persistencia de chat memory
 chatmemory-persistence:
-  provider: "memory"
+  provider: "jpa"
   memory:
     file-path: "./chat-memory.db"  # Ruta personalizable para el archivo MapDB
   jpa:
@@ -39,14 +41,14 @@ spring:
     allow-bean-definition-overriding: true
   # Configuración de base de datos necesaria para los tests
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
+    url: jdbc:postgresql://localhost:5432/vectors
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres1234
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    database-platform: org.hibernate.dialect.H2Dialect
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         format_sql: true

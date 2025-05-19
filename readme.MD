@@ -57,7 +57,7 @@ Consulta la documentación completa del modelo de administrador en [Admin Domain
 
 - Java 17+
 - Maven 3.8+
-- Docker y Docker Compose
+- Podman y Podman Compose o Docker y Docker Compose  
 - 8GB RAM mínimo (recomendado 16GB para modelos LLM más grandes)
 
 ## Instalación y ejecución
@@ -80,10 +80,15 @@ Consulta la documentación completa del modelo de administrador en [Admin Domain
      temperature: 0.7
      n_ctx: 1024
    ```
-4. **Iniciar servicios con Docker Compose**:
-   ```bash
-   docker-compose up -d
-   ```   
+4. ** Iniciar containers
+   4.1. Iniciar servicios con Pod compose**:
+      ```bash
+      podman-compose up -d
+      ```
+   4.2. Iniciar servicios con Docker Compose**:
+      ```bash
+      docker-compose up -d
+      ```   
 
 5. ** Compilar y ejecutar la aplicación:
  ```bash

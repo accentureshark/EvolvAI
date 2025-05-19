@@ -7,11 +7,10 @@ import org.shark.evolvai.admin.model.person.LegalPerson;
 import java.util.UUID;
 
 @Entity
-@Table(name = "organization", schema = "admin")
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Organization extends LegalPerson {
 
     @Id

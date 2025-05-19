@@ -1,5 +1,6 @@
 server:
   port: 8081
+
 # Configuración de embeddings
 embedding:
   storage:
@@ -9,7 +10,7 @@ embedding:
   pgvector:
     host: localhost
     port: 5432
-    database: vectors
+    database: evolvai
     user: postgres
     password: postgres1234
     tableName: embeddings
@@ -25,36 +26,55 @@ llm:
     api-key: "tu_api_key_opcional"
     model: "llama-2-7b-chat"
     model-path: "classpath:model/ggml-model.gguf"
-# Configuración de persistencia de chat memory
+
 # Configuración de persistencia de chat memory
 chatmemory-persistence:
   provider: "jpa"
   memory:
-    file-path: "./chat-memory.db"  # Ruta personalizable para el archivo MapDB
+    file-path: "./chat-memory.db"
   jpa:
-    table-name: "chat_memory"      # Nombre de tabla personalizable
+    table-name: "chat_memory"
+
 # Configuración de Spring
 spring:
   profiles:
     active: default
   main:
     allow-bean-definition-overriding: true
-  # Configuración de base de datos necesaria para los tests
   datasource:
-    url: jdbc:postgresql://localhost:5432/vectors
+    url: jdbc:postgresql://localhost:5432/evolvai
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: postgres1234
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         format_sql: true
+        use_sql_comments: true  # (opcional) agrega comentarios a los SQL generados
 
-# Docker compose (debería estar en un archivo separado)
-# Usar --- para separar documentos YAML
+# Logging detallado
+logging:
+  level:
+    root: DEBUG
+    org.springframework.web: DEBUG
+    org.springdoc: DEBUG
+    org.hibernate.SQL: DEBUG              # muestra las sentencias SQL
+    org.hibernate.type.descriptor.sql: TRACE  # muestra los parámetros enlazados
+    org.hibernate.orm.jdbc.bind: TRACE    # más trazas de bindings
+    org.hibernate.engine.jdbc.spi: DEBUG  # detalles de conexión JDBC y ejecución
+
+# Configuración de Springdoc
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+# Docker compose
 ---
 services:
   pgvector:
@@ -62,7 +82,7 @@ services:
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres1234"
-      POSTGRES_DB: "vectors"
+      POSTGRES_DB: "evolvai"
     ports:
       - "5432:5432"
     volumes:

@@ -18,7 +18,7 @@ class PgVectorEmbeddingStorageIntegrationTest {
     void setUp() {
         // Limpia la tabla antes de cada test
         try (java.sql.Connection conn = java.sql.DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/vectors", "postgres", "postgres1234")) {
+                "jdbc:postgresql://localhost:5432/evolvai", "postgres", "postgres1234")) {
             try (java.sql.Statement stmt = conn.createStatement()) {
                 stmt.execute("DELETE FROM embeddings");
             }
@@ -26,7 +26,7 @@ class PgVectorEmbeddingStorageIntegrationTest {
             throw new RuntimeException(e);
         }
         storage = new PgVectorEmbeddingStorage(
-                "localhost", 5432, "vectors", "postgres", "postgres1234", "embeddings", 1536
+                "localhost", 5432, "evolvai", "postgres", "postgres1234", "embeddings", 1536
         );
     }
 

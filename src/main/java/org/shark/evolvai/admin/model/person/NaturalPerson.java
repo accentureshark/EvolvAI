@@ -6,6 +6,7 @@ import org.shark.evolvai.admin.model.common.Person;
 import org.shark.evolvai.admin.model.organization.AreaAssignment;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("NATURAL")

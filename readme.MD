@@ -1,6 +1,5 @@
 # EvolvAI RAG
 
-## Descripción
 
 ## Descripción
 

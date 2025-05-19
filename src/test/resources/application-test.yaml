@@ -16,7 +16,7 @@ embedding:
   pgvector:
     host: localhost
     port: 5432
-    database: vectors
+    database: evolvai
     user: postgres
     password: postgres1234
     tableName: embeddings

@@ -1,4 +1,3 @@
-
 package org.shark.evolvai.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -11,9 +10,9 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-            .info(new Info()
-                .title("API RAG EvolvAI")
-                .version("1.0")
-                .description("API para consultas con Generación Aumentada por Recuperación"));
+                .info(new Info()
+                        .title("API RAG EvolvAI")
+                        .version("1.0")
+                        .description("API para consultas con Generación Aumentada por Recuperación"));
     }
 }

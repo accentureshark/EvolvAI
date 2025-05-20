@@ -46,6 +46,11 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
     }
 
     @Override
+    public Embedding generateEmbedding(int[] inputIds, int[] attentionMask) {
+        return embeddingGenerator.generateEmbedding(inputIds, attentionMask);
+    }
+
+    @Override
     public void removeAllDocuments() {
         embeddingStorage.removeAll();
     }

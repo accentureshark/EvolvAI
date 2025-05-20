@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class PgVectorEmbeddingStorage implements EmbeddingStorage {
 
     // Quita 'final' para permitir el mock en tests
-    private PgVectorEmbeddingStore embeddingStore;
+    private final PgVectorEmbeddingStore embeddingStore;
 
     public PgVectorEmbeddingStorage(
             @Value("${embedding.pgvector.host:localhost}") String host,

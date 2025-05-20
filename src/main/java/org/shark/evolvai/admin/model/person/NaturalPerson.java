@@ -1,6 +1,9 @@
 package org.shark.evolvai.admin.model.person;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 import org.shark.evolvai.admin.model.common.Person;
 import org.shark.evolvai.admin.model.organization.AreaAssignment;

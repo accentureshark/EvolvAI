@@ -1,6 +1,7 @@
 package org.shark.evolvai.admin.model.person;
 
-import jakarta.persistence.*;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import lombok.*;
 import org.shark.evolvai.admin.model.common.Person;
 

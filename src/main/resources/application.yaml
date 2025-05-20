@@ -72,8 +72,8 @@ spring:
 logging:
   level:
     root: INFO
-    org.springframework.web: INFO
-    org.springdoc: INFO
+    org.springframework.web: DEBUG
+    org.springdoc: DEBUG
     org.hibernate.SQL: INFO              # muestra las sentencias SQL
     org.hibernate.type.descriptor.sql: INFO  # muestra los parámetros enlazados
     org.hibernate.orm.jdbc.bind: INFO   # más trazas de bindings

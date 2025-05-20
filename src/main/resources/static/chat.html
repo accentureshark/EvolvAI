@@ -271,7 +271,7 @@
             const formData = new FormData();
             formData.append('file', file);
             try {
-                const res = await fetch(`${BACKEND_URL}/api/embeddings/embed-file`, {
+                const res = await fetch(`${BACKEND_URL}/api/inference/upload-document`, {
                     method: 'POST',
                     body: formData
                 });

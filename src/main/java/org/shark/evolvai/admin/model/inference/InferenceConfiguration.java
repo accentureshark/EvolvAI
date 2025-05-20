@@ -2,7 +2,10 @@ package org.shark.evolvai.admin.model.inference;
 
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.shark.evolvai.admin.model.EmbeddingSource;
 import org.shark.evolvai.admin.model.common.InferenceContextType;
 import org.shark.evolvai.admin.model.prompt.Prompt;

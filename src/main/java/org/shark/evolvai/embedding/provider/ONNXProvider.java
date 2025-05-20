@@ -5,13 +5,13 @@ import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.output.Response;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -138,7 +138,7 @@ public class ONNXProvider implements EmbeddingModel {
         char[] chars = text.toCharArray();
         long[] tokens = new long[chars.length];
         for (int i = 0; i < chars.length; i++) {
-            tokens[i] = (long) chars[i];
+            tokens[i] = chars[i];
         }
         return tokens;
     }
@@ -168,4 +168,56 @@ public class ONNXProvider implements EmbeddingModel {
             logger.error("Error closing ONNX resources", e);
         }
     }
+
+    public EmbeddingResult embed(int[] inputIds, int[] attentionMask) {
+        try {
+            long[][] inputIdsBatch = new long[1][inputIds.length];
+            long[][] attentionMaskBatch = new long[1][attentionMask.length];
+            long[][] tokenTypeIdsBatch = new long[1][inputIds.length];
+
+            for (int i = 0; i < inputIds.length; i++) {
+                inputIdsBatch[0][i] = inputIds[i];
+                attentionMaskBatch[0][i] = attentionMask[i];
+                tokenTypeIdsBatch[0][i] = 0L; // todos 0
+            }
+
+            OnnxTensor inputIdsTensor = OnnxTensor.createTensor(environment, inputIdsBatch);
+            OnnxTensor attentionMaskTensor = OnnxTensor.createTensor(environment, attentionMaskBatch);
+            OnnxTensor tokenTypeIdsTensor = OnnxTensor.createTensor(environment, tokenTypeIdsBatch);
+
+            Map<String, OnnxTensor> inputs = new HashMap<>();
+            inputs.put("input_ids", inputIdsTensor);
+            inputs.put("attention_mask", attentionMaskTensor);
+            inputs.put("token_type_ids", tokenTypeIdsTensor);
+
+            OrtSession.Result result = session.run(inputs);
+
+            float[] embeddings = extractEmbeddings(result);
+
+            inputIdsTensor.close();
+            attentionMaskTensor.close();
+            tokenTypeIdsTensor.close();
+            result.close();
+
+            return new EmbeddingResult(Embedding.from(embeddings));
+
+        } catch (Exception e) {
+            logger.error("Error embedding tokenized input", e);
+            throw new RuntimeException("Failed to embed tokenized input", e);
+        }
+    }
+
+    public static class EmbeddingResult {
+        private final Embedding content;
+
+        public EmbeddingResult(Embedding content) {
+            this.content = content;
+        }
+
+        public Embedding content() {
+            return content;
+        }
+    }
+
+
 }

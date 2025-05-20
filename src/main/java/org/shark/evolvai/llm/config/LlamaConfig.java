@@ -1,4 +1,3 @@
-
 package org.shark.evolvai.llm.config;
 
 import dev.langchain4j.model.openai.OpenAiChatModel;

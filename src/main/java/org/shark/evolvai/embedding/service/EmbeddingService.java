@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface EmbeddingService {
     Embedding embedText(String text);
+
     List<Embedding> embedTexts(List<String> texts);
+
     Embedding embedTextSegment(TextSegment segment);
+
     List<Embedding> embedTextSegments(List<TextSegment> segments);
 }

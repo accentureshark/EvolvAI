@@ -19,11 +19,10 @@ public class InMemoryEmbeddingStorage implements EmbeddingStorage {
         this.embeddingStore = new InMemoryEmbeddingStore<>();
     }
 
-@Override
-public void store(String id, Embedding embedding, String text) {
-    embeddingStore.add(id, embedding, TextSegment.from(text));
-}
-
+    @Override
+    public void store(String id, Embedding embedding, String text) {
+        embeddingStore.add(id, embedding, TextSegment.from(text));
+    }
 
 
     @Override

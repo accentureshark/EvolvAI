@@ -1,4 +1,3 @@
-
 package org.shark.evolvai.embedding.adapter.output.storage;
 
 import dev.langchain4j.data.embedding.Embedding;

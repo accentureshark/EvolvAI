@@ -1,8 +1,5 @@
 package org.shark.evolvai.inference.adapter.input.rest;
 
-import java.util.Collections;
-import dev.langchain4j.store.embedding.EmbeddingMatch;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,8 +11,10 @@ import org.shark.evolvai.inference.port.input.InferenceUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.mockito.Mockito.when;
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class InferenceControllerTest {

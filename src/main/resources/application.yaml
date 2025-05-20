@@ -17,15 +17,25 @@ embedding:
     dimensions: 1536
   onnx:
     model-path: ./models/all-MiniLM-L6-v2.onnx
+  tokenizer:
+    path: classpath:tokenizer/tokenizer.json
+
+
+
 
 # Configuración del LLM
 llm:
   provider: "llama"
   llama:
     base-url: "http://localhost:8000/v1"
-    api-key: "tu_api_key_opcional"
-    model: "llama-2-7b-chat"
-    model-path: "classpath:model/ggml-model.gguf"
+    api-key: "test_api_key"
+    model: "llama2"
+    temperature: 0.7
+    max-tokens: 512
+    top-p: 0.95
+    top-k: 50
+
+
 
 # Configuración de persistencia de chat memory
 chatmemory-persistence:
@@ -37,6 +47,8 @@ chatmemory-persistence:
 
 # Configuración de Spring
 spring:
+  application:
+    name: evolvAI
   profiles:
     active: default
   main:
@@ -59,13 +71,13 @@ spring:
 # Logging detallado
 logging:
   level:
-    root: DEBUG
-    org.springframework.web: DEBUG
-    org.springdoc: DEBUG
-    org.hibernate.SQL: DEBUG              # muestra las sentencias SQL
-    org.hibernate.type.descriptor.sql: TRACE  # muestra los parámetros enlazados
-    org.hibernate.orm.jdbc.bind: TRACE    # más trazas de bindings
-    org.hibernate.engine.jdbc.spi: DEBUG  # detalles de conexión JDBC y ejecución
+    root: INFO
+    org.springframework.web: INFO
+    org.springdoc: INFO
+    org.hibernate.SQL: INFO              # muestra las sentencias SQL
+    org.hibernate.type.descriptor.sql: INFO  # muestra los parámetros enlazados
+    org.hibernate.orm.jdbc.bind: INFO   # más trazas de bindings
+    org.hibernate.engine.jdbc.spi: INFO  # detalles de conexión JDBC y ejecución
 
 # Configuración de Springdoc
 springdoc:

@@ -1,7 +1,7 @@
-
 package org.shark.evolvai.chathistory.adapter.out;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ChatMemoryStoreFactory {
 
-    ///private final DynamoDbChatMemoryStore dynamoDbChatMemoryStore;
+    /// private final DynamoDbChatMemoryStore dynamoDbChatMemoryStore;
     // @Value("${chatmemory-persistence.provider:memory}")
     private String persistenceProvider;
 

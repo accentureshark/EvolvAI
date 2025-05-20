@@ -1,7 +1,10 @@
 package org.shark.evolvai.admin.model.person;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.shark.evolvai.admin.model.organization.Area;
 
 import java.util.UUID;

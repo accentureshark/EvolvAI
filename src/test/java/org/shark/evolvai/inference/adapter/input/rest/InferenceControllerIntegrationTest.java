@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.shark.evolvai.inference.controller.QueryResponse;
 import org.shark.evolvai.inference.controller.RagQueryRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,11 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class InferenceControllerIntegrationTest {
 
     private static final Logger log = LoggerFactory.getLogger(InferenceControllerIntegrationTest.class);
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private TestRestTemplate restTemplate;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void queryEndpointReturnsValidResponse() {

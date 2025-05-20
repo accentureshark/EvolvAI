@@ -5,5 +5,6 @@ public interface ChatHistoryRepository {
 
     // Añadir estos métodos
     String getConversationHistory(String conversationId);
+
     void saveInteractionWithId(String conversationId, String query, String answer);
 }

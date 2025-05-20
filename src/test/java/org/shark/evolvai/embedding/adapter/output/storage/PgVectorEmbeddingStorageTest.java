@@ -1,4 +1,3 @@
-
 package org.shark.evolvai.embedding.adapter.output.storage;
 
 import dev.langchain4j.data.embedding.Embedding;
@@ -12,7 +11,8 @@ import org.mockito.Mockito;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class PgVectorEmbeddingStorageTest {

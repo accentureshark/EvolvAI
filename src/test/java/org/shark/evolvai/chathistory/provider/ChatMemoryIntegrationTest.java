@@ -12,22 +12,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.shark.evolvai.chathistory.service.ChatMemoryService;
 
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ChatMemoryIntegrationTest {
 
+    private final String memoryId = "test-memory";
     @Mock
     ChatMemoryStore chatMemoryStore;
-
     @InjectMocks
     ChatMemoryService chatMemoryService;
-
-    private final String memoryId = "test-memory";
 
     @BeforeEach
     void setUp() {
@@ -42,7 +39,7 @@ class ChatMemoryIntegrationTest {
         List<ChatMessage> messages = chatMemoryService.getMessages(memoryId);
         assertNotNull(messages);
         assertEquals(2, messages.size());
-        assertTrue(messages.get(0) instanceof UserMessage);
-        assertEquals("Hola", ((UserMessage) messages.get(0)).text());
+        assertInstanceOf(UserMessage.class, messages.get(0));
+        assertEquals("Hola", messages.get(0).text());
     }
 }

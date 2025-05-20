@@ -24,9 +24,6 @@ public class ONNXEmbeddingGenerator implements EmbeddingGenerator {
         return onnxProvider.embed(text).content();
     }
 
-    // Método eliminado: generateEmbeddings(List<String> texts)
-    // La interfaz no tiene este método
-
     @Override
     public Embedding generateEmbedding(TextSegment segment) {
         return onnxProvider.embed(segment.text()).content();
@@ -34,7 +31,11 @@ public class ONNXEmbeddingGenerator implements EmbeddingGenerator {
 
     @Override
     public List<Embedding> generateEmbeddings(List<TextSegment> texts) {
-        // Implementación optimizada usando el método por lotes
         return onnxProvider.embedAll(texts).content();
+    }
+
+    @Override
+    public Embedding generateEmbedding(int[] inputIds, int[] attentionMask) {
+        return onnxProvider.embed(inputIds, attentionMask).content();
     }
 }

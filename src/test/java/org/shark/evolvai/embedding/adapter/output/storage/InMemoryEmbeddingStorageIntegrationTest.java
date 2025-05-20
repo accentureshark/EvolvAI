@@ -1,4 +1,3 @@
-
 package org.shark.evolvai.embedding.adapter.output.storage;
 
 import dev.langchain4j.data.embedding.Embedding;
@@ -8,7 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InMemoryEmbeddingStorageIntegrationTest {
 

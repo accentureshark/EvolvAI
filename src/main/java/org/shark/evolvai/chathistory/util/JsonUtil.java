@@ -3,8 +3,10 @@ package org.shark.evolvai.chathistory.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.langchain4j.data.message.*;
-
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.UserMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,20 +16,6 @@ import java.util.List;
 public class JsonUtil {
     private static final Logger logger = LoggerFactory.getLogger(JsonUtil.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    // Clase intermedia para almacenamiento
-    public static class StoredMessage {
-        public String type;
-        public String text;
-
-        // Constructor por Jackson
-        public StoredMessage() {}
-
-        public StoredMessage(String type, String text) {
-            this.type = type;
-            this.text = text;
-        }
-    }
 
     public static String serializeMessages(List<ChatMessage> messages) {
         try {
@@ -55,7 +43,8 @@ public class JsonUtil {
         }
 
         try {
-            List<StoredMessage> stored = objectMapper.readValue(json, new TypeReference<>() {});
+            List<StoredMessage> stored = objectMapper.readValue(json, new TypeReference<>() {
+            });
             List<ChatMessage> result = stored.stream()
                     .map(s -> switch (s.type) {
                         case "user" -> new UserMessage(s.text);
@@ -74,5 +63,20 @@ public class JsonUtil {
 
     public static ObjectMapper getObjectMapper() {
         return objectMapper;
+    }
+
+    // Clase intermedia para almacenamiento
+    public static class StoredMessage {
+        public String type;
+        public String text;
+
+        // Constructor por Jackson
+        public StoredMessage() {
+        }
+
+        public StoredMessage(String type, String text) {
+            this.type = type;
+            this.text = text;
+        }
     }
 }

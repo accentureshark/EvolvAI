@@ -13,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryChatMemoryStoreTest {
 
-    private InMemoryChatMemoryStore chatMemoryStore;
     private final String testMemoryId = "test-memory-id";
+    private InMemoryChatMemoryStore chatMemoryStore;
 
     @BeforeEach
     void setUp() {
@@ -79,9 +79,9 @@ class InMemoryChatMemoryStoreTest {
 
         // Validar
         assertEquals(2, parsed.size(), "Se deben deserializar 2 mensajes");
-        assertTrue(parsed.get(0) instanceof UserMessage, "El primer mensaje debe ser UserMessage");
-        assertTrue(parsed.get(1) instanceof AiMessage, "El segundo mensaje debe ser AiMessage");
-        assertEquals("Hola", ((UserMessage) parsed.get(0)).text());
+        assertInstanceOf(UserMessage.class, parsed.get(0), "El primer mensaje debe ser UserMessage");
+        assertInstanceOf(AiMessage.class, parsed.get(1), "El segundo mensaje debe ser AiMessage");
+        assertEquals("Hola", parsed.get(0).text());
         assertEquals("¿En qué puedo ayudarte?", ((AiMessage) parsed.get(1)).text());
     }
 

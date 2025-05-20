@@ -1,12 +1,15 @@
 # Admin Domain Model - EvolvAI
 
-Este documento describe en profundidad el modelo de dominio del paquete `admin.model` del proyecto EvolvAI. Su objetivo es ayudar a nuevos integrantes del equipo a comprender la estructura de clases, relaciones entre entidades y su finalidad dentro del contexto del sistema.
+Este documento describe en profundidad el modelo de dominio del paquete `admin.model` del proyecto EvolvAI. Su objetivo
+es ayudar a nuevos integrantes del equipo a comprender la estructura de clases, relaciones entre entidades y su
+finalidad dentro del contexto del sistema.
 
 ---
 
 ## ✨ Propósito del modelo `admin`
 
-El modelo `admin` representa la estructura organizativa, los usuarios, sus roles, las personas (físicas y jurídicas) y la configuración para el uso personalizado de la inteligencia artificial (IA) dentro del sistema EvolvAI.
+El modelo `admin` representa la estructura organizativa, los usuarios, sus roles, las personas (físicas y jurídicas) y
+la configuración para el uso personalizado de la inteligencia artificial (IA) dentro del sistema EvolvAI.
 
 ---
 
@@ -15,7 +18,8 @@ El modelo `admin` representa la estructura organizativa, los usuarios, sus roles
 Para facilitar la instalación y pruebas del modelo, se incluyen los siguientes scripts:
 
 * 🛠️ [init\_adm\_tables.sql](../scripts/init_adm_tables.sql): Crea todas las tablas necesarias del esquema `admin`.
-* 🧪 [insert\_data.sql](../scripts/insert_data.sql): Inserta datos sintéticos útiles para pruebas y validaciones iniciales.
+* 🧪 [insert\_data.sql](../scripts/insert_data.sql): Inserta datos sintéticos útiles para pruebas y validaciones
+  iniciales.
 
 Podés encontrarlos en el directorio `/scripts` del repositorio o cargarlos en tu instancia local de PostgreSQL.
 
@@ -194,4 +198,5 @@ Podés encontrarlos en el directorio `/scripts` del repositorio o cargarlos en t
 
 ---
 
-✉ Si sos nuevo en el equipo y tenés dudas sobre este modelo, podés hablar con el autor original o consultar los ejemplos en `/docs/examples/admin-model`.
+✉ Si sos nuevo en el equipo y tenés dudas sobre este modelo, podés hablar con el autor original o consultar los ejemplos
+en `/docs/examples/admin-model`.

@@ -1,17 +1,18 @@
 package org.shark.evolvai.chathistory.adapter.out;
 
-import org.springframework.beans.factory.annotation.Value;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Serializer;
 import org.shark.evolvai.chathistory.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
+
 @Component
 @ConditionalOnProperty(name = "chatmemory-persistence.provider", havingValue = "memory", matchIfMissing = true)
 public class MapDbChatMemoryStore implements ChatMemoryStore {

@@ -2,7 +2,10 @@ package org.shark.evolvai.admin.model.prompt;
 
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.shark.evolvai.admin.model.common.MessageRole;
 
 import java.util.UUID;

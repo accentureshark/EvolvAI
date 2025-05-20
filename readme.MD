@@ -83,7 +83,7 @@ Consulta la documentación completa del modelo de administrador en [Admin Domain
    4.1. Iniciar servicios con Pod compose**:
       ```bash
       podman-compose up -d
-      ```
+  [static](src/main/resources/static)    ```
    4.2. Iniciar servicios con Docker Compose**:
       ```bash
       docker-compose up -d

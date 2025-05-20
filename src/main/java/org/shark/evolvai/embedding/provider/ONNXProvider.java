@@ -23,6 +23,8 @@ import java.util.Map;
 public class ONNXProvider implements EmbeddingModel {
 
     private static final Logger logger = LoggerFactory.getLogger(ONNXProvider.class);
+    private static final int MAX_TOKENS = 512;
+
 
     @Value("${embedding.onnx.model-path}")
     private String modelPath;
@@ -134,14 +136,23 @@ public class ONNXProvider implements EmbeddingModel {
     }
 
     private long[] tokenizeText(String text) {
-        // Implementar tokenización real según el modelo
+        // Conversión básica de texto a tokens usando chars (tokenización simulada)
         char[] chars = text.toCharArray();
-        long[] tokens = new long[chars.length];
-        for (int i = 0; i < chars.length; i++) {
+
+        // Truncamiento a MAX_TOKENS
+        int maxLength = Math.min(chars.length, MAX_TOKENS);
+
+        if (chars.length > MAX_TOKENS) {
+            logger.warn("Texto truncado de {} a {} tokens", chars.length, MAX_TOKENS);
+        }
+
+        long[] tokens = new long[maxLength];
+        for (int i = 0; i < maxLength; i++) {
             tokens[i] = chars[i];
         }
         return tokens;
     }
+
 
     private float[] extractEmbeddings(OrtSession.Result result) throws OrtException {
         Object value = result.get(0).getValue();

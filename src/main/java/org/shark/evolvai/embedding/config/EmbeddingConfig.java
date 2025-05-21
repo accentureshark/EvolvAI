@@ -5,11 +5,13 @@ import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
 import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
+@EnableConfigurationProperties({TokenizerProperties.class, ChunkingProperties.class})
 public class EmbeddingConfig {
 
     @Value("${embedding.storage.type:inMemory}")
@@ -23,8 +25,7 @@ public class EmbeddingConfig {
     public EmbeddingStorage embeddingStorage(
             @Qualifier("inMemoryEmbeddingStorage") EmbeddingStorage inMemoryStorage,
             @Qualifier("pgVectorEmbeddingStorage") EmbeddingStorage pgVectorStorage) {
-
-        if ("pgVector".equals(storageType)) {
+        if ("pgVector".equalsIgnoreCase(storageType)) {
             return pgVectorStorage;
         }
         return inMemoryStorage;
@@ -33,15 +34,17 @@ public class EmbeddingConfig {
     @Bean
     @Primary
     public EmbeddingGenerator embeddingGenerator(
-            @Qualifier("onnxEmbeddingGenerator") EmbeddingGenerator onnxGenerator) {
-        // Aquí se pueden agregar más generadores en el futuro (Titan, etc.)
-        if ("onnx".equals(generatorType)) {
-            return onnxGenerator;
-        }
-        return onnxGenerator; // Por defecto usa ONNX
+            @Qualifier("onnxEmbeddingGenerator") EmbeddingGenerator onnxGenerator,
+            @Qualifier("ollamaEmbeddingGenerator") EmbeddingGenerator ollamaGenerator) {
+        return switch (generatorType.toLowerCase()) {
+            case "onnx" -> onnxGenerator;
+            case "ollama" -> ollamaGenerator;
+            default -> throw new IllegalArgumentException("Generador no soportado: " + generatorType);
+        };
     }
+
     @Bean
-    public TextChunkingService textChunkingService() {
-        return new TextChunkingService(256, 32); // Ajusta los parámetros según tu necesidad
+    public TextChunkingService textChunkingService(ChunkingProperties properties) {
+        return new TextChunkingService(properties.getSize(), properties.getOverlap());
     }
 }

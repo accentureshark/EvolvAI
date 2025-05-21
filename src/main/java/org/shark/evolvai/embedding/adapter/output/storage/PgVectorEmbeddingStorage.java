@@ -15,7 +15,7 @@ import java.sql.*;
 import java.time.Instant;
 import java.util.*;
 
-@Component
+@Component("pgVectorEmbeddingStorage")
 public class PgVectorEmbeddingStorage implements EmbeddingStorage {
 
     private static final Logger log = LoggerFactory.getLogger(PgVectorEmbeddingStorage.class);
@@ -25,6 +25,7 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     private final String dbUser;
     private final String dbPassword;
     private final String tableName;
+    private final int targetDimension;
 
     public PgVectorEmbeddingStorage(
             @Value("${embedding.pgvector.host}") String host,
@@ -35,25 +36,21 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
             @Value("${embedding.pgvector.tableName}") String tableName,
             @Value("${embedding.pgvector.dimensions}") int dimensions
     ) {
-        try {
-            this.embeddingStore = PgVectorEmbeddingStore.builder()
-                    .host(host)
-                    .port(port)
-                    .database(database)
-                    .user(user)
-                    .password(password)
-                    .table(tableName) // debe ser "embedding.embeddings"
-                    .dimension(dimensions)
-                    .build();
+        this.embeddingStore = PgVectorEmbeddingStore.builder()
+                .host(host)
+                .port(port)
+                .database(database)
+                .user(user)
+                .password(password)
+                .table(tableName)
+                .dimension(dimensions)
+                .build();
 
-            this.jdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + database;
-            this.dbUser = user;
-            this.dbPassword = password;
-            this.tableName = tableName;
-        } catch (Exception e) {
-            log.error("Error inicializando PgVectorEmbeddingStore", e);
-            throw e;
-        }
+        this.jdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + database;
+        this.dbUser = user;
+        this.dbPassword = password;
+        this.tableName = tableName;
+        this.targetDimension = dimensions;
     }
 
     @Override
@@ -73,16 +70,10 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
 
         Metadata metadata = Metadata.from(meta);
 
-        float[] original = embedding.vector();
-        if (original.length > 1536) {
-            throw new IllegalArgumentException("Embedding tiene más de 1536 dimensiones: " + original.length);
-        }
-
-        float[] padded = new float[1536];
-        System.arraycopy(original, 0, padded, 0, original.length);
+        float[] padded = padToDimension(embedding.vector(), targetDimension);
 
         insertEmbedding(UUID.randomUUID(), padded, documentId, text, metadata.toMap());
-        log.info("Embedding almacenado en PgVector con document_id={}, metadatos={}", documentId, metadata);
+        log.info("Embedding almacenado en PgVector con document_id={}, dimensiones={}, metadatos={}", documentId, padded.length, metadata);
     }
 
     private boolean existsDocumentId(String documentId) {
@@ -104,16 +95,14 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setObject(1, embeddingId);
-
-            // Convertir float[] a Float[] para el array SQL
             Float[] floatObjects = new Float[embedding.length];
             for (int i = 0; i < embedding.length; i++) {
                 floatObjects[i] = embedding[i];
             }
             java.sql.Array pgVector = conn.createArrayOf("float4", floatObjects);
-            ps.setArray(2, pgVector);
 
+            ps.setObject(1, embeddingId);
+            ps.setArray(2, pgVector);
             ps.setString(3, documentId);
             ps.setString(4, text);
 
@@ -126,16 +115,9 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         }
     }
 
-
     @Override
     public List<EmbeddingMatch<String>> findSimilar(Embedding embedding, int maxResults, double minScore) {
-        float[] original = embedding.vector();
-        if (original.length > 1536) {
-            throw new IllegalArgumentException("Embedding de búsqueda excede las 1536 dimensiones: " + original.length);
-        }
-
-        float[] padded = new float[1536];
-        System.arraycopy(original, 0, padded, 0, original.length);
+        float[] padded = padToDimension(embedding.vector(), targetDimension);
         Embedding paddedEmbedding = new Embedding(padded);
 
         return embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore)
@@ -153,6 +135,17 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     public void removeAll() {
         embeddingStore.removeAll();
         log.warn("Todos los embeddings han sido eliminados de PgVector.");
+    }
+
+    private float[] padToDimension(float[] input, int dim) {
+        float[] result = new float[dim];
+        if (input.length > dim) {
+            System.arraycopy(input, 0, result, 0, dim);
+            log.warn("Truncando embedding de {} a {} dimensiones", input.length, dim);
+        } else {
+            System.arraycopy(input, 0, result, 0, input.length);
+        }
+        return result;
     }
 
     private String hashText(String text) {

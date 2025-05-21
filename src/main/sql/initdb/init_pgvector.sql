@@ -9,7 +9,7 @@ CREATE SCHEMA IF NOT EXISTS admin;
 CREATE TABLE IF NOT EXISTS embedding.embeddings
 (
     embedding_id UUID PRIMARY KEY,
-    embedding VECTOR(1536) NOT NULL,
+    embedding VECTOR(2000) NOT NULL,
     document_id VARCHAR(512),
     text TEXT NOT NULL,
     metadata JSONB

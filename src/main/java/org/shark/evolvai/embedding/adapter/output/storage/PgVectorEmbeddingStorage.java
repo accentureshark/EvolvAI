@@ -42,9 +42,10 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
                     .database(database)
                     .user(user)
                     .password(password)
-                    .table(tableName)
+                    .table(tableName) // debe ser "embedding.embeddings"
                     .dimension(dimensions)
                     .build();
+
             this.jdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + database;
             this.dbUser = user;
             this.dbPassword = password;
@@ -60,7 +61,6 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         String hash = hashText(text);
         String documentId = id + "_" + hash;
 
-        // Verifica si ya existe ese document_id usando JDBC
         if (existsDocumentId(documentId)) {
             log.warn("Ya existe un documento con document_id={}. No se insertará nuevamente.", documentId);
             return;
@@ -77,10 +77,10 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         if (original.length > 1536) {
             throw new IllegalArgumentException("Embedding tiene más de 1536 dimensiones: " + original.length);
         }
+
         float[] padded = new float[1536];
         System.arraycopy(original, 0, padded, 0, original.length);
 
-        // Inserta usando JDBC para poblar todas las columnas correctamente
         insertEmbedding(UUID.randomUUID(), padded, documentId, text, metadata.toMap());
         log.info("Embedding almacenado en PgVector con document_id={}, metadatos={}", documentId, metadata);
     }
@@ -103,27 +103,39 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         String sql = "INSERT INTO " + tableName + " (embedding_id, embedding, document_id, text, metadata) VALUES (?, ?, ?, ?, ?::jsonb)";
         try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
              PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setObject(1, embeddingId);
-            ps.setObject(2, embedding); // Puede requerir adaptación según el driver pgvector
+
+            // Convertir float[] a Float[] para el array SQL
+            Float[] floatObjects = new Float[embedding.length];
+            for (int i = 0; i < embedding.length; i++) {
+                floatObjects[i] = embedding[i];
+            }
+            java.sql.Array pgVector = conn.createArrayOf("float4", floatObjects);
+            ps.setArray(2, pgVector);
+
             ps.setString(3, documentId);
             ps.setString(4, text);
-            ps.setString(5, new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(metadata));
+
+            String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(metadata);
+            ps.setString(5, json);
+
             ps.executeUpdate();
         } catch (Exception e) {
             log.error("Error insertando embedding", e);
         }
     }
 
+
     @Override
     public List<EmbeddingMatch<String>> findSimilar(Embedding embedding, int maxResults, double minScore) {
-        // Mantén la lógica existente, pero revisa si hay métodos no obsoletos en PgVectorEmbeddingStore
         float[] original = embedding.vector();
         if (original.length > 1536) {
             throw new IllegalArgumentException("Embedding de búsqueda excede las 1536 dimensiones: " + original.length);
         }
+
         float[] padded = new float[1536];
         System.arraycopy(original, 0, padded, 0, original.length);
-
         Embedding paddedEmbedding = new Embedding(padded);
 
         return embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore)

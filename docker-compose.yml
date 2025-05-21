@@ -1,16 +1,25 @@
+version: '3.8'
+
 services:
+
   pgvector:
-    image: docker.io/ankane/pgvector
-    ports:
-      - "5432:5432"
+    image: ankane/pgvector
+    container_name: evolvai_pgvector
+    restart: always
     environment:
+      POSTGRES_DB: evolvai
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres1234
-      POSTGRES_DB: evolvai
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
     volumes:
-      - pgvector_data:/var/lib/postgresql/data
-      - ./src/main/sql/init_pgvector.sql:/docker-entrypoint-initdb.d/init_pgvector.sql
-      - ./src/main/sql/init_adm_tables.sql:/docker-entrypoint-initdb.d/init_adm_tables.sql
+      - ./src/main/sql/initdb:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   ollama:
     image: docker.io/ollama/ollama:latest

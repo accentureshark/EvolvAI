@@ -21,20 +21,30 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
 
     private final EmbeddingGenerator embeddingGenerator;
     private final EmbeddingStorage embeddingStorage;
+    private final TextChunkingService textChunkingService;
 
     public RAGEmbeddingService(
             EmbeddingGenerator embeddingGenerator,
-            EmbeddingStorage embeddingStorage) {
+            EmbeddingStorage embeddingStorage,
+            TextChunkingService textChunkingService) {
         this.embeddingGenerator = embeddingGenerator;
         this.embeddingStorage = embeddingStorage;
+        this.textChunkingService = textChunkingService;
     }
 
     @Override
     public void indexDocument(String id, String text) {
         log.info("Indexando documento con id: {}", id);
-        Embedding embedding = embeddingGenerator.generateEmbedding(text);
-        log.info("Guardando documento con id: {}", id);
-        embeddingStorage.store(id, embedding, text);
+
+        List<String> fragments = textChunkingService.chunk(text);
+        for (int i = 0; i < fragments.size(); i++) {
+            String fragment = fragments.get(i);
+            Embedding embedding = embeddingGenerator.generateEmbedding(fragment);
+            String fragmentId = id + "-fragment-" + i;
+            embeddingStorage.store(fragmentId, embedding, fragment);
+            log.info("Fragmento almacenado con id: {}", fragmentId);
+        }
+
         log.info("Documento indexado correctamente: {}", id);
     }
 
@@ -43,7 +53,8 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
         log.info("Buscando documentos similares para query: '{}', maxResults: {}, minScore: {}", query, maxResults, minScore);
         Embedding queryEmbedding = embeddingGenerator.generateEmbedding(query);
         List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(
-                queryEmbedding, maxResults, minScore);
+                queryEmbedding, maxResults, minScore
+        );
         log.info("Se encontraron {} documentos similares.", matches.size());
         return matches.stream()
                 .map(EmbeddingMatch::embedded)

@@ -1,5 +1,6 @@
 package org.shark.evolvai.embedding.config;
 
+import org.shark.evolvai.embedding.domain.service.TextChunkingService;
 import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
 import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,5 +39,9 @@ public class EmbeddingConfig {
             return onnxGenerator;
         }
         return onnxGenerator; // Por defecto usa ONNX
+    }
+    @Bean
+    public TextChunkingService textChunkingService() {
+        return new TextChunkingService(256, 32); // Ajusta los parámetros según tu necesidad
     }
 }

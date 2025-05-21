@@ -22,7 +22,10 @@ import java.util.Map;
 @Component
 public class ONNXProvider implements EmbeddingModel {
 
+
     private static final Logger logger = LoggerFactory.getLogger(ONNXProvider.class);
+
+
     private static final int MAX_TOKENS = 512;
 
 
@@ -217,6 +220,8 @@ public class ONNXProvider implements EmbeddingModel {
             throw new RuntimeException("Failed to embed tokenized input", e);
         }
     }
+
+
 
     public static class EmbeddingResult {
         private final Embedding content;

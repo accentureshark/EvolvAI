@@ -70,7 +70,7 @@ public class InferenceController {
                 }
             }
             log.info("Indexando documento en embeddings: {}", filename);
-            embeddingUseCase.indexDocument(filename, text);
+            embeddingUseCase.indexDocument(filename, text); // <-- Aquí se invoca la segmentación
             log.info("Documento procesado y embebido correctamente: {}", filename);
             return ResponseEntity.ok().build();
         } catch (Exception e) {

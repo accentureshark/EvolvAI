@@ -1,6 +1,5 @@
 -- Enable pgvector
-CREATE
-EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS vector;
 
 -- Schemas for structured separation
 CREATE SCHEMA IF NOT EXISTS embedding;
@@ -9,21 +8,11 @@ CREATE SCHEMA IF NOT EXISTS admin;
 -- Main embeddings table
 CREATE TABLE IF NOT EXISTS embedding.embeddings
 (
-    embedding_id
-    UUID
-    PRIMARY
-    KEY,
-    embedding
-    VECTOR
-(
-    1536
-) NOT NULL,
+    embedding_id UUID PRIMARY KEY,
+    embedding VECTOR(1536) NOT NULL,
+    document_id VARCHAR(512),
     text TEXT NOT NULL,
-    metadata JSONB,
-    uploader_user_id UUID,
-    document_name TEXT,
-    document_url TEXT,
-    upload_timestamp TIMESTAMP
+    metadata JSONB
     );
 
 CREATE INDEX IF NOT EXISTS embeddings_vector_idx

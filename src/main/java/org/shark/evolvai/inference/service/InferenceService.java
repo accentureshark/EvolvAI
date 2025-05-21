@@ -1,8 +1,12 @@
 package org.shark.evolvai.inference.service;
 
 import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import org.shark.evolvai.chathistory.port.output.ChatHistoryRepository;
+import org.shark.evolvai.chathistory.service.ChatMemoryService;
 import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
 import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
 import org.shark.evolvai.inference.controller.EmbeddingMatchDto;
@@ -14,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,17 +32,20 @@ public class InferenceService implements InferenceUseCase {
     private final EmbeddingStorage embeddingStorage;
     private final LlmProvider llmProvider;
     private final ChatHistoryRepository chatHistoryRepository;
+    private final ChatMemoryService chatMemoryService;
 
     public InferenceService(
             EmbeddingGenerator embeddingGenerator,
             EmbeddingStorage embeddingStorage,
             LlmProvider llmProvider,
-            ChatHistoryRepository chatHistoryRepository
+            ChatHistoryRepository chatHistoryRepository,
+            ChatMemoryService chatMemoryService
     ) {
         this.embeddingGenerator = embeddingGenerator;
         this.embeddingStorage = embeddingStorage;
         this.llmProvider = llmProvider;
         this.chatHistoryRepository = chatHistoryRepository;
+        this.chatMemoryService = chatMemoryService;
     }
 
     @Override
@@ -58,7 +66,14 @@ public class InferenceService implements InferenceUseCase {
 
         chatHistoryRepository.saveInteraction(request.getQuery(), answer);
 
-        // Mapear a DTO antes de devolver
+        // Acumula mensajes previos en la memoria de chat
+        String conversationId = request.getConversationId() != null ? request.getConversationId() : UUID.randomUUID().toString();
+        List<ChatMessage> prevMessages = chatMemoryService.getMessages(conversationId);
+        List<ChatMessage> updatedMessages = new ArrayList<>(prevMessages);
+        updatedMessages.add(new UserMessage(request.getQuery()));
+        updatedMessages.add(new AiMessage(answer));
+        chatMemoryService.updateMessages(conversationId, updatedMessages);
+
         List<EmbeddingMatchDto> dtos = matches.stream()
                 .map(m -> new EmbeddingMatchDto(
                         m.score(),
@@ -104,7 +119,13 @@ public class InferenceService implements InferenceUseCase {
 
         chatHistoryRepository.saveInteractionWithId(conversationId, request.getQuery(), answer);
 
-        // Mapear a DTO antes de devolver
+        // Acumula mensajes previos en la memoria de chat
+        List<ChatMessage> prevMessages = chatMemoryService.getMessages(conversationId);
+        List<ChatMessage> updatedMessages = new ArrayList<>(prevMessages);
+        updatedMessages.add(new UserMessage(request.getQuery()));
+        updatedMessages.add(new AiMessage(answer));
+        chatMemoryService.updateMessages(conversationId, updatedMessages);
+
         List<EmbeddingMatchDto> dtos = matches.stream()
                 .map(m -> new EmbeddingMatchDto(
                         m.score(),

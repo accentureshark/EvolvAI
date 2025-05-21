@@ -1,6 +1,7 @@
 package org.shark.evolvai.embedding.domain.service;
 
 import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import org.shark.evolvai.embedding.port.input.EmbeddingUseCase;
 import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
@@ -36,7 +37,13 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
     public void indexDocument(String id, String text) {
         log.info("Indexando documento con id: {}", id);
 
-        List<String> fragments = textChunkingService.chunk(text);
+
+        List<String> fragments = textChunkingService.chunk(text)
+                .stream()
+                .map(TextSegment::text)
+                .collect(Collectors.toList());
+
+
         for (int i = 0; i < fragments.size(); i++) {
             String fragment = fragments.get(i);
             Embedding embedding = embeddingGenerator.generateEmbedding(fragment);

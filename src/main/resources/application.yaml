@@ -2,11 +2,15 @@ server:
   port: 8081
 
 # Configuración de embeddings
+# Configuración de embeddings
 embedding:
+  chunking:
+    size: 500
+    overlap: 100
   storage:
     type: pgVector  # Opciones: inMemory, pgVector
   generator:
-    type: onnx      # Opciones: onnx, [otros a futuro]
+    type: ollama    # Opciones: onnx, ollama
   pgvector:
     host: localhost
     port: 5432
@@ -14,9 +18,12 @@ embedding:
     user: postgres
     password: postgres1234
     tableName: embedding.embeddings
-    dimensions: 1536
+    dimensions: 2000
   onnx:
     model-path: ./models/all-MiniLM-L6-v2.onnx
+  ollama:
+    base-url: http://localhost:11434
+    model: llama3:8b  # también podés probar nomic-embed-text, llama3:8b si soporta embeddings
   tokenizer:
     path: classpath:tokenizer/tokenizer.json
 
@@ -25,20 +32,20 @@ embedding:
 
 # Configuración del LLM
 llm:
-  provider: "ollama"  # Cambia aquí "llama" u "ollama"
-  llama:
-    base-url: "http://localhost:8000/v1"
-    api-key: "test_api_key"
-    model: "llama2"
+  provider: "ollama"
+  ollama:
+    base-url: "http://localhost:11434"
+    model: "llama3:8b"
     temperature: 0.7
     max-tokens: 512
     top-p: 0.95
     top-k: 50
-  ollama:
-    base-url: "http://localhost:11434"
-    model: "phi3:mini"
-    temperature: 0.2
     timeout-sec: 180
+  #ollama:
+  #  base-url: "http://localhost:11434"
+  #  model: "phi3:mini"
+  #  temperature: 0.2
+  #  timeout-sec: 180
 
 
 # Configuración de persistencia de chat memory

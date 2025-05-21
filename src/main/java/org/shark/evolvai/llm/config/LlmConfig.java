@@ -17,17 +17,20 @@ public class LlmConfig {
 
     @Bean
     public ChatLanguageModel chatLanguageModel(
-            @Value("${llm.llama.base-url}") String llamaBaseUrl,
-            @Value("${llm.llama.api-key}") String llamaApiKey,
-            @Value("${llm.llama.model}") String llamaModel,
-            @Value("${llm.llama.temperature}") double llamaTemperature,
-            @Value("${llm.llama.max-tokens}") int llamaMaxTokens,
-            @Value("${llm.llama.top-p}") double llamaTopP,
-            @Value("${llm.llama.top-k}") int llamaTopK,
-            @Value("${llm.ollama.base-url}") String ollamaBaseUrl,
-            @Value("${llm.ollama.model}") String ollamaModel,
-            @Value("${llm.ollama.temperature}") double ollamaTemperature,
-            @Value("${llm.ollama.timeout-sec}") int ollamaTimeoutSec
+            // OpenAI/Llama params (solo si se usa)
+            @Value("${llm.llama.base-url:}") String llamaBaseUrl,
+            @Value("${llm.llama.api-key:}") String llamaApiKey,
+            @Value("${llm.llama.model:}") String llamaModel,
+            @Value("${llm.llama.temperature:0.7}") double llamaTemperature,
+            @Value("${llm.llama.max-tokens:512}") int llamaMaxTokens,
+            @Value("${llm.llama.top-p:0.95}") double llamaTopP,
+            @Value("${llm.llama.top-k:50}") int llamaTopK,
+
+            // Ollama params (solo si se usa)
+            @Value("${llm.ollama.base-url:}") String ollamaBaseUrl,
+            @Value("${llm.ollama.model:}") String ollamaModel,
+            @Value("${llm.ollama.temperature:0.7}") double ollamaTemperature,
+            @Value("${llm.ollama.timeout-sec:180}") int ollamaTimeoutSec
     ) {
         if ("llama".equalsIgnoreCase(provider)) {
             return OpenAiChatModel.builder()
@@ -50,6 +53,3 @@ public class LlmConfig {
         }
     }
 }
-
-
-

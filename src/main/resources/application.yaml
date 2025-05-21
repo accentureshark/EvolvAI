@@ -25,7 +25,7 @@ embedding:
 
 # Configuración del LLM
 llm:
-  provider: "llama"
+  provider: "ollama"  # Cambia aquí "llama" u "ollama"
   llama:
     base-url: "http://localhost:8000/v1"
     api-key: "test_api_key"
@@ -34,7 +34,11 @@ llm:
     max-tokens: 512
     top-p: 0.95
     top-k: 50
-
+  ollama:
+    base-url: "http://localhost:11434"
+    model: "phi3:mini"
+    temperature: 0.2
+    timeout-sec: 180
 
 
 # Configuración de persistencia de chat memory

@@ -28,8 +28,8 @@ services:
     volumes:
       - ollama_data:/root/.ollama
     restart: unless-stopped
-    mem_limit: 20g
-    cpus: 6
+    mem_limit: 32g
+    cpus: 8
     environment:
       - OLLAMA_MODELS=phi3:mini
 

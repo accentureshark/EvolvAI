@@ -41,7 +41,13 @@ public class InMemoryEmbeddingStorage implements EmbeddingStorage {
     }
 
     @Override
+    public List<String> findAllDocumentIds() {
+        return List.of();
+    }
+
+    @Override
     public void removeAll() {
         //embeddingStore.;
     }
+
 }

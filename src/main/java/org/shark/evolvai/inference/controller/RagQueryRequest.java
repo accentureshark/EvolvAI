@@ -4,7 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RagQueryRequest {
 
     @NotBlank(message = "La consulta no puede estar vacía")
@@ -27,51 +33,6 @@ public class RagQueryRequest {
     @Schema(description = "Incluir documentos recuperados en la respuesta", defaultValue = "true")
     private boolean includeMatches = true;
 
-    // Constructores, getters y setters
-    public RagQueryRequest() {
-    }
-
-    public RagQueryRequest(String query) {
-        this.query = query;
-    }
-
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public String getConversationId() {
-        return conversationId;
-    }
-
-    public void setConversationId(String conversationId) {
-        this.conversationId = conversationId;
-    }
-
-    public int getMaxResults() {
-        return maxResults;
-    }
-
-    public void setMaxResults(int maxResults) {
-        this.maxResults = maxResults;
-    }
-
-    public double getMinSimilarity() {
-        return minSimilarity;
-    }
-
-    public void setMinSimilarity(double minSimilarity) {
-        this.minSimilarity = minSimilarity;
-    }
-
-    public boolean isIncludeMatches() {
-        return includeMatches;
-    }
-
-    public void setIncludeMatches(boolean includeMatches) {
-        this.includeMatches = includeMatches;
-    }
+    @Schema(description = "Prompt personalizado para mejorar la respuesta del modelo", example = "Responde de manera concisa y profesional")
+    private String customPrompt;
 }

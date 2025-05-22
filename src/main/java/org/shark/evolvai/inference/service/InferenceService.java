@@ -9,6 +9,7 @@ import org.shark.evolvai.chathistory.port.output.ChatHistoryRepository;
 import org.shark.evolvai.chathistory.service.ChatMemoryService;
 import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
 import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
+import org.shark.evolvai.inference.config.InferenceProperties;
 import org.shark.evolvai.inference.controller.EmbeddingMatchDto;
 import org.shark.evolvai.inference.controller.QueryResponse;
 import org.shark.evolvai.inference.controller.RagQueryRequest;
@@ -24,7 +25,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class InferenceService implements InferenceUseCase {
+public class    InferenceService implements InferenceUseCase {
 
     private static final Logger log = LoggerFactory.getLogger(InferenceService.class);
 
@@ -34,18 +35,22 @@ public class InferenceService implements InferenceUseCase {
     private final ChatHistoryRepository chatHistoryRepository;
     private final ChatMemoryService chatMemoryService;
 
+    private final InferenceProperties inferenceProperties;
+
     public InferenceService(
             EmbeddingGenerator embeddingGenerator,
             EmbeddingStorage embeddingStorage,
             LlmProvider llmProvider,
             ChatHistoryRepository chatHistoryRepository,
-            ChatMemoryService chatMemoryService
+            ChatMemoryService chatMemoryService,
+            InferenceProperties inferenceProperties
     ) {
         this.embeddingGenerator = embeddingGenerator;
         this.embeddingStorage = embeddingStorage;
         this.llmProvider = llmProvider;
         this.chatHistoryRepository = chatHistoryRepository;
         this.chatMemoryService = chatMemoryService;
+        this.inferenceProperties = inferenceProperties;
     }
 
     @Override
@@ -54,14 +59,18 @@ public class InferenceService implements InferenceUseCase {
 
         Embedding queryEmbedding = embeddingGenerator.generateEmbedding(request.getQuery());
 
-        List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(queryEmbedding, 5, 0.7);
+        List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(
+                queryEmbedding,
+                inferenceProperties.getMaxResults(),
+                inferenceProperties.getMinScore()
+        );
         log.info("Se encontraron {} documentos similares.", matches.size());
 
         String context = matches.stream()
                 .map(EmbeddingMatch::embedded)
                 .reduce("", (a, b) -> a + "\n" + b);
 
-        String answer = llmProvider.generateResponse(context, request.getQuery());
+        String answer = llmProvider.generateResponse(context, request.getQuery(), request.getCustomPrompt());
         log.info("Respuesta generada: {}", answer);
 
         chatHistoryRepository.saveInteraction(request.getQuery(), answer);
@@ -84,6 +93,10 @@ public class InferenceService implements InferenceUseCase {
                 .collect(Collectors.toList());
 
         log.info("Consulta básica finalizada.");
+        for (EmbeddingMatch<String> match : matches) {
+            log.debug("Score: {}, ID: {}, Text preview: {}", match.score(), match.embeddingId(), match.embedded().substring(0, Math.min(100, match.embedded().length())));
+        }
+
         return new QueryResponse(answer, dtos);
     }
 
@@ -114,7 +127,12 @@ public class InferenceService implements InferenceUseCase {
         log.debug("Recuperando historial de conversación...");
         String conversationHistory = chatHistoryRepository.getConversationHistory(conversationId);
 
-        String answer = llmProvider.generateResponseWithHistory(context, request.getQuery(), conversationHistory);
+        String answer = llmProvider.generateResponseWithHistory(
+                context,
+                request.getQuery(),
+                conversationHistory,
+                request.getCustomPrompt()
+        );
         log.info("Respuesta generada: {}", answer);
 
         chatHistoryRepository.saveInteractionWithId(conversationId, request.getQuery(), answer);

@@ -1,6 +1,7 @@
 package org.shark.evolvai.embedding.config;
 
 import ai.djl.huggingface.tokenizers.HuggingFaceTokenizer;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -16,7 +17,11 @@ import java.nio.file.Paths;
 
 @Configuration
 @EnableConfigurationProperties(TokenizerProperties.class)
+@Data
 public class TokenizerConfig {
+
+    private String loadedPath;
+    private int maxLength;
 
     private static final Logger logger = LoggerFactory.getLogger(TokenizerConfig.class);
 

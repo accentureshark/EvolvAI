@@ -53,10 +53,10 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         this.targetDimension = dimensions;
     }
 
-    @Override
-    public void store(String id, Embedding embedding, String text) {
+    // Nuevo método para soportar customPrompt
+    public void store(String id, Embedding embedding, String text, String customPrompt) {
         String hash = hashText(text);
-        String documentId = id + "_" + hash;
+        String documentId = id + "-" + hash;
 
         if (existsDocumentId(documentId)) {
             log.warn("Ya existe un documento con document_id={}. No se insertará nuevamente.", documentId);
@@ -67,6 +67,9 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         meta.put("documentName", id);
         meta.put("usuario", "desconocido");
         meta.put("timestamp", Instant.now().toEpochMilli());
+        if (customPrompt != null && !customPrompt.isBlank()) {
+            meta.put("customPrompt", customPrompt);
+        }
 
         Metadata metadata = Metadata.from(meta);
 
@@ -74,6 +77,12 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
 
         insertEmbedding(UUID.randomUUID(), padded, documentId, text, metadata.toMap());
         log.info("Embedding almacenado en PgVector con document_id={}, dimensiones={}, metadatos={}", documentId, padded.length, metadata);
+    }
+
+    // Sobrecarga para compatibilidad
+    @Override
+    public void store(String id, Embedding embedding, String text) {
+        store(id, embedding, text, null);
     }
 
     private boolean existsDocumentId(String documentId) {
@@ -131,7 +140,24 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
                 .toList();
     }
 
+    // En PgVectorEmbeddingStorage.java
+    public List<String> findAllDocumentIds() {
+        String sql = "SELECT DISTINCT split_part(document_id, '///', 1) FROM " + tableName;
+        List<String> ids = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                ids.add(rs.getString(1));
+            }
+        } catch (SQLException e) {
+            log.error("Error obteniendo document_id distintos", e);
+        }
+        return ids;
+    }
+
     @Override
+
     public void removeAll() {
         embeddingStore.removeAll();
         log.warn("Todos los embeddings han sido eliminados de PgVector.");

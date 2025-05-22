@@ -26,15 +26,18 @@ public class GenericLlmProvider implements LlmProvider {
     private final ChatLanguageModel chatLanguageModel;
     private final String modelName;
     private final String ollamaBaseUrl;
+    private final String defaultPrompt;
 
     public GenericLlmProvider(
             ChatLanguageModel chatLanguageModel,
             @Value("${llm.ollama.model:phi3:mini}") String modelName,
-            @Value("${llm.ollama.base-url:http://localhost:11434}") String ollamaBaseUrl
+            @Value("${llm.ollama.base-url:http://localhost:11434}") String ollamaBaseUrl,
+            @Value("${llm.default-prompt:Responde de manera clara y profesional:}") String defaultPrompt
     ) {
         this.chatLanguageModel = chatLanguageModel;
         this.modelName = modelName;
         this.ollamaBaseUrl = ollamaBaseUrl;
+        this.defaultPrompt = defaultPrompt;
     }
 
     @Override
@@ -45,6 +48,7 @@ public class GenericLlmProvider implements LlmProvider {
         }
         try {
             Response<AiMessage> response = chatLanguageModel.generate(messages);
+            log.info("Respuesta recibida del modelo: {}", response.content().text());
             return response.content();
         } catch (RuntimeException e) {
             log.error("Error al consultar el modelo LLM", e);
@@ -54,14 +58,21 @@ public class GenericLlmProvider implements LlmProvider {
 
     @Override
     public String generateResponse(String context, String query) {
+        return generateResponse(context, query, null);
+    }
+
+    @Override
+    public String generateResponse(String context, String query, String customPrompt) {
         if (!isModelLoaded(modelName)) {
             throw new ModelNotLoadedException(modelName);
         }
         try {
-            List<ChatMessage> messages = List.of(
-                    new UserMessage(context + "\n" + query)
-            );
+            String prompt = (customPrompt != null && !customPrompt.isBlank()) ? customPrompt : defaultPrompt;
+            log.info("Prompt usado para LLM: {}", prompt);
+            List<ChatMessage> messages = List.of(new UserMessage(prompt + "\n" + context + "\n" + query));
+            log.info("Enviando mensaje al modelo: {}", messages);
             Response<AiMessage> response = chatLanguageModel.generate(messages);
+            log.info("Respuesta generada: {}", response.content().text());
             return response.content().text();
         } catch (RuntimeException e) {
             log.error("Error al generar respuesta con LLM", e);
@@ -71,15 +82,25 @@ public class GenericLlmProvider implements LlmProvider {
 
     @Override
     public String generateResponseWithHistory(String context, String query, String history) {
+        return generateResponseWithHistory(context, query, history, null);
+    }
+
+    @Override
+    public String generateResponseWithHistory(String context, String query, String history, String customPrompt) {
         if (!isModelLoaded(modelName)) {
             throw new ModelNotLoadedException(modelName);
         }
         try {
-            String prompt = (history != null && !history.isEmpty())
-                    ? history + "\n" + context + "\n" + query
-                    : context + "\n" + query;
-            List<ChatMessage> messages = List.of(new UserMessage(prompt));
+            String prompt = (customPrompt != null && !customPrompt.isBlank()) ? customPrompt : defaultPrompt;
+            String fullPrompt = (history != null && !history.isEmpty())
+                    ? prompt + "\n" + history + "\n" + context + "\n" + query
+                    : prompt + "\n" + context + "\n" + query;
+            log.info("Prompt usado para LLM (con historial): {}", prompt);
+            log.debug("Prompt completo enviado al modelo: {}", fullPrompt);
+            List<ChatMessage> messages = List.of(new UserMessage(fullPrompt));
+            log.info("Enviando mensaje al modelo: {}", messages);
             Response<AiMessage> response = chatLanguageModel.generate(messages);
+            log.info("Respuesta generada: {}", response.content().text());
             return response.content().text();
         } catch (RuntimeException e) {
             log.error("Error al generar respuesta con historial en LLM", e);
@@ -97,7 +118,9 @@ public class GenericLlmProvider implements LlmProvider {
 
             try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                 String response = in.lines().reduce("", (a, b) -> a + b);
-                return response.contains("\"" + modelName + "\"");
+                boolean loaded = response.contains("\"" + modelName + "\"");
+                log.debug("¿Modelo '{}' cargado en Ollama?: {}", modelName, loaded);
+                return loaded;
             }
         } catch (Exception e) {
             log.error("No se pudo verificar si el modelo está cargado en Ollama", e);

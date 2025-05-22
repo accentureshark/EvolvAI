@@ -10,7 +10,7 @@ embedding:
   storage:
     type: pgVector  # Opciones: inMemory, pgVector
   generator:
-    type: ollama    # Opciones: onnx, ollama
+    type: onnx    # Opciones: onnx, ollama
   pgvector:
     host: localhost
     port: 5432
@@ -27,20 +27,30 @@ embedding:
   tokenizer:
     path: classpath:tokenizer/tokenizer.json
 
-
+inference:
+  max-results: 3
+  min-score: 0.85
 
 
 # Configuración del LLM
 llm:
   provider: "ollama"
-  ollama:
-    base-url: "http://localhost:11434"
-    model: "llama3:8b"
+  default-prompt: 'Respondé exclusivamente usando el contexto provisto. 
+  Si no hay información relevante en el contexto, decí ''No se encontró información suficiente''.'
+  llama:
+    base-url: "http://localhost:8000/v1"
+    api-key: "test_api_key"
+    model: "llama2"
     temperature: 0.7
     max-tokens: 512
     top-p: 0.95
     top-k: 50
+  ollama:
+    base-url: "http://localhost:11434"
+    model: "phi3:mini"
+    temperature: 0.2
     timeout-sec: 180
+
   #ollama:
   #  base-url: "http://localhost:11434"
   #  model: "phi3:mini"
@@ -79,24 +89,6 @@ spring:
         format_sql: true
         use_sql_comments: true  # (opcional) agrega comentarios a los SQL generados
 
-# Logging detallado
-logging:
-  level:
-    root: INFO
-    org.springframework.web: DEBUG
-    org.springdoc: DEBUG
-    org.hibernate.SQL: INFO              # muestra las sentencias SQL
-    org.hibernate.type.descriptor.sql: INFO  # muestra los parámetros enlazados
-    org.hibernate.orm.jdbc.bind: INFO   # más trazas de bindings
-    org.hibernate.engine.jdbc.spi: INFO  # detalles de conexión JDBC y ejecución
-
-# Configuración de Springdoc
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
-
 # Docker compose
 ---
 services:
@@ -114,3 +106,29 @@ services:
 
 volumes:
   pgvector-data:
+
+
+# Logging detallado
+logging:
+  level:
+    root: INFO
+    org.shark.evolvai: DEBUG
+    org.springframework.web: DEBUG
+    org.springdoc: DEBUG
+    org.hibernate.SQL: INFO              # muestra las sentencias SQL
+    org.hibernate.type.descriptor.sql: INFO  # muestra los parámetros enlazados
+    org.hibernate.orm.jdbc.bind: INFO   # más trazas de bindings
+    org.hibernate.engine.jdbc.spi: INFO  # detalles de conexión JDBC y ejecución
+
+# Configuración de Springdoc
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,rag

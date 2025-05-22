@@ -4,6 +4,7 @@ import ai.djl.huggingface.tokenizers.HuggingFaceTokenizer;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import org.shark.evolvai.embedding.port.input.EmbeddingUseCase;
+import org.shark.evolvai.inference.config.InferenceProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,16 @@ public class EmbeddingController {
     private static final Logger log = LoggerFactory.getLogger(EmbeddingController.class);
     private final EmbeddingUseCase embeddingUseCase;
     private final HuggingFaceTokenizer tokenizer;
+    private final InferenceProperties inferenceProperties;
 
-    public EmbeddingController(EmbeddingUseCase embeddingUseCase, HuggingFaceTokenizer tokenizer) {
+    public EmbeddingController(
+            EmbeddingUseCase embeddingUseCase,
+            HuggingFaceTokenizer tokenizer,
+            InferenceProperties inferenceProperties
+    ) {
         this.embeddingUseCase = embeddingUseCase;
         this.tokenizer = tokenizer;
+        this.inferenceProperties = inferenceProperties;
     }
 
     @PostMapping("/embed-file")
@@ -43,10 +50,10 @@ public class EmbeddingController {
             int[] inputIds = Arrays.stream(encoding.getIds()).mapToInt(i -> (int) i).toArray();
             int[] attentionMask = Arrays.stream(encoding.getAttentionMask()).mapToInt(i -> (int) i).toArray();
 
-            var embedding = embeddingUseCase.generateEmbedding(inputIds, attentionMask); // <--- asegurate que esto esté acá
+            var embedding = embeddingUseCase.generateEmbedding(inputIds, attentionMask);
             log.info("Archivo procesado exitosamente: {}", file.getOriginalFilename());
 
-            return ResponseEntity.ok(embedding.vectorAsList()); // <--- y esto también dentro del try
+            return ResponseEntity.ok(embedding.vectorAsList());
 
         } catch (Exception e) {
             log.error("Error procesando archivo", e);
@@ -58,20 +65,29 @@ public class EmbeddingController {
         }
     }
 
-
     @PostMapping("/index")
     public ResponseEntity<Void> indexDocument(@RequestBody DocumentRequest request) {
         String id = request.getId() != null ? request.getId() : UUID.randomUUID().toString();
-        embeddingUseCase.indexDocument(id, request.getText());
+        embeddingUseCase.indexDocument(id, request.getText(), request.getCustomPrompt());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<String>> search(
             @RequestParam String query,
-            @RequestParam(defaultValue = "5") int maxResults,
-            @RequestParam(defaultValue = "0.7") double minScore) {
-        List<String> results = embeddingUseCase.findSimilarDocuments(query, maxResults, minScore);
-        return ResponseEntity.ok(results);
+            @RequestParam(required = false) Integer maxResults,
+            @RequestParam(required = false) Double minScore) {
+        int results = maxResults != null ? maxResults : inferenceProperties.getMaxResults();
+        double score = minScore != null ? minScore : inferenceProperties.getMinScore();
+        List<String> resultsList = embeddingUseCase.findSimilarDocuments(query, results, score);
+        return ResponseEntity.ok(resultsList);
+    }
+
+    @GetMapping("/documents")
+    public ResponseEntity<List<String>> listDocuments() {
+        log.info("Recibida solicitud para listar document_id distintos.");
+        List<String> ids = embeddingUseCase.listDocumentIds();
+        log.info("Se encontraron {} document_id distintos.", ids.size());
+        return ResponseEntity.ok(ids);
     }
 }

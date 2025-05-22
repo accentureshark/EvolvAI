@@ -10,7 +10,7 @@ embedding:
   storage:
     type: pgVector  # Opciones: inMemory, pgVector
   generator:
-    type: onnx    # Opciones: onnx, ollama
+    type: ollama    # Opciones: onnx, ollama
   pgvector:
     host: localhost
     port: 5432

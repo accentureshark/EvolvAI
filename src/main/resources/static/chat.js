@@ -61,13 +61,35 @@ function addMessage(text, who) {
     const container = document.getElementById("messages");
     const msg = document.createElement("div");
     msg.className = "message " + who;
+
+    // Lógica de truncado
+    const maxLen = 200;
+    let isTruncated = text.length > maxLen;
+    let shortText = isTruncated ? text.slice(0, maxLen) + "..." : text;
+
+
     if (who === "bot") {
-        msg.innerHTML = `<img class="avatar" src="shark-bot.png" alt="Bot"><div class="text">${text}</div>`;
+        msg.innerHTML = `<img class="avatar" src="shark-bot.png" alt="Bot">
+        <div class="text">${shortText}
+            ${isTruncated ? `<a href="#" class="see-more" title="Expandir mensaje completo">Ver más</a>` : ""}
+        </div>`;
     } else {
-        msg.innerHTML = `<div class="text">${text}</div>`;
+        msg.innerHTML = `<div class="text">${shortText}
+        ${isTruncated ? `<a href="#" class="see-more" title="Expandir mensaje completo">Ver más</a>` : ""}
+    </div>`;
     }
+
     container.appendChild(msg);
-    container.scrollTop = container.scrollHeight;
+    container.scrollTop = container.scrollHeight; // Solo al agregar mensaje nuevo
+
+    // Evento para "Ver más"
+    if (isTruncated) {
+        msg.querySelector('.see-more').addEventListener('click', function(e) {
+            e.preventDefault();
+            msg.querySelector('.text').innerHTML = text;
+            // No hacer scroll automático aquí
+        });
+    }
 }
 
 async function handleFormSubmit(e) {
@@ -134,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadUploadedFiles();
     // Mostrar mensaje del bot si no hay mensajes
     const messages = document.getElementById("messages");
-   // if (messages.children.length === 0) {
-   //     addMessage("¿En qué te puedo ayudar pequeño Sharkcamonte?", "bot");
-   // }
+    if (messages.children.length === 0) {
+        addMessage("¿En qué te puedo ayudar pequeño Sharkcamonte?", "bot");
+    }
 });

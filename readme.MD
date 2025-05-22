@@ -1,191 +1,207 @@
 # EvolvAI RAG
 
-
 ## Descripción
 
-EvolvAI RAG es un sistema de Generación Aumentada por Recuperación (RAG) implementado en Java que permite crear aplicaciones conversacionales con acceso a información contextual. El sistema utiliza una arquitectura hexagonal (puertos y adaptadores) que separa claramente las responsabilidades y facilita tanto el mantenimiento como las pruebas.
+EvolvAI RAG es un sistema conversacional inteligente basado en RAG (Retrieval-Augmented Generation) desarrollado en Java con Spring Boot y LangChain4j. Su objetivo es brindar respuestas enriquecidas con contexto relevante para organizaciones, áreas o usuarios individuales, soportando múltiples perfiles y entidades jurídicas.
 
-El proyecto combina la potencia de modelos de embeddings para vectorización de texto, almacenamiento eficiente de vectores con búsqueda semántica y modelos de lenguaje (LLM) para generar respuestas contextualizadas de alta calidad. Además, aprovecha el framework LangChain4j para abstraer la lógica subyacente, permitiendo un diseño altamente modular y desacoplado de las tecnologías específicas. Esta abstracción facilita la integración con diferentes proveedores de embeddings, bases de datos vectoriales y modelos de lenguaje, haciendo que el sistema sea adaptable a nuevas tecnologías sin modificar la lógica central de la aplicación.
-## Arquitectura
+La arquitectura sigue el patrón hexagonal y se apoya exclusivamente en tecnologías libres y gratuitas, con un diseño modular que facilita la extensibilidad. Usa Docker o Podman indistintamente para levantar servicios.
 
-![Arquitectura RAG](./images/Arquitectura_RAG.png)
+---
 
-La arquitectura del sistema está diseñada siguiendo el patrón hexagonal, separando cada dominio funcional en componentes independientes:
+## 🨠 Arquitectura
 
 ### Componentes principales
 
-- **Admin:**
-   - Gestión de usuarios, roles, personas físicas y jurídicas, organizaciones, áreas y asignaciones.
-   - Configuración personalizada de inferencia (prompts, fuentes de embedding) por usuario, área u organización.
-   - Scripts SQL para inicialización y datos de ejemplo.
+* **Admin**: Gestión de usuarios, roles, prompts, organizaciones y configuración personalizada.
+* **Embedding**: Generación de vectores con ONNX y con Ollama, configurable, con persistencia en PgVector o en memoria. Búsqueda semántica eficiente.
+* **LLM**: Integración con modelos de lenguaje (Llama vía LocalAI, OLLAMA o Bedrock).
+* **Inference**: Orquestador del flujo completo RAG.
+* **Chat Memory**: Manejo del contexto conversacional activo (memoria de corto plazo), con soporte en memoria o PostgreSQL.
+* **Prompt Management**: Soporte para prompts personalizados asociados a usuarios, áreas u organizaciones.
+* **Chat History**: Almacenamiento de logs de conversaciones, con orden cronológico y persistencia configurable.
 
-- **Embedding:**
-   - Vectorización de textos con modelos ONNX pre-entrenados.
-   - Almacenamiento y recuperación de embeddings mediante PgVector o en memoria.
-   - Búsqueda semántica eficiente sobre los datos vectorizados.
+---
 
-- **LLM:**
-   - Integración con modelos de lenguaje (ej. Llama) a través de LocalAI.
-   - Generación de respuestas contextualizadas.
-   - Procesamiento de prompts estructurados y mensajes con roles semánticos.
+## 🔁 Ejemplo de flujo RAG completo
 
-- **Inference:**
-   - Orquestación del flujo RAG completo.
-   - Recepción de consultas, recuperación de contexto y entrega de respuestas.
-   - Coordinación entre componentes: embeddings, almacenamiento, LLM y configuración de inferencia.
+1. **Usuario inicia conversación** (opcionalmente con un archivo PDF o texto).
+2. El sistema:
 
-- **Chat History:**
-   - Almacenamiento del historial de interacciones.
-   - Persistencia configurable (en memoria o base de datos).
-   - Mantenimiento y recuperación del contexto conversacional.
+    * Extrae texto y lo vectoriza vía ONNX u Ollama.
+    * Guarda vectores en PgVector o en memoria.
+    * Registra conversación en `ChatHistory`.
+3. Se genera una respuesta con:
 
-## 📚 Documentación
+    * Recuperación semántica (`EmbeddingUseCase` → documentos relevantes).
+    * Inserción en el prompt (`PromptService` + contexto).
+    * LLM responde (LocalAI, Ollama o Bedrock).
+4. La interacción se guarda en `ChatMemory` y `ChatHistory` para próximas consultas.
 
-Consulta la documentación completa del modelo de administrador en [Admin Domain Model](./readme.MD).
+Este enfoque permite:
 
-## Tecnologías
+* Respuestas personalizadas por perfil u organización.
+* Persistencia y trazabilidad completa.
+* Razonamiento contextual y reutilización conversacional.
 
-- **Backend**: Java 17, Spring Boot
-- **Embeddings**: ONNX Runtime, MiniLM-L6-v2
-- **Almacenamiento vectorial**: PostgreSQL + pgvector
-- **LLM**: Llama a través de LocalAI
-- **Contenedores**: Docker, Docker Compose
-- **Pruebas**: JUnit 5, Mockito
+---
 
-## Requisitos previos
+## 🚀 Tecnologías principales
 
-- Java 17+
-- Maven 3.8+
-- Podman y Podman Compose o Docker y Docker Compose  
-- 8GB RAM mínimo (recomendado 16GB para modelos LLM más grandes)
+* **Java** 17
+* **Spring Boot** 3.4.1
+* **LangChain4j** 0.37.0-SNAPSHOT
+* **ONNX Runtime** 1.20.0
+* **PostgreSQL + pgvector**
+* **LocalAI / Ollama / Amazon Bedrock**
+* **MapDB (memoria persistente opcional)**
+* **Swagger (OpenAPI UI)**
+* **Podman / Docker** (intercambiables)
+* **JUnit 5 + Mockito** para testing
 
-## Instalación y ejecución
+---
 
-1. **Clonar el repositorio**:
-   ```bash
-   git clone https://github.com/tu-usuario/evolvai-rag.git
-   cd evolvai-rag
-2. **Descargar modelos**:
-    - Coloca el modelo ONNX para embeddings en `src/main/resources/model/all-MiniLM-L6-v2.onnx`
-    - Coloca el modelo GGUF para LLM en `src/main/resources/model/ggml-model.gguf`
+## ⚙️ Requisitos previos
 
-3. **Configurar LocalAI**:
-   Asegúrate de que el archivo `src/main/resources/model/llama2.yaml` esté correctamente configurado:
-   ```yaml
-   name: llama2
-   backend: llama-cpp
-   parameters:
-     model: ggml-model.gguf
-     temperature: 0.7
-     n_ctx: 1024
-   ```
-4. ** Iniciar containers
-   4.1. Iniciar servicios con Pod compose**:
-      ```bash
-      podman-compose up -d
-  [static](src/main/resources/static)    ```
-   4.2. Iniciar servicios con Docker Compose**:
-      ```bash
-      docker-compose up -d
-      ```   
+* Java 17+
+* Maven 3.8+
+* Docker o Podman con Docker Compose o Podman Compose
+* 8GB RAM mínimo (recomendado 16GB para LLMs)
 
-5. ** Compilar y ejecutar la aplicación:
- ```bash
-    mvn clean install
-    mvn spring-boot:run
+---
+
+## 🔪 Instalación y ejecución
+
+```bash
+# 1. Clonar el repositorio
+$ git clone https://github.com/tu-usuario/evolvai-rag.git
+$ cd evolvai-rag
+
+# 2. Descargar modelos
+# - ONNX: src/main/resources/model/all-MiniLM-L6-v2.onnx
+# - GGUF: src/main/resources/model/ggml-model.gguf
+
+# 3. Configurar LLM (ejemplo LocalAI)
+# src/main/resources/model/llama2.yaml
+name: llama2
+backend: llama-cpp
+parameters:
+  model: ggml-model.gguf
+  temperature: 0.7
+  n_ctx: 1024
+
+# 4. Iniciar servicios (usar uno de los dos)
+$ podman-compose up -d  # o
+$ docker-compose up -d
+
+# 5. Ejecutar la app
+$ mvn clean install
+$ mvn spring-boot:run
 ```
-## Configuración
-La configuración principal se encuentra en application.yaml:
-Embedding: Configuración del generador (ONNX) y almacenamiento (memoria o PgVector)
-LLM: Configuración del proveedor de LLM (Llama via LocalAI)
-Chat Memory: Persistencia del historial de conversaciones
-Base de datos: Configuración de conexión a PostgreSQL para almacenamiento de vectores
 
-## Estructura del proyecto
+---
+
+## 🛠️ Configuración
+
+Ubicada en `application.yaml`:
+
+* Embeddings: ONNX / almacenamiento PgVector o memoria
+* LLM: LocalAI, Ollama o AWS Bedrock
+* Inferencia: Parámetros como max-results, min-score
+* Persistencia: Chat memory (MapDB o PostgreSQL)
+* Prompts: Asociación y configuración por usuario, área u organización
+
+---
+
+## 📂 Estructura del proyecto
+
 ```bash
 src/
-├── main/
-│   ├── java/org/shark/evolvai/
-│   │   ├── admin/
-│   │   │   ├── model/
-│   │   │   │   ├── common/         # Entidades y enums base (Person, MessageRole, etc.)
-│   │   │   │   ├── organization/   # Organización, Área, Asignaciones
-│   │   │   │   ├── person/         # Personas físicas y jurídicas, roles
-│   │   │   │   ├── prompt/         # Prompts y mensajes de prompt
-│   │   │   │   ├── inference/      # Configuración de inferencia y enums IA
-│   │   │   │   └── EmbeddingSource.java
-│   │   │   └── scripts/            # Scripts SQL de inicialización y datos
-│   │   ├── embedding/              # Vectorización y almacenamiento
-│   │   ├── llm/                    # Integración con modelos de lenguaje
-│   │   ├── inference/              # Orquestación del flujo RAG
-│   │   ├── chathistory/            # Gestión del historial de conversaciones
-│   │   └── config/                 # Configuraciones de Spring
-│   └── resources/
-│       ├── model/                  # Modelos LLM y embedding
-│       └── application.yaml        # Configuración de la aplicación
-└── test/
-    ├── java/                       # Tests unitarios e integración
-    └── resources/                  # Configuración de tests
+├── main/java/org/shark/evolvai/
+│   ├── admin/               # Dominio administrativo
+│   ├── embedding/           # Embeddings
+│   ├── llm/                 # Proveedores de lenguaje
+│   ├── inference/           # Orquestación RAG
+│   ├── chathistory/         # Chat memory e historial
+│   └── config/              # Configuraciones generales
+├── resources/
+│   ├── model/               # Modelos ONNX / GGUF
+│   └── application.yaml     # Configuración global
+└── test/                    # Pruebas unitarias e integración
 ```
 
-## Pruebas
+---
 
-El proyecto incluye pruebas unitarias y de integración:
+## 🥐 Pruebas
 
 ```bash
-# Ejecutar todas las pruebas
+# Todas las pruebas
 mvn test
 
-# Ejecutar solo pruebas unitarias
+# Solo unitarias
 mvn test -Dtest=*Test
 
-# Ejecutar pruebas de integración
+# Solo integración
 mvn test -Dtest=*IntegrationTest
 ```
 
-## Docker Compose
+---
 
-El proyecto utiliza Docker Compose para proporcionar los servicios de infraestructura necesarios:
+## 🐳 Docker / Podman Compose
 
-### Servicios incluidos
+Servicios incluidos:
 
-1. **pgvector**: Base de datos PostgreSQL con la extensión pgvector
-   - Proporciona almacenamiento vectorial para embeddings con capacidad de búsqueda por similitud
-   -  Proporciona almacenamiento estandard para la memoria del historial de chat.
-   - Persiste datos en un volumen dedicado
-   - Se inicializa automáticamente con la estructura necesaria mediante `init_pgvector.sql`
+### `pgvector`
 
-2. **localai**: Servidor de inferencia local para modelos LLM
-   - Permite ejecutar modelos de lenguaje localmente sin dependencias externas
-   - Expone una API compatible con OpenAI para la generación de texto
-   - Monta los modelos desde `src/main/resources/model`
+* PostgreSQL con extensión `pgvector`
+* Persistencia para embeddings y memoria
+* Script `init_pgvector.sql` incluido
 
-### Configuración
+### `localai`
 
-El archivo `docker-compose.yml` está preconfigurado con:
-- Puertos: 5432 para PostgreSQL+pgvector y 8000 para LocalAI
-- Credenciales por defecto para la base de datos
-- Volúmenes para persistencia de datos
-- Configuración optimizada para modelos Llama2
-
-### Uso
-
-
-Para iniciar los servicios:
+* Inferencia LLM local compatible con OpenAI
+* Modelos montados desde `resources/model`
 
 ```bash
-# Iniciar en segundo plano
-docker-compose up -d
+# Iniciar
+podman-compose up -d  # o docker-compose up -d
 
-# Ver logs de los servicios
-docker-compose logs -f
+# Logs
+podman-compose logs -f
 
-# Detener servicios
-docker-compose down
+# Apagar
+podman-compose down  # o docker-compose down
 
-# Detener y eliminar volúmenes (borra datos persistentes)
-docker-compose down -v
+# Limpiar todo
+podman-compose down -v
 ```
 
-Nota: Asegúrate de tener los modelos descargados en src/main/resources/model antes de iniciar los servicios.
+---
 
+## 🌐 Interfaz Web
+
+Se incluye un frontend HTML (`chat.html`) con diseño estilo mensajería instantánea. Incluye:
+
+* Carga de archivos
+* Prompt personalizado
+* Historial y memoria
+* Log de consola
+
+---
+
+## 📎 Recursos adicionales
+
+* Diagramas UML y ERD disponibles en la carpeta `docs`
+* Scripts de carga en `admin/scripts`
+* Presentación visual: ver `PlanCarrera.pdf`
+
+---
+
+## 👥 Autores y colaboración
+
+Desarrollado por Shark IA Team 💈. Colaboraciones y issues son bienvenidos en [GitHub](https://github.com/tu-usuario/evolvai-rag).
+
+---
+
+## 📄 Licencia
+
+Software libre bajo licencia MIT. ¡Usalo, modificalo y compartilo libremente!

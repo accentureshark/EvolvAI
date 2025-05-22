@@ -1,8 +1,8 @@
 package org.shark.evolvai.monitoring;
 
-import org.shark.evolvai.embedding.domain.service.TextChunkingService;
-import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
-import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
+import org.shark.evolvai.embedding.core.TextChunkingService;
+import org.shark.evolvai.embedding.spi.EmbeddingGenerator;
+import org.shark.evolvai.embedding.spi.EmbeddingStorage;
 import org.shark.evolvai.embedding.config.TokenizerConfig;
 import org.shark.evolvai.llm.port.out.LlmProvider;
 

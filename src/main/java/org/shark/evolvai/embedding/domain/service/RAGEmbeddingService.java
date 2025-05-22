@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class RAGEmbeddingService implements EmbeddingUseCase {
 
     private static final Logger log = LoggerFactory.getLogger(RAGEmbeddingService.class);
+    private static final String DEFAULT_PROMPT = "Genera embeddings para este texto:";
 
     private final EmbeddingGenerator embeddingGenerator;
     private final EmbeddingStorage embeddingStorage;
@@ -33,21 +34,22 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
         this.textChunkingService = textChunkingService;
     }
 
-    @Override
-    public void indexDocument(String id, String text) {
+    // Nuevo método con customPrompt
+    public void indexDocument(String id, String text, String customPrompt) {
         log.info("Indexando documento con id: {}", id);
 
+        String prompt = (customPrompt != null && !customPrompt.isBlank()) ? customPrompt : DEFAULT_PROMPT;
 
         List<String> fragments = textChunkingService.chunk(text)
                 .stream()
                 .map(TextSegment::text)
                 .collect(Collectors.toList());
 
-
         for (int i = 0; i < fragments.size(); i++) {
             String fragment = fragments.get(i);
-            Embedding embedding = embeddingGenerator.generateEmbedding(fragment);
-            String fragmentId = id + "-fragment-" + i;
+            String promptFragment = prompt + "\n" + fragment;
+            Embedding embedding = embeddingGenerator.generateEmbedding(promptFragment);
+            String fragmentId = id + "///fragment-" + i;
             embeddingStorage.store(fragmentId, embedding, fragment);
             log.info("Fragmento almacenado con id: {}", fragmentId);
         }
@@ -55,6 +57,10 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
         log.info("Documento indexado correctamente: {}", id);
     }
 
+  @Override
+  public List<String> listDocumentIds() {
+      return embeddingStorage.findAllDocumentIds();
+  }
     @Override
     public List<String> findSimilarDocuments(String query, int maxResults, double minScore) {
         log.info("Buscando documentos similares para query: '{}', maxResults: {}, minScore: {}", query, maxResults, minScore);

@@ -70,7 +70,7 @@ public class InferenceController {
                 }
             }
             log.info("Indexando documento en embeddings: {}", filename);
-            embeddingUseCase.indexDocument(filename, text); // <-- Aquí se invoca la segmentación
+            embeddingUseCase.indexDocument(filename, text, null); // Si quieres soportar customPrompt aquí, deberías agregarlo como parámetro
             log.info("Documento procesado y embebido correctamente: {}", filename);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
@@ -96,7 +96,7 @@ public class InferenceController {
             @Parameter(description = "Datos de la consulta", required = true)
             @Valid @RequestBody RagQueryRequest request) {
         log.info("Recibida consulta RAG básica: {}", request.getQuery());
-        QueryResponse response = inferenceUseCase.query(request);
+        QueryResponse response = inferenceUseCase.query(request); // customPrompt ya se propaga
         log.info("Respuesta generada para consulta RAG básica: {}", response);
         return ResponseEntity.ok(response);
     }
@@ -118,7 +118,7 @@ public class InferenceController {
             @Parameter(description = "Datos de la consulta avanzada", required = true)
             @Valid @RequestBody RagQueryRequest request) {
         log.info("Recibida consulta RAG avanzada: {}", request.getQuery());
-        QueryResponse response = inferenceUseCase.advancedQuery(request);
+        QueryResponse response = inferenceUseCase.advancedQuery(request); // customPrompt ya se propaga
         log.info("Respuesta generada para consulta RAG avanzada: {}", response.getAnswer().toLowerCase());
         return ResponseEntity.ok(response);
     }

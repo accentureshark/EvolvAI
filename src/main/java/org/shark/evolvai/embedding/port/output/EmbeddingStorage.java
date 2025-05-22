@@ -9,6 +9,6 @@ public interface EmbeddingStorage {
     void store(String id, Embedding embedding, String text);
 
     List<EmbeddingMatch<String>> findSimilar(Embedding embedding, int maxResults, double minScore);
-
+    List<String>findAllDocumentIds();
     void removeAll();
 }

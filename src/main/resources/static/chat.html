@@ -1,366 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Chatbot RAG</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #eef2f3;
-            margin: 0;
-            padding: 0;
-        }
-
-        #main-container {
-            display: flex;
-            flex-direction: column;
-            max-width: 1100px;
-            margin: 40px auto;
-            height: 90vh;
-            min-height: 600px;
-        }
-
-        #chat {
-            display: flex;
-            flex-direction: row;
-            background: #fff;
-            border-radius: 10px 10px 0 0;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            flex: 1 1 auto;
-            min-height: 0;
-        }
-
-        #sidebar {
-            width: 200px;
-            margin-right: 20px;
-            background: #f0f4f8;
-            border-radius: 10px;
-            padding: 10px;
-            height: 100%;
-            overflow-y: auto;
-        }
-
-        #file-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        #file-list li {
-            background: #e3eaf1;
-            margin-bottom: 8px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 0.95em;
-            word-break: break-all;
-        }
-
-        #messages {
-            height: 100%;
-            min-height: 0;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            flex: 1 1 auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .msg {
-            margin: 10px 0;
-            padding: 10px 15px;
-            border-radius: 20px;
-            max-width: 70%;
-            word-wrap: break-word;
-        }
-
-        .user {
-            background: #1976d2;
-            color: #fff;
-            align-self: flex-end;
-            text-align: right;
-        }
-
-        .bot {
-            background: #e0e0e0;
-            color: #000;
-            align-self: flex-start;
-            text-align: left;
-        }
-
-        #input-area {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        #input-area input[type="text"] {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-        }
-
-        #input-area button {
-            background: #1976d2;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        #input-area button:hover {
-            background: #155a9c;
-        }
-
-        #input-area input[type="file"] {
-            display: none;
-        }
-
-        #file-label {
-            cursor: pointer;
-            color: #1976d2;
-            text-decoration: underline;
-        }
-
-        #log-panel {
-            width: 100%;
-            background: #1e1e2f;
-            color: #fff;
-            border-radius: 0 0 10px 10px;
-            padding: 15px;
-            height: 140px;
-            overflow-y: auto;
-            font-size: 0.9em;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin: 0;
-        }
-
-        #log-panel h4 {
-            margin-top: 0;
-            color: #ffcc00;
-            font-size: 1.2em;
-            text-align: center;
-        }
-
-        .log-entry {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            background: #2a2a3d;
-        }
-
-        .log-entry .log-icon {
-            margin-right: 10px;
-            font-size: 1.2em;
-        }
-
-        .log-error {
-            border-left: 4px solid #ff5252;
-        }
-
-        .log-error .log-icon {
-            color: #ff5252;
-        }
-
-        .log-info {
-            border-left: 4px solid #90caf9;
-        }
-
-        .log-info .log-icon {
-            color: #90caf9;
-        }
-
-        .log-success {
-            border-left: 4px solid #81c784;
-        }
-
-        .log-success .log-icon {
-            color: #81c784;
-        }
-
-        .log-time {
-            margin-left: auto;
-            font-size: 0.8em;
-            color: #bbb;
-        }
-
-        /* Spinner */
-        #spinner {
-            display: none;
-            text-align: center;
-            margin: 10px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Chat EvolvAI</title>
+  <link rel="stylesheet" href="chat.css">
 </head>
 <body>
-<div id="main-container">
+  <div id="main-container">
+    <header id="main-header">
+      <img src="shark-ia.png" alt="Logo" id="header-logo">
+      <span id="header-title">EvolvAI Chat</span>
+    </header>
     <div id="chat">
-        <div id="sidebar">
-            <h4>Archivos subidos</h4>
-            <ul id="file-list"></ul>
-        </div>
-        <div style="flex:1; display:flex; flex-direction:column; min-height:0;">
-            <div id="messages"></div>
-            <!-- Spinner de espera -->
-            <div id="spinner">
-                <svg width="40" height="40" viewBox="0 0 40 40">
-                    <circle cx="20" cy="20" r="16" stroke="#1976d2" stroke-width="4" fill="none" opacity="0.2"/>
-                    <circle cx="20" cy="20" r="16" stroke="#1976d2" stroke-width="4" fill="none" stroke-dasharray="80" stroke-dashoffset="60">
-                        <animateTransform attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="1s" repeatCount="indefinite"/>
-                    </circle>
-                </svg>
-            </div>
-            <form id="input-area">
-                <input id="advanced-check" style="margin-right:8px;" type="checkbox">
-                <label for="advanced-check" style="margin-right:12px; color:#1976d2;">Avanzado</label>
-                <input autocomplete="off" id="user-input" placeholder="Escribe tu mensaje..." type="text"/>
-                <label for="file-input" id="file-label">Subir archivo</label>
-                <input accept=".txt,.pdf" id="file-input" type="file"/>
-                <button type="submit">➤</button>
-            </form>
-        </div>
+      <div id="sidebar-left">
+        <div class="sidebar-pane" id="sidebar-memory"><h4>Memoria</h4><p>Memoria activa o contexto.</p></div>
+        <div class="sidebar-pane" id="sidebar-history"><h4>Historial</h4><ul><li>Consulta 1</li></ul></div>
+      </div>
+      <div id="chat-area">
+        <div id="messages"></div>
+        <form id="input-area">
+          <div class="input-options"><input id="advanced-check" type="checkbox"><label for="advanced-check">Avanzado</label></div>
+          <div class="input-row">
+            <input autocomplete="off" id="user-input" placeholder="Escribe tu mensaje..." type="text"/>
+            <label for="file-input" id="file-label">📎</label>
+            <input accept=".txt,.pdf" id="file-input" type="file" />
+            <button type="submit" id="send-btn">➤</button>
+          </div>
+        </form>
+      </div>
+      <div id="sidebar-right">
+        <div class="sidebar-pane" id="sidebar-files"><h4>Archivos subidos</h4><ul id="file-list"></ul></div>
+        <div class="sidebar-pane" id="sidebar-prompt"><h4>Prompt personalizado</h4><textarea id="custom-prompt" placeholder="Prompt aquí..."></textarea></div>
+      </div>
     </div>
-    <div id="log-panel">
-        <h4>Log</h4>
-        <div id="log-entries"></div>
-    </div>
-</div>
-<script>
-    const BACKEND_URL = "http://localhost:8081";
-    const messages = document.getElementById('messages');
-    const form = document.getElementById('input-area');
-    const userInput = document.getElementById('user-input');
-    const fileInput = document.getElementById('file-input');
-    const fileList = document.getElementById('file-list');
-    const logEntries = document.getElementById('log-entries');
-    const advancedCheck = document.getElementById('advanced-check');
-    const spinner = document.getElementById('spinner');
-    const submitButton = form.querySelector('button[type="submit"]');
 
-    function addMessage(text, sender) {
-        const div = document.createElement('div');
-        div.className = 'msg ' + sender;
-        div.innerText = text;
-        messages.appendChild(div);
-        messages.scrollTop = messages.scrollHeight;
-    }
-
-    function addFileToList(fileName) {
-        const li = document.createElement('li');
-        li.textContent = fileName;
-        fileList.appendChild(li);
-    }
-
-    function addLog(message, type = 'info') {
-        const div = document.createElement('div');
-        div.className = 'log-entry log-' + type;
-
-        const icon = document.createElement('span');
-        icon.className = 'log-icon';
-        icon.innerHTML = type === 'error' ? '⚠️' : type === 'success' ? '✔️' : 'ℹ️';
-
-        const text = document.createElement('span');
-        text.innerText = message;
-
-        const time = document.createElement('span');
-        time.className = 'log-time';
-        time.innerText = new Date().toLocaleTimeString();
-
-        div.appendChild(icon);
-        div.appendChild(text);
-        div.appendChild(time);
-
-        logEntries.appendChild(div);
-        logEntries.scrollTop = logEntries.scrollHeight;
-    }
-
-    function setWaiting(waiting) {
-        if (waiting) {
-            spinner.style.display = 'block';
-            userInput.disabled = true;
-            submitButton.disabled = true;
-            fileInput.disabled = true;
-            advancedCheck.disabled = true;
-        } else {
-            spinner.style.display = 'none';
-            userInput.disabled = false;
-            submitButton.disabled = false;
-            fileInput.disabled = false;
-            advancedCheck.disabled = false;
-        }
-    }
-
-    form.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        const file = fileInput.files[0];
-        const text = userInput.value.trim();
-
-        if (file) {
-            setWaiting(true);
-            addLog('Subiendo archivo: ' + file.name, 'info');
-            const formData = new FormData();
-            formData.append('file', file);
-            try {
-                const res = await fetch(`${BACKEND_URL}/api/inference/upload-document`, {
-                    method: 'POST',
-                    body: formData
-                });
-                if (res.ok) {
-                    addFileToList(file.name);
-                    addLog('Archivo subido y procesado: ' + file.name, 'success');
-                } else {
-                    addLog('Error al subir el archivo: ' + file.name, 'error');
-                }
-            } catch {
-                addLog('Error de red al subir el archivo: ' + file.name, 'error');
-            }
-            fileInput.value = '';
-            setWaiting(false);
-        } else if (text) {
-            addMessage(text, 'user');
-            userInput.value = '';
-            setWaiting(true);
-            addLog('Enviando consulta: ' + text, 'info');
-            try {
-                const endpoint = advancedCheck.checked
-                    ? `${BACKEND_URL}/api/inference/rag`
-                    : `${BACKEND_URL}/api/inference/query`;
-                const body = advancedCheck.checked
-                    ? JSON.stringify({query: text, maxResults: 5, minSimilarity: 0.7, includeMatches: true})
-                    : JSON.stringify({query: text});
-                const res = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: body
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    let respuesta = data.answer || data.response || data.result || JSON.stringify(data);
-                    if (typeof respuesta === 'string') {
-                        respuesta = respuesta.replace(/<[^>]+>/g, '').trim();
-                    }
-                    addMessage(respuesta, 'bot');
-                    addLog('Respuesta recibida del backend.', 'success');
-                } else {
-                    addMessage('Error en la respuesta del backend.', 'bot');
-                    addLog('Error en la respuesta del backend.', 'error');
-                }
-            } catch {
-                addMessage('Error de red al consultar.', 'bot');
-                addLog('Error de red al consultar.', 'error');
-            }
-            setWaiting(false);
-        }
-    });
-</script>
+    <div id="log-panel"><div id="log-header" onclick="toggleLog()"><span>🪵 Log</span><button id="log-toggle">▼</button></div><div id="log-entries">🖥️ Consola iniciada...</div></div>
+  </div>
+  <script src="chat.js"></script>
 </body>
 </html>

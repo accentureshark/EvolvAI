@@ -1,16 +1,14 @@
 server:
   port: 8081
 
-# Configuración de embeddings
-# Configuración de embeddings
 embedding:
   chunking:
-    size: 500
-    overlap: 100
+    size: 300       # Más pequeño para precisión semántica en respuestas
+    overlap: 50     # Evita cortes abruptos en las oraciones
   storage:
-    type: pgVector  # Opciones: inMemory, pgVector
+    type: pgVector
   generator:
-    type: ollama    # Opciones: onnx, ollama
+    type: ollama
   pgvector:
     host: localhost
     port: 5432
@@ -23,20 +21,19 @@ embedding:
     model-path: ./models/all-MiniLM-L6-v2.onnx
   ollama:
     base-url: http://localhost:11434
-    model: llama3:8b  # también podés probar nomic-embed-text, llama3:8b si soporta embeddings
+    model: nomic-embed-text  # Más específico y liviano para embeddings
   tokenizer:
     path: classpath:tokenizer/tokenizer.json
 
 inference:
-  max-results: 3
-  min-score: 0.85
+  max-results: 5        # Subido para mayor recall
+  min-score: 0.85       # Alto para mayor precisión semántica
 
-
-# Configuración del LLM
 llm:
   provider: "ollama"
-  default-prompt: 'Respondé exclusivamente usando el contexto provisto. 
-  Si no hay información relevante en el contexto, decí ''No se encontró información suficiente''.'
+  default-prompt: |
+    Respondé exclusivamente usando el contexto provisto.
+    Si no hay información relevante en el contexto, decí "No se encontró información suficiente".
   llama:
     base-url: "http://localhost:8000/v1"
     api-key: "test_api_key"
@@ -51,14 +48,6 @@ llm:
     temperature: 0.2
     timeout-sec: 180
 
-  #ollama:
-  #  base-url: "http://localhost:11434"
-  #  model: "phi3:mini"
-  #  temperature: 0.2
-  #  timeout-sec: 180
-
-
-# Configuración de persistencia de chat memory
 chatmemory-persistence:
   provider: "jpa"
   memory:
@@ -66,7 +55,6 @@ chatmemory-persistence:
   jpa:
     table-name: "chat_memory"
 
-# Configuración de Spring
 spring:
   application:
     name: evolvAI
@@ -87,9 +75,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        use_sql_comments: true  # (opcional) agrega comentarios a los SQL generados
+        use_sql_comments: true
 
-# Docker compose
+# Docker compose (usado por referencia)
 ---
 services:
   pgvector:
@@ -107,20 +95,17 @@ services:
 volumes:
   pgvector-data:
 
-
-# Logging detallado
 logging:
   level:
     root: INFO
-    org.shark.evolvai: DEBUG
-    org.springframework.web: DEBUG
-    org.springdoc: DEBUG
-    org.hibernate.SQL: INFO              # muestra las sentencias SQL
-    org.hibernate.type.descriptor.sql: INFO  # muestra los parámetros enlazados
-    org.hibernate.orm.jdbc.bind: INFO   # más trazas de bindings
-    org.hibernate.engine.jdbc.spi: INFO  # detalles de conexión JDBC y ejecución
+    org.shark.evolvai: INFO
+    org.springframework.web: INFO
+    org.springdoc: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql: INFO
+    org.hibernate.orm.jdbc.bind: INFO
+    org.hibernate.engine.jdbc.spi: INFO
 
-# Configuración de Springdoc
 springdoc:
   api-docs:
     enabled: true
@@ -131,4 +116,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,rag
+        include: "*"

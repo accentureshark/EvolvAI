@@ -34,40 +34,40 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
         this.textChunkingService = textChunkingService;
     }
 
-    // Nuevo método con customPrompt
+    @Override
     public void indexDocument(String id, String text, String customPrompt) {
         log.info("Indexando documento con id: {}", id);
-
         String prompt = (customPrompt != null && !customPrompt.isBlank()) ? customPrompt : DEFAULT_PROMPT;
 
-        List<String> fragments = textChunkingService.chunk(text)
-                .stream()
-                .map(TextSegment::text)
-                .collect(Collectors.toList());
+        List<TextSegment> segments = textChunkingService.chunk(text, id);
 
-        for (int i = 0; i < fragments.size(); i++) {
-            String fragment = fragments.get(i);
-            String promptFragment = prompt + "\n" + fragment;
-            Embedding embedding = embeddingGenerator.generateEmbedding(promptFragment);
-            String fragmentId = id + "///fragment-" + i;
-            embeddingStorage.store(fragmentId, embedding, fragment);
-            log.info("Fragmento almacenado con id: {}", fragmentId);
+        for (TextSegment segment : segments) {
+            String promptFragment = prompt + "\n" + segment.text();
+            Embedding embedding = embeddingGenerator.generateEmbedding(new TextSegment(promptFragment, segment.metadata()));
+
+            // Definir un documentName robusto y seguro
+            String docName = id;
+            if (segment.metadata() != null && segment.metadata().asMap().containsKey("chunkIndex")) {
+                docName += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
+            }
+
+            embeddingStorage.store(docName, embedding, segment.text(), segment.metadata());
+            log.info("Fragmento almacenado con id: {}", docName);
         }
 
         log.info("Documento indexado correctamente: {}", id);
     }
 
-  @Override
-  public List<String> listDocumentIds() {
-      return embeddingStorage.findAllDocumentIds();
-  }
+    @Override
+    public List<String> listDocumentIds() {
+        return embeddingStorage.findAllDocumentIds();
+    }
+
     @Override
     public List<String> findSimilarDocuments(String query, int maxResults, double minScore) {
         log.info("Buscando documentos similares para query: '{}', maxResults: {}, minScore: {}", query, maxResults, minScore);
         Embedding queryEmbedding = embeddingGenerator.generateEmbedding(query);
-        List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(
-                queryEmbedding, maxResults, minScore
-        );
+        List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(queryEmbedding, maxResults, minScore);
         log.info("Se encontraron {} documentos similares.", matches.size());
         return matches.stream()
                 .map(EmbeddingMatch::embedded)

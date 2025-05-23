@@ -1,0 +1,22 @@
+LEVEL 11 :
+  Criterios de evaluación
+       Nivel carrera
+        ◦ Que todo lo que tenga que ver con su crecimiento y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.
+        ◦ Te juntaste con tu People Lead? Al menos una charla cada mes y medio.
+        ◦ ¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?
+        ◦ Realizar al menos un curso técnico por Q. Tener en cuenta el poder planificarlos revisando previamente con el líder de equipo y los compromisos pendientes, de manera de no afectar el servicio.
+
+       Nivel tecnico
+        ◦ Que pueda brindar soporte técnico a los problemas que se presentan de complejidad media/baja
+        ◦ Detectar issues en los evolutivos que puedan afectar temas de performance / calidad del entregable hacia el cliente.
+        ◦ Tener la capacidad de abstracción para poder atacar un problema
+       Nivel liderazgo y gestion
+        ◦ Poder cumplir con las fechas comprometidas
+        ◦ Avisar en caso de posibles desvíos cuanto antes
+        ◦ Comenzar a participar en estimaciones, no importa la metodología de trabajo (Cascada,Scrum, etc)
+
+       Nivel tribu
+        ◦ Participar activamente de alguna manera en alguna de las áreas de valor de la Capability, siendo partícipe de las mismas
+        ◦ Participar brindando una charla técnica internas (reunión de comunidad)
+        ◦ Participar en la iniciativa de Shark mate
+        ◦ Participar en la charla de comunidad, al menos como asistente (obligatorio)

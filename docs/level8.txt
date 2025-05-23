@@ -1,0 +1,32 @@
+LEVEL 8:
+  Criterios de evaluación
+         Nivel carrera
+        ◦ Definición de planes de carrera y crecimiento ágil.™
+        ◦ Ver rotación de gente, ver la situación de la gente por sobre la del contrato. ™
+        ◦ Que pueda hacer un seguimiento de cada una de las personas que de él dependen.
+        ◦  Que pueda inculcar a su gente para que todo lo que tenga que ver con crecimiento de la gente y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.
+
+       Nivel tecnico
+        ◦  Generar un vínculo de confianza con las contrapartes del cliente/proyecto a fin de ser socio en la toma de decisiones tácticas y estratégicas. (TM/TE)
+        ◦ Ser referente técnico tanto para el proyecto como para la tribu entendiendo el qué , el por qué y el cómo.(TE)
+        ◦ Entender las expectativas funcionales y no funcionales del producto para garantizar que la solución sea óptima en términos de calidad, performance y valor de negocio.(TE)
+        ◦ Paquetizar componentes reusables y detectar aceleradores de los proyectos / clientes.(TE)
+        ◦ Transmitir los conocimientos y experiencias a fin de preparar otros candidatos y aumentar la solidez de la tribu.
+        ◦ Definir una solución completa desde la arquitectura macro (TE)
+        ◦ Abstracción óptima para definir un modelo de solución técnico a gran escala para dimensionar una oportunidad de negocio (TM)
+      Nivel liderazgo y gestion
+        ◦ Asegurar un servicio que respete los lineamientos contractuales, las expectativas del cliente y el bienestar del grupo de trabajo.™
+        ◦ Maximizar la performance de los equipos (TM/TE)
+        ◦ Diseño inteligente del ramp up del proyecto ™
+        ◦ Encontrar el punto de equilibrio entre la inversión y el retorno de inversión. ™
+        ◦ Detectar attrition proactivo dentro del equipo para gestionar rotaciones, incorporaciones y promociones ™
+        ◦ Generar un vínculo de confianza con las contrapartes del cliente/proyecto a fin de ser socio en la toma de decisiones tácticas y estrategicas. (TM/TE)
+
+       Nivel tribu
+        ◦ Participar en la estrategia de la tribu en alguna de las áreas de valor
+        ◦ Ser un role model para la comunidad tomando las mejores prácticas personales y profesionales de otros líderes en pos de formar referentes
+        ◦ Participar en entrevistas técnicas
+        ◦ Participar brindando una charla técnica internas (reunión de comunidad)
+        ◦ Participar brindando una charla técnica externas (eventos en institutos, universidades, otras comunidades tecnológicas)
+        ◦ Participar como embajador activo de la comunidad comentando en las redes sociales como linkEdin eventos destacables de la comunidad o bien dar a conocer experiencias propias de la firma.
+        ◦ Participar en la charla de comunidad, al menos como asistente (obligatorio)

@@ -196,6 +196,58 @@ Se incluye un frontend HTML (`chat.html`) con diseño estilo mensajería instant
 
 ---
 
+## 🔍 Spring Boot Actuator: Endpoints de monitoreo para RAG
+
+El sistema incluye endpoints personalizados de Spring Boot Actuator para facilitar la observabilidad y pruebas de configuraciones dinámicas y estáticas del sistema de RAG.
+
+### 🌐 Endpoints disponibles
+
+#### `/actuator/rag-config`
+Muestra toda la configuración cargada desde `application.yaml` o valores por defecto, agrupados por módulo:
+- LLM (`model`, `prompt`, `baseUrl`, clase Java usada)
+- Embeddings (`generator`, `storage`, `pgvector`, etc.)
+- Tokenizer (`maxLength`, ruta del tokenizer cargado)
+- Chunking (`chunkSize`, `overlap`)
+- Inference (`minScore`, `maxResults`)
+- Documentos cargados
+
+> Ideal para verificar combinaciones de configuración sin reiniciar la app ni leer archivos.
+
+Ejemplo de uso:
+```bash
+curl http://localhost:8081/actuator/rag-config
+```
+
+#### `/actuator/rag-status`
+Muestra métricas dinámicas del estado actual del sistema:
+- Documentos embebidos y cantidad de fragmentos por archivo
+- Tiempo de respuesta en vivo del LLM (`/ping`) usando un mensaje de prueba
+- Total de requests recibidos
+- Tiempo promedio de procesamiento por request
+
+> Este endpoint puede usarse para monitoreo con Prometheus, health-checks personalizados o dashboards.
+
+Ejemplo de uso:
+```bash
+curl http://localhost:8081/actuator/rag-status
+```
+
+### ⚙️ Configuración necesaria
+En tu `application.yaml`, asegurate de exponer los endpoints personalizados:
+
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+```
+
+---
+
+¿Querés ver ejemplos de integración con Prometheus, Grafana o alertas automáticas en base a latencia? También se puede adaptar a un `/actuator/rag-health` para devolver HTTP 503 si el modelo no está disponible.
+
+
 ## 👥 Autores y colaboración
 
 Desarrollado por Shark IA Team 💈. Colaboraciones y issues son bienvenidos en [GitHub](https://github.com/tu-usuario/evolvai-rag).

@@ -1,5 +1,6 @@
 package org.shark.evolvai.embedding.adapter.output.storage;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component("pgVectorEmbeddingStorage")
 public class PgVectorEmbeddingStorage implements EmbeddingStorage {
@@ -53,36 +55,33 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         this.targetDimension = dimensions;
     }
 
-    // Nuevo método para soportar customPrompt
-    public void store(String id, Embedding embedding, String text, String customPrompt) {
+    @Override
+    public void store(String id, Embedding embedding, String text) {
+        store(id, embedding, text, null);
+    }
+
+    @Override
+    public void store(String id, Embedding embedding, String text, Metadata metadata) {
         String hash = hashText(text);
-        String documentId = id + "-" + hash;
+        String documentId = id + "/" + hash;
 
         if (existsDocumentId(documentId)) {
             log.warn("Ya existe un documento con document_id={}. No se insertará nuevamente.", documentId);
             return;
         }
 
-        Map<String, Object> meta = new HashMap<>();
-        meta.put("documentName", id);
-        meta.put("usuario", "desconocido");
-        meta.put("timestamp", Instant.now().toEpochMilli());
-        if (customPrompt != null && !customPrompt.isBlank()) {
-            meta.put("customPrompt", customPrompt);
+        if (metadata == null) {
+            metadata = Metadata.from(Map.of(
+                    "documentName", id,
+                    "usuario", "desconocido",
+                    "timestamp", String.valueOf(Instant.now().toEpochMilli())
+            ));
         }
-
-        Metadata metadata = Metadata.from(meta);
 
         float[] padded = padToDimension(embedding.vector(), targetDimension);
 
         insertEmbedding(UUID.randomUUID(), padded, documentId, text, metadata.toMap());
         log.info("Embedding almacenado en PgVector con document_id={}, dimensiones={}, metadatos={}", documentId, padded.length, metadata);
-    }
-
-    // Sobrecarga para compatibilidad
-    @Override
-    public void store(String id, Embedding embedding, String text) {
-        store(id, embedding, text, null);
     }
 
     private boolean existsDocumentId(String documentId) {
@@ -108,14 +107,14 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
             for (int i = 0; i < embedding.length; i++) {
                 floatObjects[i] = embedding[i];
             }
-            java.sql.Array pgVector = conn.createArrayOf("float4", floatObjects);
+            Array pgVector = conn.createArrayOf("float4", floatObjects);
 
             ps.setObject(1, embeddingId);
             ps.setArray(2, pgVector);
             ps.setString(3, documentId);
             ps.setString(4, text);
 
-            String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(metadata);
+            String json = new ObjectMapper().writeValueAsString(metadata);
             ps.setString(5, json);
 
             ps.executeUpdate();
@@ -131,18 +130,55 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
 
         return embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore)
                 .stream()
-                .map(match -> new EmbeddingMatch<>(
-                        match.score(),
-                        match.embedded().metadata().get("documentName").toString(),
-                        match.embedding(),
-                        match.embedded().text()
-                ))
+                .map(match -> {
+                    String documentName = Optional.ofNullable(match.embedded().metadata().get("documentName"))
+                            .map(Object::toString)
+                            .orElse("desconocido");
+                    return new EmbeddingMatch<>(
+                            match.score(),
+                            documentName,
+                            match.embedding(),
+                            match.embedded().text()
+                    );
+                })
                 .toList();
     }
 
-    // En PgVectorEmbeddingStorage.java
+    @Override
+    public List<EmbeddingMatch<String>> findSimilar(Embedding embedding, int maxResults, double minScore, Metadata filter) {
+        float[] padded = padToDimension(embedding.vector(), targetDimension);
+        Embedding paddedEmbedding = new Embedding(padded);
+
+        List<EmbeddingMatch<TextSegment>> matches = embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore);
+
+        return matches.stream()
+                .filter(match -> {
+                    for (String key : filter.asMap().keySet()) {
+                        Object expected = filter.get(key);
+                        Object actual = match.embedded().metadata().get(key);
+                        if (actual == null || !actual.toString().equals(expected.toString())) {
+                            return false;
+                        }
+                    }
+                    return true;
+                })
+                .map(match -> {
+                    String documentName = Optional.ofNullable(match.embedded().metadata().get("documentName"))
+                            .map(Object::toString)
+                            .orElse("desconocido");
+                    return new EmbeddingMatch<>(
+                            match.score(),
+                            documentName,
+                            match.embedding(),
+                            match.embedded().text()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<String> findAllDocumentIds() {
-        String sql = "SELECT DISTINCT split_part(document_id, '///', 1) FROM " + tableName;
+        String sql = "SELECT DISTINCT split_part(document_id, '/', 1) FROM " + tableName;
         List<String> ids = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -157,7 +193,6 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     }
 
     @Override
-
     public void removeAll() {
         embeddingStore.removeAll();
         log.warn("Todos los embeddings han sido eliminados de PgVector.");

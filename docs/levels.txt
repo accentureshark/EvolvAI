@@ -1,0 +1,169 @@
+LEVEL 7:
+  Criterios de evaluación
+	 Nivel carrera :
+    • Conocer la estructura de carrera de la tribu y velar por sus buenas prácticas
+    • Participar proactivamente en la gestión de talent discussion
+    • Conocer las métricas de HR de la tribu para ayudar en la gestión efectiva del talento
+    • Velar por el crecimiento de roles de tech expert
+    • Velar por el crecimiento de roles de tech manager
+	Nivel tecnico
+    • Entender cómo se traduce toda la estructura del servicio en valor para el cliente. (TM)
+    • Diseñar estrategias que permitan incrementar y medir el valor. (TM)
+    • Generar un vínculo de confianza con las contrapartes del cliente/proyecto a fin de ser socio en la toma de decisiones tácticas y estratégicas.(TM/TE)
+    • A partir del conocimiento de la realidad del cliente en términos de proyectos y
+    • necesidades de negocio articular propuestas innovadoras apalancandose en herramientas
+    • internas como externas (TM).
+    •  Estar a la vanguardia de las nuevas tecnologías para poder transformarlas en propuestas de tu proyecto actual y de la tribu (TE)
+    • Participar de la gestión técnica de las ventas o propuestas de ventas que lleguen a la tribu (TE)
+    • Generar propuestas de innovación en los contratos en donde la tribu tenga participación (TE)
+	Nivel liderazgo y gestion
+    • Focalizarse en expansión de equipos detectando necesidades de negocio tanto funcionales como no funcionales proactivamente (TM/TE)
+    • Analizar y controlar los revenues del contrato que se gestiona para mantener el margen de ganancia establecido y cumplir con el forecast estimado con PCS ™
+    • Tener un vínculo con diferentes interlocutores de la organización, tanto de directivos según industrias, como áreas de RRHH, compensaciones, marketing, recruiting, ventas, etc. (TM/TE)
+    • Entender cómo se traduce toda la estructura del servicio en valor para el cliente. ™
+    • Promover la rotación en los equipos para fomentar crecimiento ágil y desafíos para el desarrollo de carrera.
+
+	Nivel tribu
+
+    • Ser focal de dos o más squads de valor entendiendo la realidad de la organización, contexto (social, económico y tecnológico )y las necesidades de nuestros clientes para poder realizar una gestión exitosa junto al líder de tribu.
+    • Participar proactivamente en la gestión de la tribu y conocer la agenda de valor junto a todos los OKRS que se gestionan.
+
+
+LEVEL 8:
+  Criterios de evaluación
+         Nivel carrera
+        ◦ Definición de planes de carrera y crecimiento ágil.™
+        ◦ Ver rotación de gente, ver la situación de la gente por sobre la del contrato. ™
+        ◦ Que pueda hacer un seguimiento de cada una de las personas que de él dependen.
+        ◦  Que pueda inculcar a su gente para que todo lo que tenga que ver con crecimiento de la gente y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.
+
+       Nivel tecnico
+        ◦  Generar un vínculo de confianza con las contrapartes del cliente/proyecto a fin de ser socio en la toma de decisiones tácticas y estratégicas. (TM/TE)
+        ◦ Ser referente técnico tanto para el proyecto como para la tribu entendiendo el qué , el por qué y el cómo.(TE)
+        ◦ Entender las expectativas funcionales y no funcionales del producto para garantizar que la solución sea óptima en términos de calidad, performance y valor de negocio.(TE)
+        ◦ Paquetizar componentes reusables y detectar aceleradores de los proyectos / clientes.(TE)
+        ◦ Transmitir los conocimientos y experiencias a fin de preparar otros candidatos y aumentar la solidez de la tribu.
+        ◦ Definir una solución completa desde la arquitectura macro (TE)
+        ◦ Abstracción óptima para definir un modelo de solución técnico a gran escala para dimensionar una oportunidad de negocio (TM)
+      Nivel liderazgo y gestion
+        ◦ Asegurar un servicio que respete los lineamientos contractuales, las expectativas del cliente y el bienestar del grupo de trabajo.™
+        ◦ Maximizar la performance de los equipos (TM/TE)
+        ◦ Diseño inteligente del ramp up del proyecto ™
+        ◦ Encontrar el punto de equilibrio entre la inversión y el retorno de inversión. ™
+        ◦ Detectar attrition proactivo dentro del equipo para gestionar rotaciones, incorporaciones y promociones ™
+        ◦ Generar un vínculo de confianza con las contrapartes del cliente/proyecto a fin de ser socio en la toma de decisiones tácticas y estrategicas. (TM/TE)
+
+       Nivel tribu
+        ◦ Participar en la estrategia de la tribu en alguna de las áreas de valor
+        ◦ Ser un role model para la comunidad tomando las mejores prácticas personales y profesionales de otros líderes en pos de formar referentes
+        ◦ Participar en entrevistas técnicas
+        ◦ Participar brindando una charla técnica internas (reunión de comunidad)
+        ◦ Participar brindando una charla técnica externas (eventos en institutos, universidades, otras comunidades tecnológicas)
+        ◦ Participar como embajador activo de la comunidad comentando en las redes sociales como linkEdin eventos destacables de la comunidad o bien dar a conocer experiencias propias de la firma.
+        ◦ Participar en la charla de comunidad, al menos como asistente (obligatorio)
+
+LEVEL 9 :
+   Criterios de evaluación
+       Nivel carrera
+        ◦ Que pueda hacer un seguimiento de cada una de las personas que de él dependen.
+        ◦ Que pueda inculcar a su gente para que todo lo que tenga que ver con crecimiento de la gente y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.
+        ◦ Te juntaste con tu People Lead? Al menos una charla cada mes y medio.
+        ◦ Te juntaste con tu Counselee? Cargar las reuniones de feedback en la herramienta de Feedback y en la herramienta de Performance Achievement.
+        ◦ ¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?
+        ◦  ¿Cómo estás hoy en tu asignación?
+
+       Nivel tecnico
+        ◦ Que pueda brindar soporte técnico a los problemas que se presentan
+        ◦ Que pueda brindar soporte necesario al equipo para poder salir adelante
+        ◦ Poder diseñar y construir los sistemas de acuerdo a la arquitectura planteada en cada cliente, teniendo en cuenta las mejores prácticas de programación
+        ◦ Detectar issues en los evolutivos que puedan afectar temas de performance / calidad del entregable hacia el cliente.
+        ◦ Tener la capacidad de abstracción para poder atacar un problema
+
+       Nivel liderazgo y gestion
+        ◦ Como líder es muy posible que tengas un equipo a cargo, por lo cual debe tener las cualidades necesarias para poder coordinar al equipo en cuanto a gestionar las tareas de la gente (técnicamente o según tiempos de roadmap)
+        ◦ Manejar la capacidad del equipo (no tomar más tareas de las que podemos, ni menos de las que debemos)
+        ◦ Poder cumplir con las fechas comprometidas
+        ◦ Gestionar desvíos
+        ◦ Poder participar en estimaciones, no importa la metodología de trabajo (Cascada, Scrum,etc)
+        ◦ Poder hacer propuesta de migrar / actualizar stack tecnológicos
+        ◦ Un líder no nace, se hace
+        Nivel tribu
+        ◦ Ser un role model para la comunidad tomando las mejores prácticas personales y profesionales de otros líderes en pos de formar referentes
+        ◦ Participar activamente de alguna manera en alguna de las áreas de valor de la tribu ya sea como referente de alguna de las áreas, o siendo partícipe de las mismas
+        ◦ Participar en entrevistas técnicas
+        ◦ Participar brindando una charla técnica internas (reunión de comunidad)
+        ◦ Participar brindando una charla técnica externas (eventos en institutos, universidades, otras comunidades tecnológicas)
+        ◦ Participar como embajador activo de la comunidad comentando en las redes sociales como linkEdin eventos destacables de la comunidad o bien dar a conocer experiencias propias de la firma.
+        ◦ Participar en la iniciativa de Shark mate
+        ◦ Participar en los laboratorios de Innovación
+        ◦ Participar en la charla de comunidad, al menos como asistente (obligatorio)
+
+LEVEL 10:
+  Criterios de evaluación
+       Nivel carrera
+        ◦ Que todo lo que tenga que ver con su crecimiento y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.
+        ◦ Te juntaste con tu People Lead? Al menos una charla cada mes y medio.
+        ◦ ¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?
+        ◦ Realizar al menos un curso técnico por Q. Tener en cuenta el poder planificarlos revisando previamente con el líder de equipo y los compromisos pendientes, de manera de no afectar el servicio
+       Nivel tecnico
+        ◦ Que pueda brindar soporte técnico a los problemas que se presentan
+        ◦ Que pueda brindar soporte necesario al equipo para poder salir adelante
+        ◦ Poder diseñar y construir los sistemas de acuerdo a la arquitectura planteada en cada cliente, teniendo en cuenta las mejores prácticas de programación
+        ◦ Detectar issues en los evolutivos que puedan afectar temas de performance / calidad del entregable hacia el cliente.
+        ◦ Tener la capacidad de abstracción para poder atacar un problema
+
+       Nivel liderazgo y gestion
+        ◦ Si tiene un equipo o gente a cargo, debe tener las cualidades necesarias para poder coordinar al equipo en cuanto a gestionar las tareas de la gente
+        ◦ Poder cumplir con las fechas comprometidas
+        ◦ Gestionar desvíos
+        ◦ Poder participar en estimaciones, no importa la metodología de trabajo (Cascada, Scrum,etc)
+        ◦ Poder hacer propuesta de migrar / actualizar stack tecnológicos
+
+       Nivel tribu
+        ◦ Participar activamente de alguna manera en alguna de las áreas de valor de la Capability, siendo partícipe de las mismas
+        ◦ Participar en entrevistas técnicas
+        ◦ Participar brindando una charla técnica internas (reunión de comunidad)
+        ◦ Participar brindando una charla técnica externas (eventos en institutos, universidades,otras comunidades tecnológicas)
+        ◦ Participar como embajador activo de la comunidad comentando en las redes sociales como Linkedin eventos destacables de la comunidad o bien dar a conocer experiencias propias de la firma.
+        ◦ Participar en la iniciativa de Shark mate
+        ◦ Participar en los laboratorios de Innovación
+        ◦ Participar en la charla de comunidad, al menos como asistente (obligatorio)
+
+
+LEVEL 11 :
+  Criterios de evaluación
+       Nivel carrera
+        ◦ Que todo lo que tenga que ver con su crecimiento y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.
+        ◦ Te juntaste con tu People Lead? Al menos una charla cada mes y medio.
+        ◦ ¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?
+        ◦ Realizar al menos un curso técnico por Q. Tener en cuenta el poder planificarlos revisando previamente con el líder de equipo y los compromisos pendientes, de manera de no afectar el servicio.
+
+       Nivel tecnico
+        ◦ Que pueda brindar soporte técnico a los problemas que se presentan de complejidad media/baja
+        ◦ Detectar issues en los evolutivos que puedan afectar temas de performance / calidad del entregable hacia el cliente.
+        ◦ Tener la capacidad de abstracción para poder atacar un problema
+       Nivel liderazgo y gestion
+        ◦ Poder cumplir con las fechas comprometidas
+        ◦ Avisar en caso de posibles desvíos cuanto antes
+        ◦ Comenzar a participar en estimaciones, no importa la metodología de trabajo (Cascada,Scrum, etc)
+
+       Nivel tribu
+        ◦ Participar activamente de alguna manera en alguna de las áreas de valor de la Capability, siendo partícipe de las mismas
+        ◦ Participar brindando una charla técnica internas (reunión de comunidad)
+        ◦ Participar en la iniciativa de Shark mate
+        ◦ Participar en la charla de comunidad, al menos como asistente (obligatorio)
+
+LEVEL 12 :
+  Criterios de evaluación
+       Nivel carrera
+        ◦ Que todo lo que tenga que ver con su crecimiento y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.
+        ◦ Te juntaste con tu People Lead? Al menos una charla cada mes y medio.
+        ◦ ¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?
+        ◦ Realizar al menos un curso técnico por Q. Tener en cuenta el poder planificarlos revisando previamente con el líder de equipo y los compromisos pendientes, de manera de noafectar el servicio.
+       Nivel tecnico
+        ◦ Que pueda brindar soporte técnico a los problemas que se presentan de complejidad baja
+       Nivel liderazgo y gestion
+        ◦ Poder cumplir con las fechas comprometidas
+        ◦  Avisar en caso de posibles desvíos cuanto antes
+       Nivel tribu
+        ◦ Participar en la charla de comunidad, al menos como asistente (obligatorio)

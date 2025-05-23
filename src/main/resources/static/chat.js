@@ -82,14 +82,42 @@ function addMessage(text, who) {
     container.appendChild(msg);
     container.scrollTop = container.scrollHeight; // Solo al agregar mensaje nuevo
 
+
     // Evento para "Ver más"
     if (isTruncated) {
-        msg.querySelector('.see-more').addEventListener('click', function(e) {
+        const textContainer = msg.querySelector('.text');
+
+        function toggleExpand(e) {
             e.preventDefault();
-            msg.querySelector('.text').innerHTML = text;
-            // No hacer scroll automático aquí
-        });
+            const isExpanded = e.target.dataset.expanded === "true";
+
+            if (isExpanded) {
+                textContainer.innerHTML = `${shortText} <a href="#" class="see-more" data-expanded="false" title="Expandir mensaje completo">Ver más</a>`;
+            } else {
+                textContainer.innerHTML = `${text} <a href="#" class="see-more" data-expanded="true" title="Colapsar mensaje">Ver menos</a>`;
+            }
+
+            // Forzar scroll: mantener posición si estaba abajo o permitir ver hacia arriba
+            const wasAtBottom = Math.abs(container.scrollHeight - container.scrollTop - container.clientHeight) < 5;
+            setTimeout(() => {
+                if (wasAtBottom) {
+                    container.scrollTop = container.scrollHeight;
+                } else {
+                    container.scrollTop = container.scrollTop; // fuerza repaint para activar scroll
+                }
+            }, 0);
+
+            const newLink = textContainer.querySelector('.see-more');
+            newLink.addEventListener('click', toggleExpand);
+        }
+
+        const seeMoreLink = textContainer.querySelector('.see-more');
+        seeMoreLink.dataset.expanded = "false";
+        seeMoreLink.addEventListener('click', toggleExpand);
     }
+
+
+
 }
 
 async function handleFormSubmit(e) {
@@ -147,16 +175,46 @@ async function handleFormSubmit(e) {
         showSpinner(false);
     }
 }
+function toggleLog() {
+    const logPanel = document.getElementById("log-panel");
+    logPanel.classList.toggle("collapsed");
+}
 
 // --- Inicialización ---
+function setupWebSocketLogs() {
+    const socket = new SockJS(`${BACKEND_URL}/ws`);
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, () => {
+        log("🧩 Conectado al WebSocket de logs");
+        stompClient.subscribe("/topic/logs", (message) => {
+            log("🖧 " + message.body);
+        });
+    }, (error) => {
+        log("❌ Error de conexión WebSocket: " + error);
+    });
+}
+
 
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("input-area").addEventListener("submit", handleFormSubmit);
     setupFileUpload();
     loadUploadedFiles();
+    setupWebSocketLogs();
     // Mostrar mensaje del bot si no hay mensajes
     const messages = document.getElementById("messages");
     if (messages.children.length === 0) {
-        addMessage("¿En qué te puedo ayudar pequeño Sharkcamonte?", "bot");
+        const welcomeText = "¿En qué te puedo ayudar pequeño Sharkcamonte?";
+        addMessage(welcomeText, "bot");
+
+        // Esperar que el DOM del mensaje se agregue, luego scrollear a ese nodo
+        setTimeout(() => {
+            const allMessages = messages.querySelectorAll(".message");
+            if (allMessages.length > 0) {
+                allMessages[allMessages.length - 1].scrollIntoView({ behavior: "auto", block: "end" });
+            }
+        }, 10);
     }
+
 });
+

@@ -196,6 +196,59 @@ function setupWebSocketLogs() {
 }
 
 
+function loadChatHistory() {
+    fetch(`${BACKEND_URL}/api/chat/historia`)
+        .then(res => {
+            if (!res.ok) throw new Error("No se pudo obtener el historial");
+            return res.json();
+        })
+        .then(history => {
+            const sidebar = document.getElementById("sidebar-history");
+            let html = "<h4>Historial</h4><ul>";
+            if (Array.isArray(history) && history.length > 0) {
+                history.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+            } else {
+                html += "<li>(Vacío)</li>";
+            }
+            html += "</ul>";
+            sidebar.innerHTML = html;
+            log("🕑 Historial cargado");
+        })
+        .catch(err => {
+            log("❌ Error al cargar historial: " + err.message);
+        });
+}
+
+function loadChatMemory() {
+    fetch(`${BACKEND_URL}/api/chat/memoria`)
+        .then(res => {
+            if (!res.ok) throw new Error("No se pudo obtener la memoria");
+            return res.json();
+        })
+        .then(memory => {
+            const sidebar = document.getElementById("sidebar-memory");
+            let html = "<h4>Memoria</h4>";
+            if (memory && typeof memory === "string") {
+                html += `<p>${memory}</p>`;
+            } else if (Array.isArray(memory)) {
+                html += "<ul>";
+                memory.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                html += "</ul>";
+            } else {
+                html += "<p>(Vacía)</p>";
+            }
+            sidebar.innerHTML = html;
+            log("🧠 Memoria cargada");
+        })
+        .catch(err => {
+            log("❌ Error al cargar memoria: " + err.message);
+        });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("input-area").addEventListener("submit", handleFormSubmit);
     setupFileUpload();
@@ -215,6 +268,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }, 10);
     }
+    loadChatHistory();
+    loadChatMemory();
+
 
 });
 

@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+
+  pgvector:
+    image: ankane/pgvector
+    container_name: evolvai_pgvector
+    restart: always
+    environment:
+      POSTGRES_DB: evolvai
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres1234
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./src/main/sql/initdb:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ollama:
+    image: docker.io/ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    mem_limit: 32g
+    cpus: 8
+    environment:
+      - OLLAMA_MODELS=phi3:mini
+
+  ollama-init:
+    image: docker.io/curlimages/curl
+    depends_on:
+      - ollama
+    entrypoint: >
+      sh -c "
+        until curl -s http://ollama:11434/; do sleep 2; done;
+        curl -X POST http://ollama:11434/api/pull -d '{\"name\":\"phi3:mini\"}'
+      "
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: "no"
+
+volumes:
+  pgvector_data:
+  ollama_data:

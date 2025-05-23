@@ -42,7 +42,7 @@ public class GenericLlmProvider implements LlmProvider {
 
     @Override
     public ChatMessage send(List<ChatMessage> messages) {
-        log.info("Enviando mensajes al modelo genérico: {}", messages);
+        log.warn("⚠️ Método send(...) fue invocado directamente. Esto omite el uso de prompt del YAML.");
         if (!isModelLoaded(modelName)) {
             throw new ModelNotLoadedException(modelName);
         }
@@ -106,6 +106,11 @@ public class GenericLlmProvider implements LlmProvider {
             log.error("Error al generar respuesta con historial en LLM", e);
             throw e;
         }
+    }
+
+    @Override
+    public String getDefaultPrompt() {
+        return defaultPrompt;
     }
 
     private boolean isModelLoaded(String modelName) {

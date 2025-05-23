@@ -11,6 +11,7 @@
   <header id="main-header">
     <img src="shark-ia.png" alt="Logo" id="header-logo">
     <span id="header-title">EvolvAI Chat</span>
+    <button id="settings-button" title="Estado del sistema">⚙️</button>
   </header>
   <div id="chat">
     <div id="sidebar-left">
@@ -18,6 +19,12 @@
       <div class="sidebar-pane" id="sidebar-history"><h4>Historial</h4><ul><li>Consulta 1</li></ul></div>
     </div>
     <div id="chat-area">
+
+      
+      <div id="spinner" class="spinner" style="display: none;">
+        <img src="shark-bot.png" alt="Cargando..." class="spinner-logo">
+      </div>
+
       <div id="messages"></div>
       <div id="scroll-anchor"></div>
       <form id="input-area">
@@ -32,26 +39,52 @@
           <button type="submit" id="send-btn">➤</button>
         </div>
       </form>
+      <div id="prompt-panel" class="sidebar-pane">
+        <div id="prompt-header">
+          <span>Prompt personalizado</span>
+          <button id="prompt-toggle">▼</button>
+        </div>
+        <textarea id="custom-prompt" placeholder="Prompt aquí..."></textarea>
+      </div>
+
     </div>
     <div id="sidebar-right">
       <div class="sidebar-pane" id="sidebar-files">
         <h4>Archivos subidos</h4>
         <ul id="file-list"></ul>
       </div>
-      <div class="sidebar-pane" id="sidebar-prompt">
-        <h4>Prompt personalizado</h4>
-        <textarea id="custom-prompt" placeholder="Prompt aquí..."></textarea>
-      </div>
     </div>
   </div>
   <div id="log-panel">
     <div id="log-header" onclick="toggleLog()">
-      <span>🪵 Log</span>
+      <span>🩵 Log</span>
       <button id="log-toggle">▼</button>
     </div>
     <div id="log-entries">🖥️ Consola iniciada...</div>
   </div>
 </div>
+
+<!-- Modal Actuator -->
+<div id="actuator-modal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close-button" id="close-modal">&times;</span>
+    <h3>Endpoints Actuator</h3>
+    <ul>
+      <li><a href="#" onclick="loadActuator('/actuator')">/actuator</a></li>
+      <li><a href="#" onclick="loadActuator('/actuator/rag-status')">/actuator/rag-status</a></li>
+      <li><a href="#" onclick="loadActuator('/actuator/rag-config')">/actuator/rag-config</a></li>
+    </ul>
+    <pre id="actuator-output">Selecciona un endpoint para ver su contenido...</pre>
+    <button onclick="copyActuatorOutput()" style="margin-top: 10px;">📋 Copiar</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast">
+  <span id="toast-msg"></span>
+  <span id="toast-close">&times;</span>
+</div>
+
 <script src="chat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>

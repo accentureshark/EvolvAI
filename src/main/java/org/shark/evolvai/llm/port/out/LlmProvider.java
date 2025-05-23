@@ -5,6 +5,7 @@ import dev.langchain4j.data.message.ChatMessage;
 import java.util.List;
 
 public interface LlmProvider {
+
     ChatMessage send(List<ChatMessage> messages);
 
     // Sin prompt personalizado (usa el prompt por defecto)
@@ -18,4 +19,7 @@ public interface LlmProvider {
 
     // Con prompt personalizado y con historial
     String generateResponseWithHistory(String context, String query, String conversationHistory, String customPrompt);
+
+    // Devuelve el prompt por defecto desde el application.yaml
+    String getDefaultPrompt();
 }

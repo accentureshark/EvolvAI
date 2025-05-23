@@ -1,0 +1,30 @@
+LEVEL 7:
+  Criterios de evaluación
+	 Nivel carrera :
+    • Conocer la estructura de carrera de la tribu y velar por sus buenas prácticas
+    • Participar proactivamente en la gestión de talent discussion
+    • Conocer las métricas de HR de la tribu para ayudar en la gestión efectiva del talento
+    • Velar por el crecimiento de roles de tech expert
+    • Velar por el crecimiento de roles de tech manager
+	Nivel tecnico
+    • Entender cómo se traduce toda la estructura del servicio en valor para el cliente. (TM)
+    • Diseñar estrategias que permitan incrementar y medir el valor. (TM)
+    • Generar un vínculo de confianza con las contrapartes del cliente/proyecto a fin de ser socio en la toma de decisiones tácticas y estratégicas.(TM/TE)
+    • A partir del conocimiento de la realidad del cliente en términos de proyectos y
+    • necesidades de negocio articular propuestas innovadoras apalancandose en herramientas
+    • internas como externas (TM).
+    •  Estar a la vanguardia de las nuevas tecnologías para poder transformarlas en propuestas de tu proyecto actual y de la tribu (TE)
+    • Participar de la gestión técnica de las ventas o propuestas de ventas que lleguen a la tribu (TE)
+    • Generar propuestas de innovación en los contratos en donde la tribu tenga participación (TE)
+	Nivel liderazgo y gestion
+    • Focalizarse en expansión de equipos detectando necesidades de negocio tanto funcionales como no funcionales proactivamente (TM/TE)
+    • Analizar y controlar los revenues del contrato que se gestiona para mantener el margen de ganancia establecido y cumplir con el forecast estimado con PCS ™
+    • Tener un vínculo con diferentes interlocutores de la organización, tanto de directivos según industrias, como áreas de RRHH, compensaciones, marketing, recruiting, ventas, etc. (TM/TE)
+    • Entender cómo se traduce toda la estructura del servicio en valor para el cliente. ™
+    • Promover la rotación en los equipos para fomentar crecimiento ágil y desafíos para el desarrollo de carrera.
+
+	Nivel tribu
+
+    • Ser focal de dos o más squads de valor entendiendo la realidad de la organización, contexto (social, económico y tecnológico )y las necesidades de nuestros clientes para poder realizar una gestión exitosa junto al líder de tribu.
+    • Participar proactivamente en la gestión de la tribu y conocer la agenda de valor junto a todos los OKRS que se gestionan.
+

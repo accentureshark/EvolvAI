@@ -1,0 +1,30 @@
+LEVEL 10:
+  Criterios de evaluación
+       Nivel carrera
+        ◦ Que todo lo que tenga que ver con su crecimiento y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.
+        ◦ Te juntaste con tu People Lead? Al menos una charla cada mes y medio.
+        ◦ ¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?
+        ◦ Realizar al menos un curso técnico por Q. Tener en cuenta el poder planificarlos revisando previamente con el líder de equipo y los compromisos pendientes, de manera de no afectar el servicio
+       Nivel tecnico
+        ◦ Que pueda brindar soporte técnico a los problemas que se presentan
+        ◦ Que pueda brindar soporte necesario al equipo para poder salir adelante
+        ◦ Poder diseñar y construir los sistemas de acuerdo a la arquitectura planteada en cada cliente, teniendo en cuenta las mejores prácticas de programación
+        ◦ Detectar issues en los evolutivos que puedan afectar temas de performance / calidad del entregable hacia el cliente.
+        ◦ Tener la capacidad de abstracción para poder atacar un problema
+
+       Nivel liderazgo y gestion
+        ◦ Si tiene un equipo o gente a cargo, debe tener las cualidades necesarias para poder coordinar al equipo en cuanto a gestionar las tareas de la gente
+        ◦ Poder cumplir con las fechas comprometidas
+        ◦ Gestionar desvíos
+        ◦ Poder participar en estimaciones, no importa la metodología de trabajo (Cascada, Scrum,etc)
+        ◦ Poder hacer propuesta de migrar / actualizar stack tecnológicos
+
+       Nivel tribu
+        ◦ Participar activamente de alguna manera en alguna de las áreas de valor de la Capability, siendo partícipe de las mismas
+        ◦ Participar en entrevistas técnicas
+        ◦ Participar brindando una charla técnica internas (reunión de comunidad)
+        ◦ Participar brindando una charla técnica externas (eventos en institutos, universidades,otras comunidades tecnológicas)
+        ◦ Participar como embajador activo de la comunidad comentando en las redes sociales como Linkedin eventos destacables de la comunidad o bien dar a conocer experiencias propias de la firma.
+        ◦ Participar en la iniciativa de Shark mate
+        ◦ Participar en los laboratorios de Innovación
+        ◦ Participar en la charla de comunidad, al menos como asistente (obligatorio)

@@ -8,18 +8,7 @@ public interface LlmProvider {
 
     ChatMessage send(List<ChatMessage> messages);
 
-    // Sin prompt personalizado (usa el prompt por defecto)
-    String generateResponse(String context, String query);
+    public String generateResponse(List<ChatMessage> context, String query, String customPrompt) ;
 
-    // Con prompt personalizado
-    String generateResponse(String context, String query, String customPrompt);
-
-    // Sin prompt personalizado, con historial
-    String generateResponseWithHistory(String context, String query, String conversationHistory);
-
-    // Con prompt personalizado y con historial
-    String generateResponseWithHistory(String context, String query, String conversationHistory, String customPrompt);
-
-    // Devuelve el prompt por defecto desde el application.yaml
     String getDefaultPrompt();
 }

@@ -1,4 +1,4 @@
-package org.shark.evolvai.embedding.adapter.output.generator;
+package org.shark.evolvai.embedding.adapter.out.generator;
 
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.model.output.Response;

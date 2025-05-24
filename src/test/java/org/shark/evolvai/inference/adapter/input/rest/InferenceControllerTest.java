@@ -28,7 +28,7 @@ class InferenceControllerTest {
     @Test
     void queryReturnsOkWhenRequestIsValid() {
         RagQueryRequest request = new RagQueryRequest();
-        QueryResponse expectedResponse = new QueryResponse("respuesta", Collections.emptyList());
+        QueryResponse expectedResponse = new QueryResponse("respuesta", Collections.emptyList(), "conv-1");
         when(inferenceUseCase.query(request)).thenReturn(expectedResponse);
 
         ResponseEntity<QueryResponse> response = inferenceController.query(request);
@@ -40,7 +40,7 @@ class InferenceControllerTest {
     @Test
     void advancedQueryReturnsOkWhenRequestIsValid() {
         RagQueryRequest request = new RagQueryRequest();
-        QueryResponse expectedResponse = new QueryResponse("respuesta", Collections.emptyList());
+        QueryResponse expectedResponse = new QueryResponse("respuesta", Collections.emptyList(), "conv-2");
         when(inferenceUseCase.advancedQuery(request)).thenReturn(expectedResponse);
 
         ResponseEntity<QueryResponse> response = inferenceController.advancedQuery(request);

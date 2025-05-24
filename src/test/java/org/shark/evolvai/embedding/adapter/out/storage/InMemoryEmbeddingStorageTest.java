@@ -1,4 +1,4 @@
-package org.shark.evolvai.embedding.adapter.output.storage;
+package org.shark.evolvai.embedding.adapter.out.storage;
 
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;

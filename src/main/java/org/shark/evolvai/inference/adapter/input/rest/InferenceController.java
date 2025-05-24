@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-
 import org.shark.evolvai.embedding.port.input.EmbeddingUseCase;
 import org.shark.evolvai.inference.controller.QueryResponse;
 import org.shark.evolvai.inference.controller.RagQueryRequest;

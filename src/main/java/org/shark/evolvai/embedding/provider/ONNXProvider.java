@@ -222,7 +222,6 @@ public class ONNXProvider implements EmbeddingModel {
     }
 
 
-
     public static class EmbeddingResult {
         private final Embedding content;
 

@@ -22,11 +22,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RagStatusEndpoint {
 
-    private final EmbeddingStorage embeddingStorage;
-    private final LlmProvider llmProvider;
-
     private static final AtomicLong totalRequests = new AtomicLong();
     private static final AtomicLong totalProcessingTimeMillis = new AtomicLong();
+    private final EmbeddingStorage embeddingStorage;
+    private final LlmProvider llmProvider;
 
     // Para usar desde filtros/interceptors
     public static void registerRequest(Duration duration) {

@@ -1,16 +1,15 @@
 package org.shark.evolvai.embedding.domain.service;
 
-import java.util.Map;
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.segment.TextSegment;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
 
 @Slf4j
 @Getter

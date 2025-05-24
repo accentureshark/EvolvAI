@@ -1,7 +1,7 @@
 package org.shark.evolvai.logging;
 
-import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.AppenderBase;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 public class WebSocketLogAppender extends AppenderBase<ILoggingEvent> {

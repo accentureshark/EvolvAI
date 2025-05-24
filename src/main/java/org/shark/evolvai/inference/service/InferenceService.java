@@ -5,9 +5,7 @@ import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
-import org.shark.evolvai.chathistory.port.output.ChatHistoryRepository;
-import org.shark.evolvai.chathistory.service.ChatMemoryService;
-
+import org.shark.evolvai.chathistory.port.in.ChatMemoryService;
 import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
 import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
 import org.shark.evolvai.inference.config.InferenceProperties;
@@ -26,14 +24,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class    InferenceService implements InferenceUseCase {
+public class InferenceService implements InferenceUseCase {
 
     private static final Logger log = LoggerFactory.getLogger(InferenceService.class);
 
     private final EmbeddingGenerator embeddingGenerator;
     private final EmbeddingStorage embeddingStorage;
     private final LlmProvider llmProvider;
-    private final ChatHistoryRepository chatHistoryRepository;
     private final ChatMemoryService chatMemoryService;
 
     private final InferenceProperties inferenceProperties;
@@ -42,14 +39,12 @@ public class    InferenceService implements InferenceUseCase {
             EmbeddingGenerator embeddingGenerator,
             EmbeddingStorage embeddingStorage,
             LlmProvider llmProvider,
-            ChatHistoryRepository chatHistoryRepository,
             ChatMemoryService chatMemoryService,
             InferenceProperties inferenceProperties
     ) {
         this.embeddingGenerator = embeddingGenerator;
         this.embeddingStorage = embeddingStorage;
         this.llmProvider = llmProvider;
-        this.chatHistoryRepository = chatHistoryRepository;
         this.chatMemoryService = chatMemoryService;
         this.inferenceProperties = inferenceProperties;
     }
@@ -71,15 +66,24 @@ public class    InferenceService implements InferenceUseCase {
                 .map(EmbeddingMatch::embedded)
                 .reduce("", (a, b) -> a + "\n" + b);
 
-        String answer = llmProvider.generateResponse(context, request.getQuery(), request.getCustomPrompt());
+        String conversationId = request.getConversationId();
+        if (conversationId == null || conversationId.isEmpty()) {
+            conversationId = UUID.randomUUID().toString();
+            log.debug("No se proporcionó conversationId, se genera uno nuevo: {}", conversationId);
+        }
+
+        // Usar solo ChatMemoryService para historial y memoria
+        List<ChatMessage> conversationHistory = chatMemoryService.getMessages(conversationId);
+
+        String answer = llmProvider.generateResponse(
+                conversationHistory,
+                request.getQuery(),
+                request.getCustomPrompt()
+        );
         log.info("Respuesta generada: {}", answer);
 
-        chatHistoryRepository.saveInteraction(request.getQuery(), answer);
-
-        // Acumula mensajes previos en la memoria de chat
-        String conversationId = request.getConversationId() != null ? request.getConversationId() : UUID.randomUUID().toString();
-        List<ChatMessage> prevMessages = chatMemoryService.getMessages(conversationId);
-        List<ChatMessage> updatedMessages = new ArrayList<>(prevMessages);
+        // Guardar historial/memoria unificada
+        List<ChatMessage> updatedMessages = new ArrayList<>(conversationHistory);
         updatedMessages.add(new UserMessage(request.getQuery()));
         updatedMessages.add(new AiMessage(answer));
         chatMemoryService.updateMessages(conversationId, updatedMessages);
@@ -98,7 +102,7 @@ public class    InferenceService implements InferenceUseCase {
             log.debug("Score: {}, ID: {}, Text preview: {}", match.score(), match.embeddingId(), match.embedded().substring(0, Math.min(100, match.embedded().length())));
         }
 
-        return new QueryResponse(answer, dtos);
+        return new QueryResponse(answer, dtos, conversationId);
     }
 
     @Override
@@ -125,22 +129,19 @@ public class    InferenceService implements InferenceUseCase {
         } else {
             log.debug("Usando conversationId existente: {}", conversationId);
         }
-        log.debug("Recuperando historial de conversación...");
-        String conversationHistory = chatHistoryRepository.getConversationHistory(conversationId);
 
-        String answer = llmProvider.generateResponseWithHistory(
-                context,
-                request.getQuery(),
+        // Usar solo ChatMemoryService para historial y memoria
+        List<ChatMessage> conversationHistory = chatMemoryService.getMessages(conversationId);
+
+        String answer = llmProvider.generateResponse(
                 conversationHistory,
+                request.getQuery(),
                 request.getCustomPrompt()
         );
         log.info("Respuesta generada: {}", answer);
 
-        chatHistoryRepository.saveInteractionWithId(conversationId, request.getQuery(), answer);
-
-        // Acumula mensajes previos en la memoria de chat
-        List<ChatMessage> prevMessages = chatMemoryService.getMessages(conversationId);
-        List<ChatMessage> updatedMessages = new ArrayList<>(prevMessages);
+        // Guardar historial/memoria unificada
+        List<ChatMessage> updatedMessages = new ArrayList<>(conversationHistory);
         updatedMessages.add(new UserMessage(request.getQuery()));
         updatedMessages.add(new AiMessage(answer));
         chatMemoryService.updateMessages(conversationId, updatedMessages);
@@ -155,8 +156,8 @@ public class    InferenceService implements InferenceUseCase {
                 .collect(Collectors.toList());
 
         log.info("Consulta avanzada finalizada. includeMatches={}", request.isIncludeMatches());
-        QueryResponse response = new QueryResponse(answer,
-                request.isIncludeMatches() ? dtos : null);
-        return response;
+        return new QueryResponse(answer,
+                request.isIncludeMatches() ? dtos : null,
+                conversationId);
     }
 }

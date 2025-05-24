@@ -1,4 +1,4 @@
-package org.shark.evolvai.embedding.adapter.input.rest;
+package org.shark.evolvai.embedding.adapter.in.rest;
 
 import ai.djl.huggingface.tokenizers.HuggingFaceTokenizer;
 import dev.langchain4j.data.document.Document;

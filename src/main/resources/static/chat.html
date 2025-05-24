@@ -27,10 +27,6 @@
       <div id="messages"></div>
       <div id="scroll-anchor"></div>
       <form id="input-area">
-        <div class="input-options">
-          <input id="advanced-check" type="checkbox">
-          <label for="advanced-check">Avanzado</label>
-        </div>
         <div class="input-row">
           <input autocomplete="off" id="user-input" placeholder="Escribe tu mensaje..." type="text"/>
           <label for="file-input" id="file-label" title="Subir archivo (.txt o .pdf)">📎</label>
@@ -84,7 +80,7 @@
   <span id="toast-close">&times;</span>
 </div>
 
-<script src="chat.js"></script>
+<script type="module" src="chat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 </body>

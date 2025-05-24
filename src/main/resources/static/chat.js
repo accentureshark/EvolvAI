@@ -1,5 +1,17 @@
 const BACKEND_URL = "http://localhost:8081";
 
+// --- Generación de ID de conversación único para la sesión ---
+const SESSION_CONVERSATION_ID = crypto.randomUUID();
+
+function getConversationId() {
+    return SESSION_CONVERSATION_ID;
+}
+
+function setConversationId(id) {
+    // no-op: ya no se cambia dinámicamente
+}
+
+
 // --- Funciones auxiliares ---
 
 function log(msg) {
@@ -19,6 +31,7 @@ function showSpinner(show) {
     }
     spinner.style.display = show ? "block" : "none";
 }
+
 
 // --- Funciones principales ---
 document.getElementById("settings-button").addEventListener("click", () => {
@@ -126,10 +139,11 @@ function addMessage(text, who) {
     }
 
 
-
 }
 
+
 async function handleFormSubmit(e) {
+    console.log("🔍 handleFormSubmit triggered");
     e.preventDefault();
     const fileInput = document.getElementById("file-input");
     const userInput = document.getElementById("user-input");
@@ -147,8 +161,37 @@ async function handleFormSubmit(e) {
                 body: formData
             });
             if (res.ok) {
-                log('Archivo subido y procesado: ' + file.name);
-                loadUploadedFiles();
+                const data = await res.json();
+                addMessage(data.answer || JSON.stringify(data), 'bot');
+                log('Respuesta recibida del backend.');
+
+                // Guardar en memoria
+                const memoryPayload = {
+                    conversationId: conversationId,
+                    messages: [
+                        {type: "user", text: text},
+                        {type: "ai", text: data.answer}
+                    ]
+                };
+                fetch(`${BACKEND_URL}/chat-memory/`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(memoryPayload)
+                }).then(() => log('🧠 Memoria actualizada'))
+                    .catch(err => log('⚠️ Error al guardar memoria: ' + err.message));
+
+                // Guardar en historial si hay conversación
+                const historyPayload = {
+                    conversationId: conversationId,
+                    query: text,
+                    answer: data.answer
+                };
+                fetch(`${BACKEND_URL}/chat-history/`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(historyPayload)
+                }).then(() => log('📝 Historial guardado'))
+                    .catch(err => log('⚠️ Error al guardar historial: ' + err.message));
             } else {
                 log('Error al subir el archivo: ' + file.name);
             }
@@ -163,15 +206,26 @@ async function handleFormSubmit(e) {
         showSpinner(true);
         log('Enviando consulta: ' + text);
         try {
-            let endpoint, body;
-            endpoint = `${BACKEND_URL}/api/embeddings/search`;
-            body = `query=${encodeURIComponent(text)}&maxResults=5&minScore=0.7`;
-            endpoint += `?${body}`;
-            const res = await fetch(endpoint, { method: 'GET' });
+            const conversationId = getConversationId();
+            const customPrompt = document.getElementById("custom-prompt")?.value || null;
+
+            const payload = {
+                query: text,
+                conversationId: conversationId,
+                customPrompt: customPrompt
+            };
+
+            console.log("📤 Payload enviado:", payload);
+
+            const res = await fetch(`${BACKEND_URL}/api/inference/query`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+
             if (res.ok) {
                 const data = await res.json();
-                let respuesta = Array.isArray(data) ? data.join('\n') : JSON.stringify(data);
-                addMessage(respuesta, 'bot');
+                addMessage(data.answer || JSON.stringify(data), 'bot');
                 log('Respuesta recibida del backend.');
             } else {
                 addMessage('Error en la respuesta del backend.', 'bot');
@@ -184,58 +238,11 @@ async function handleFormSubmit(e) {
         showSpinner(false);
     }
 }
-function togglePrompt() {
-    const promptPanel = document.getElementById("prompt-panel");
-    const toggleBtn = document.getElementById("prompt-toggle");
 
-    const collapsed = promptPanel.classList.toggle("collapsed");
-    toggleBtn.textContent = collapsed ? "▲" : "▼";
-}
-
-
-// --- Inicialización ---
-function setupWebSocketLogs() {
-    const socket = new SockJS(`${BACKEND_URL}/ws`);
-    const stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, () => {
-        log("🧩 Conectado al WebSocket de logs");
-        stompClient.subscribe("/topic/logs", (message) => {
-            log("🖧 " + message.body);
-        });
-    }, (error) => {
-        log("❌ Error de conexión WebSocket: " + error);
-    });
-}
-
-
-function loadChatHistory() {
-    fetch(`${BACKEND_URL}/api/chat/historia`)
-        .then(res => {
-            if (!res.ok) throw new Error("No se pudo obtener el historial");
-            return res.json();
-        })
-        .then(history => {
-            const sidebar = document.getElementById("sidebar-history");
-            let html = "<h4>Historial</h4><ul>";
-            if (Array.isArray(history) && history.length > 0) {
-                history.forEach(item => {
-                    html += `<li>${item}</li>`;
-                });
-            } else {
-                html += "<li>(Vacío)</li>";
-            }
-            html += "</ul>";
-            sidebar.innerHTML = html;
-            log("🕑 Historial cargado");
-        })
-        .catch(err => {
-            log("❌ Error al cargar historial: " + err.message);
-        });
-}
+// --- Reactivar carga de memoria e historial ---
 
 function loadChatMemory() {
-    fetch(`${BACKEND_URL}/api/chat/memoria`)
+    fetch(`${BACKEND_URL}/chat-memory`)
         .then(res => {
             if (!res.ok) throw new Error("No se pudo obtener la memoria");
             return res.json();
@@ -260,6 +267,30 @@ function loadChatMemory() {
         .catch(err => {
             log("❌ Error al cargar memoria: " + err.message);
         });
+}
+
+function togglePrompt() {
+    const promptPanel = document.getElementById("prompt-panel");
+    const toggleBtn = document.getElementById("prompt-toggle");
+
+    const collapsed = promptPanel.classList.toggle("collapsed");
+    toggleBtn.textContent = collapsed ? "▲" : "▼";
+}
+
+
+// --- Inicialización ---
+function setupWebSocketLogs() {
+    const socket = new SockJS(`${BACKEND_URL}/ws`);
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, () => {
+        log("🧩 Conectado al WebSocket de logs");
+        stompClient.subscribe("/topic/logs", (message) => {
+            log("🖧 " + message.body);
+        });
+    }, (error) => {
+        log("❌ Error de conexión WebSocket: " + error);
+    });
 }
 
 function togglePrompt() {
@@ -340,12 +371,11 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
             const allMessages = messages.querySelectorAll(".message");
             if (allMessages.length > 0) {
-                allMessages[allMessages.length - 1].scrollIntoView({ behavior: "auto", block: "end" });
+                allMessages[allMessages.length - 1].scrollIntoView({behavior: "auto", block: "end"});
             }
         }, 10);
     }
 
-    loadChatHistory();
     loadChatMemory();
 
     loadDefaultPrompt();
@@ -428,7 +458,6 @@ function loadDefaultPrompt() {
 }
 
 
-
 function copyActuatorOutput() {
     const text = document.getElementById("actuator-output").textContent;
     navigator.clipboard.writeText(text).then(() => {
@@ -447,6 +476,8 @@ function showToast(message, isError = false) {
         toast.style.display = "none";
     }, 3000);
 }
+
+document.getElementById("input-area").addEventListener("submit", handleFormSubmit);
 
 document.getElementById("toast-close").addEventListener("click", () => {
     document.getElementById("toast").style.display = "none";

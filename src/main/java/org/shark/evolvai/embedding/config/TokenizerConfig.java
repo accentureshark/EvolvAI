@@ -20,10 +20,9 @@ import java.nio.file.Paths;
 @Data
 public class TokenizerConfig {
 
+    private static final Logger logger = LoggerFactory.getLogger(TokenizerConfig.class);
     private String loadedPath;
     private int maxLength;
-
-    private static final Logger logger = LoggerFactory.getLogger(TokenizerConfig.class);
 
     @Bean
     public HuggingFaceTokenizer huggingFaceTokenizer(TokenizerProperties properties,

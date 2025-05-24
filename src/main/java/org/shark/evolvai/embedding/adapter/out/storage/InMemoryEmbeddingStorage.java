@@ -1,4 +1,4 @@
-package org.shark.evolvai.embedding.adapter.output.storage;
+package org.shark.evolvai.embedding.adapter.out.storage;
 
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
@@ -78,4 +78,5 @@ public class InMemoryEmbeddingStorage implements EmbeddingStorage {
     public void removeAll() {
         // clear() no está disponible en esta versión
         throw new UnsupportedOperationException("removeAll() no es compatible con esta versión de InMemoryEmbeddingStore");
-    }    }
+    }
+}

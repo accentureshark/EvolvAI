@@ -56,20 +56,24 @@ public class GenericLlmProvider implements LlmProvider {
         }
     }
 
-    @Override
-    public String generateResponse(String context, String query) {
-        return generateResponse(context, query, null);
-    }
 
-    @Override
-    public String generateResponse(String context, String query, String customPrompt) {
+    /**
+     * Nuevo método: genera una respuesta usando una lista de ChatMessage como contexto.
+     */
+    public String generateResponse(List<ChatMessage> context, String query, String customPrompt) {
         if (!isModelLoaded(modelName)) {
             throw new ModelNotLoadedException(modelName);
         }
         try {
             String prompt = (customPrompt != null && !customPrompt.isBlank()) ? customPrompt : defaultPrompt;
             log.info("Prompt usado para LLM: {}", prompt);
-            List<ChatMessage> messages = List.of(new UserMessage(prompt + "\n" + context + "\n" + query));
+            // Construir la lista de mensajes: prompt como primer mensaje, luego contexto, luego query
+            List<ChatMessage> messages = new java.util.ArrayList<>();
+            messages.add(new UserMessage(prompt));
+            if (context != null && !context.isEmpty()) {
+                messages.addAll(context);
+            }
+            messages.add(new UserMessage(query));
             log.info("Enviando mensaje al modelo: {}", messages);
             Response<AiMessage> response = chatLanguageModel.generate(messages);
             log.info("Respuesta generada: {}", response.content().text());
@@ -80,33 +84,6 @@ public class GenericLlmProvider implements LlmProvider {
         }
     }
 
-    @Override
-    public String generateResponseWithHistory(String context, String query, String history) {
-        return generateResponseWithHistory(context, query, history, null);
-    }
-
-    @Override
-    public String generateResponseWithHistory(String context, String query, String history, String customPrompt) {
-        if (!isModelLoaded(modelName)) {
-            throw new ModelNotLoadedException(modelName);
-        }
-        try {
-            String prompt = (customPrompt != null && !customPrompt.isBlank()) ? customPrompt : defaultPrompt;
-            String fullPrompt = (history != null && !history.isEmpty())
-                    ? prompt + "\n" + history + "\n" + context + "\n" + query
-                    : prompt + "\n" + context + "\n" + query;
-            log.info("Prompt usado para LLM (con historial): {}", prompt);
-            log.debug("Prompt completo enviado al modelo: {}", fullPrompt);
-            List<ChatMessage> messages = List.of(new UserMessage(fullPrompt));
-            log.info("Enviando mensaje al modelo: {}", messages);
-            Response<AiMessage> response = chatLanguageModel.generate(messages);
-            log.info("Respuesta generada: {}", response.content().text());
-            return response.content().text();
-        } catch (RuntimeException e) {
-            log.error("Error al generar respuesta con historial en LLM", e);
-            throw e;
-        }
-    }
 
     @Override
     public String getDefaultPrompt() {
@@ -133,3 +110,4 @@ public class GenericLlmProvider implements LlmProvider {
         }
     }
 }
+

@@ -1,10 +1,12 @@
-package org.shark.evolvai.embedding.adapter.output.storage;
+package org.shark.evolvai.embedding.adapter.out.storage;
 
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,30 +14,42 @@ import static org.junit.jupiter.api.Assertions.*;
 class PgVectorEmbeddingStorageIntegrationTest {
 
     private PgVectorEmbeddingStorage storage;
+    private static final String HOST = "localhost";
+    private static final int PORT = 5432;
+    private static final String DB = "evolvai";
+    private static final String USER = "postgres";
+    private static final String PASS = "postgres1234";
+    private static final String TABLE = "embeddings";
+    private static final int DIM = 1536;
 
     @BeforeEach
     void setUp() {
-        // Limpia la tabla antes de cada test
-        try (java.sql.Connection conn = java.sql.DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/evolvai", "postgres", "postgres1234")) {
-            try (java.sql.Statement stmt = conn.createStatement()) {
-                stmt.execute("DELETE FROM embeddings");
-            }
+        storage = new PgVectorEmbeddingStorage(HOST, PORT, DB, USER, PASS, TABLE, DIM);
+        clearTable();
+    }
+
+    @AfterEach
+    void tearDown() {
+        clearTable();
+    }
+
+    private void clearTable() {
+        try (Connection conn = DriverManager.getConnection(
+                "jdbc:postgresql://" + HOST + ":" + PORT + "/" + DB, USER, PASS);
+             Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM " + TABLE);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        // Elimina el parámetro '1536'
-        new PgVectorEmbeddingStorage("localhost", 5432, "evolvai", "postgres", "postgres1234", "embeddings", 1536);
-
     }
 
     @Test
     void testStoreAndFindSimilar() {
-        float[] vector1 = new float[1536];
+        float[] vector1 = new float[DIM];
         vector1[0] = 1.0f;
         vector1[1] = 2.0f;
 
-        float[] vector2 = new float[1536];
+        float[] vector2 = new float[DIM];
         vector2[0] = 1.1f;
         vector2[1] = 2.1f;
 
@@ -51,8 +65,6 @@ class PgVectorEmbeddingStorageIntegrationTest {
         List<EmbeddingMatch<String>> matches = storage.findSimilar(emb1, 2, 0.0);
 
         assertFalse(matches.isEmpty());
-        // No se puede verificar el id porque el método lo pone como null
-        // Puedes verificar el texto embebido
         assertTrue(matches.stream().anyMatch(m -> "texto de prueba 1".equals(m.embedded())));
         assertTrue(matches.stream().anyMatch(m -> "texto de prueba 2".equals(m.embedded())));
     }

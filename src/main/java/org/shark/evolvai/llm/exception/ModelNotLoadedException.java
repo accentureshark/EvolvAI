@@ -1,4 +1,3 @@
-
 package org.shark.evolvai.llm.exception;
 
 public class ModelNotLoadedException extends RuntimeException {

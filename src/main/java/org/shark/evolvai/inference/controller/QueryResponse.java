@@ -1,9 +1,15 @@
-// src/main/java/org/shark/evolvai/inference/controller/QueryResponse.java
 package org.shark.evolvai.inference.controller;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class QueryResponse {
 
     @Schema(description = "Respuesta generada por el modelo", example = "La capital de Francia es París.")
@@ -12,13 +18,6 @@ public class QueryResponse {
     @Schema(description = "Documentos similares encontrados")
     private List<EmbeddingMatchDto> matches;
 
-    public QueryResponse(String answer, List<EmbeddingMatchDto> matches) {
-        this.answer = answer;
-        this.matches = matches;
-    }
-
-    public String getAnswer() { return answer; }
-    public void setAnswer(String answer) { this.answer = answer; }
-    public List<EmbeddingMatchDto> getMatches() { return matches; }
-    public void setMatches(List<EmbeddingMatchDto> matches) { this.matches = matches; }
+    @Schema(description = "ID de conversación para mantener el contexto", example = "conv-123456")
+    private String conversationId;
 }

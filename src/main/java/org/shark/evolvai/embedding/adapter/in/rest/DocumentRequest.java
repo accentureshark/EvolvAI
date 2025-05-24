@@ -1,4 +1,4 @@
-package org.shark.evolvai.embedding.adapter.input.rest;
+package org.shark.evolvai.embedding.adapter.in.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

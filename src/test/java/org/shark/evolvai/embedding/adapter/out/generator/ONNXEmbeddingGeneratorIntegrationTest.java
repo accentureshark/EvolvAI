@@ -1,4 +1,4 @@
-package org.shark.evolvai.embedding.adapter.output.generator;
+package org.shark.evolvai.embedding.adapter.out.generator;
 
 import dev.langchain4j.data.embedding.Embedding;
 import org.junit.jupiter.api.AfterAll;
@@ -20,7 +20,7 @@ public class ONNXEmbeddingGeneratorIntegrationTest {
     static void setUp() throws Exception {
         // Cargar el modelo ONNX desde el classpath
         ClassLoader classLoader = ONNXEmbeddingGeneratorIntegrationTest.class.getClassLoader();
-        URL resource = classLoader.getResource("all-MiniLM-L6-v2.onnx");
+        URL resource = classLoader.getResource("models/all-MiniLM-L6-v2.onnx");
         assertNotNull(resource, "No se encontró el modelo ONNX en resources");
         String modelPath = Paths.get(resource.toURI()).toString();
 

@@ -1,0 +1,20 @@
+{
+  "nivelRegex": {
+    "pattern": "^LEVEL\\s+(\\d+)",
+    "key": "nivel"
+  },
+  "secciones": [
+    {
+      "regex": "^Nivel carrera",
+      "metadata": { "area": "CARRERA" }
+    },
+    {
+      "regex": "^Nivel tecnico",
+      "metadata": { "area": "TECNICO" }
+    }
+  ],
+  "itemRegex": {
+    "pattern": "^\\s*◦\\s+(.+)",
+    "key": "texto"
+  }
+}

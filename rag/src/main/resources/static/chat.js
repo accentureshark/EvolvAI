@@ -14,4 +14,3 @@ import { loadActuator, copyActuatorOutput } from './modal.js';
 window.loadActuator = loadActuator;
 window.copyActuatorOutput = copyActuatorOutput;
 
-// El resto de la lógica está ahora en los módulos correspondientes.

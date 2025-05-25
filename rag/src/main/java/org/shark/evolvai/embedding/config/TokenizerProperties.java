@@ -11,4 +11,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "embedding.tokenizer")
 public class TokenizerProperties {
     private String path;
+
+    public String getPath() {
+        return path;
+    }
 }

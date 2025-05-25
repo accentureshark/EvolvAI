@@ -51,7 +51,7 @@ export function setupFileUpload() {
 
         saveIcon.textContent = "⏳";
         // El endpoint correcto es /api/inference/upload
-        fetch(`${BACKEND_URL}/api/inference/upload-document`, {
+        fetch(`${BACKEND_URL}/api/inference/upload`, {
             method: "POST",
             body: formData
         })

@@ -18,5 +18,15 @@ public class ChunkingProperties {
     private int overlap;
     private List<String> enrichWith = new ArrayList<>();
 
+    public int getSize() {
+        return size;
+    }
 
+    public int getOverlap() {
+        return overlap;
+    }
+
+    public List<String> getEnrichWith() {
+        return enrichWith;
+    }
 }

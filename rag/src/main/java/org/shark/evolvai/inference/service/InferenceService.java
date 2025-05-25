@@ -63,12 +63,21 @@ public class InferenceService implements InferenceUseCase {
     private QueryResponse doRagQuery(RagQueryRequest request, boolean isAdvanced) {
         Embedding queryEmbedding = embeddingGenerator.generateEmbedding(request.getQuery());
 
-        Metadata filterMetadata = Metadata.from(new HashMap<>() {{
-            if (request.getDocumentId() != null) put("documentId", request.getDocumentId());
-            if (request.getRol() != null) put("rol", request.getRol());
-            if (request.getNivel() != null) put("nivel", request.getNivel());
-            if (request.getContextMetadata() != null) putAll(request.getContextMetadata());
-        }});
+        // Construcción segura de metadata de filtro
+        Map<String, String> baseFilter = new HashMap<>();
+
+        if (request.getDocumentId() != null) baseFilter.put("documentId", request.getDocumentId());
+        if (request.getRol() != null) baseFilter.put("rol", String.valueOf(request.getRol()));
+        if (request.getNivel() != null) baseFilter.put("nivel", String.valueOf(request.getNivel()));
+
+        if (request.getContextMetadata() != null) {
+            request.getContextMetadata().forEach((k, v) -> {
+                if (v != null) baseFilter.put(k, v.toString());
+            });
+        }
+
+        Metadata filterMetadata = Metadata.from(baseFilter);
+        log.info("Metadata usada para filtrar embeddings: {}", baseFilter);
 
         List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(
                 queryEmbedding,
@@ -123,4 +132,5 @@ public class InferenceService implements InferenceUseCase {
                 conversationId
         );
     }
+
 }

@@ -1,6 +1,5 @@
 package org.shark.evolvai.embedding.domain.service;
 
-
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.segment.TextSegment;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,6 @@ public class SemanticJsonChunkingService {
             combinedMetadata.put("chunkIndex", String.valueOf(chunkIndex));
             combinedMetadata.put("section", "fragment-" + chunkIndex);
 
-            // también traemos metadatos personalizados si existen
             for (Map.Entry<String, Object> meta : entry.entrySet()) {
                 if (!"texto".equals(meta.getKey()) && meta.getValue() != null) {
                     combinedMetadata.put(meta.getKey(), meta.getValue().toString());

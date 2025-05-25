@@ -10,7 +10,6 @@ import org.shark.evolvai.chathistory.port.in.ChatMemoryService;
 import org.shark.evolvai.config.RagProperties;
 import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
 import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
-
 import org.shark.evolvai.inference.controller.EmbeddingMatchDto;
 import org.shark.evolvai.inference.controller.QueryResponse;
 import org.shark.evolvai.inference.controller.RagQueryRequest;
@@ -63,18 +62,14 @@ public class InferenceService implements InferenceUseCase {
     private QueryResponse doRagQuery(RagQueryRequest request, boolean isAdvanced) {
         Embedding queryEmbedding = embeddingGenerator.generateEmbedding(request.getQuery());
 
-        // Construcción segura de metadata de filtro
-        Map<String, String> baseFilter = new HashMap<>();
-
-        if (request.getDocumentId() != null) baseFilter.put("documentId", request.getDocumentId());
-        if (request.getRol() != null) baseFilter.put("rol", String.valueOf(request.getRol()));
-        if (request.getNivel() != null) baseFilter.put("nivel", String.valueOf(request.getNivel()));
-
-        if (request.getContextMetadata() != null) {
-            request.getContextMetadata().forEach((k, v) -> {
-                if (v != null) baseFilter.put(k, v.toString());
-            });
-        }
+        Map<String, String> baseFilter = Optional.ofNullable(request.getContextMetadata())
+                .map(ctx -> ctx.entrySet().stream()
+                        .filter(e -> e.getValue() != null)
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                e -> String.valueOf(e.getValue())
+                        )))
+                .orElse(Collections.emptyMap());
 
         Metadata filterMetadata = Metadata.from(baseFilter);
         log.info("Metadata usada para filtrar embeddings: {}", baseFilter);
@@ -102,11 +97,23 @@ public class InferenceService implements InferenceUseCase {
 
         List<ChatMessage> conversationHistory = chatMemoryService.getMessages(conversationId);
 
-        String answer = llmProvider.generateResponse(
-                conversationHistory,
-                request.getQuery(),
-                request.getCustomPrompt()
-        );
+        String prompt = Optional.ofNullable(request.getCustomPrompt())
+                .filter(p -> !p.isBlank())
+                .orElseGet(() -> ragProperties.getPrompt().toString() );
+
+        String answer;
+
+        if (matches.isEmpty()) {
+            answer = "No hay información suficiente para responder a esa pregunta.";
+            log.info("Sin contexto relevante. Se responde con fallback.");
+        } else {
+            answer = llmProvider.generateResponse(
+                    conversationHistory,
+                    request.getQuery(),
+                    prompt
+            );
+        }
+
 
         log.info("Respuesta generada: {}", answer);
 
@@ -132,5 +139,4 @@ public class InferenceService implements InferenceUseCase {
                 conversationId
         );
     }
-
 }

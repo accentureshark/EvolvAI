@@ -16,7 +16,7 @@ import java.util.List;
 @EnableConfigurationProperties({TokenizerProperties.class, ChunkingProperties.class})
 public class EmbeddingConfig {
 
-    @Value("${embedding.storage.type:inMemory}")
+    @Value("${embedding.storage.type:pgVector}")
     private String storageType;
 
     @Value("${embedding.generator.type:onnx}")
@@ -25,12 +25,11 @@ public class EmbeddingConfig {
     @Bean
     @Primary
     public EmbeddingStorage embeddingStorage(
-            @Qualifier("inMemoryEmbeddingStorage") EmbeddingStorage inMemoryStorage,
             @Qualifier("pgVectorEmbeddingStorage") EmbeddingStorage pgVectorStorage) {
         if ("pgVector".equalsIgnoreCase(storageType)) {
             return pgVectorStorage;
         }
-        return inMemoryStorage;
+        throw new IllegalStateException("Tipo de almacenamiento no soportado: " + storageType);
     }
 
     @Bean

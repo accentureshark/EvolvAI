@@ -49,4 +49,44 @@ public class RagQueryRequest {
 
     @Schema(description = "Metadatos adicionales para filtrar los documentos relevantes", example = "{\"organizacion\":\"Accenture\"}")
     private Map<String, String> contextMetadata;
+
+    public String getQuery() {
+        return query;
+    }
+
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public int getMaxResults() {
+        return maxResults;
+    }
+
+    public double getMinSimilarity() {
+        return minSimilarity;
+    }
+
+    public boolean isIncludeMatches() {
+        return includeMatches;
+    }
+
+    public String getCustomPrompt() {
+        return customPrompt;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public String getNivel() {
+        return nivel;
+    }
+
+    public Map<String, String> getContextMetadata() {
+        return contextMetadata;
+    }
 }

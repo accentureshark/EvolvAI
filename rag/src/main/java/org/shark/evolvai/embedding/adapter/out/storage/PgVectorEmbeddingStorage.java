@@ -10,6 +10,8 @@ import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
@@ -18,6 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component("pgVectorEmbeddingStorage")
+@ConditionalOnProperty(name = "embedding.storage.type", havingValue = "pgVector")
 public class PgVectorEmbeddingStorage implements EmbeddingStorage {
 
     private static final Logger log = LoggerFactory.getLogger(PgVectorEmbeddingStorage.class);
@@ -71,16 +74,22 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         }
 
         if (metadata == null) {
-            metadata = Metadata.from(Map.of(
-                    "documentName", id,
-                    "usuario", "desconocido",
-                    "timestamp", String.valueOf(Instant.now().toEpochMilli())
-            ));
+            Map<String, Object> defaultMeta = new HashMap<>();
+            defaultMeta.put("documentName", id);
+            defaultMeta.put("usuario", "desconocido");
+            defaultMeta.put("timestamp", String.valueOf(Instant.now().toEpochMilli()));
+            metadata = Metadata.from(defaultMeta);
         }
 
         float[] padded = padToDimension(embedding.vector(), targetDimension);
 
-        insertEmbedding(UUID.randomUUID(), padded, documentId, text, metadata.toMap());
+        Map<String, Object> metaMap = metadata.asMap().entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> (Object) e.getValue()
+                ));
+
+        insertEmbedding(UUID.randomUUID(), padded, documentId, text, metaMap);
         log.info("Embedding almacenado en PgVector con document_id={}, dimensiones={}, metadatos={}", documentId, padded.length, metadata);
     }
 
@@ -124,14 +133,6 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     }
 
     @Override
-    public List<EmbeddingMatch<TextSegment>> findSimilar(Embedding embedding, int maxResults, double minScore) {
-        float[] padded = padToDimension(embedding.vector(), targetDimension);
-        Embedding paddedEmbedding = new Embedding(padded);
-
-        return embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore);
-    }
-
-    @Override
     public List<EmbeddingMatch<String>> findSimilar(Embedding embedding, int maxResults, double minScore) {
         float[] padded = padToDimension(embedding.vector(), targetDimension);
         Embedding paddedEmbedding = new Embedding(padded);
@@ -139,7 +140,7 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         return embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore)
                 .stream()
                 .map(match -> {
-                    String documentName = Optional.ofNullable(match.embedded().metadata().get("documentName"))
+                    String documentName = Optional.ofNullable(match.embedded().metadata().get("documentId"))
                             .map(Object::toString)
                             .orElse("desconocido");
                     return new EmbeddingMatch<>(
@@ -152,7 +153,41 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<EmbeddingMatch<String>> findSimilar(Embedding embedding, int maxResults, double minScore, Metadata filter) {
+        float[] padded = padToDimension(embedding.vector(), targetDimension);
+        Embedding paddedEmbedding = new Embedding(padded);
 
+        Map<String, Object> filterMap = filter.asMap().entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> (Object) e.getValue()
+                ));
+
+        return embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore).stream()
+                .filter(match -> {
+                    Map<String, Object> meta = match.embedded().metadata().asMap().entrySet().stream()
+                            .collect(Collectors.toMap(
+                                    Map.Entry::getKey,
+                                    e -> (Object) e.getValue()
+                            ));
+                    return filterMap.entrySet().stream()
+                            .allMatch(e -> e.getValue().toString().equals(
+                                    Optional.ofNullable(meta.get(e.getKey())).map(Object::toString).orElse(null)));
+                })
+                .map(match -> {
+                    String documentName = Optional.ofNullable(match.embedded().metadata().get("documentId"))
+                            .map(Object::toString)
+                            .orElse("desconocido");
+                    return new EmbeddingMatch<>(
+                            match.score(),
+                            documentName,
+                            match.embedding(),
+                            match.embedded().text()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<String> findAllDocumentIds() {

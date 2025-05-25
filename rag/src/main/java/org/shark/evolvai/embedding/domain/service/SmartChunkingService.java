@@ -4,6 +4,8 @@ package org.shark.evolvai.embedding.domain.service;
 import dev.langchain4j.data.segment.TextSegment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,6 +17,9 @@ public class SmartChunkingService {
 
     private final TextChunkingService textChunkingService;
     private final SemanticJsonChunkingService semanticJsonChunkingService;
+
+    private static final Logger log = LoggerFactory.getLogger(SmartChunkingService.class);
+
 
     /**
      * Recibe un documento que puede ser:

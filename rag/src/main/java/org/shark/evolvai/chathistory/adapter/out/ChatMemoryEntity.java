@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "chat_memory")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class ChatMemoryEntity {
 
     @Id
@@ -20,4 +20,16 @@ public class ChatMemoryEntity {
 
     @Column(columnDefinition = "TEXT")
     private String memoryJson;
+
+    public ChatMemoryEntity(String id, String memoryJson) {
+        this.id = id;
+        this.memoryJson = memoryJson;
+    }
+    public String getId() {
+        return id;
+    }
+
+    public String getMemoryJson() {
+        return memoryJson;
+    }
 }

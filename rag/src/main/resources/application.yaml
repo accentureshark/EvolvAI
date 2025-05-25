@@ -29,15 +29,15 @@ embedding:
     - area
     - nivel
 
-
 rag:
   llm:
     provider: "ollama"
-    prompt: "Respondé exclusivamente usando el contexto provisto..."
+    prompt: |
+      Respondé exclusivamente usando el contexto provisto. Si no encontrás una respuesta clara o relevante en el contexto, respondé con No hay información suficiente para responder a esa pregunta.
     ollama:
       base-url: "http://localhost:11434"
       model: "phi3:mini"
-      temperature: 0.2
+      temperature: 0.0
       timeout-sec: 180
     llama:
       base-url: "http://localhost:8000/v1"

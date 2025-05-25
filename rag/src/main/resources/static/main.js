@@ -33,6 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
     setupFileUpload();
     loadUploadedFiles();
     loadChatMemory();
+    loadDefaultPrompt();
+
 
     // Inicialización de WebSocket y modal
     setupWebSocketLogs();

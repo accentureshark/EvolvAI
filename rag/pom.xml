@@ -20,7 +20,7 @@
         <java.version>17</java.version>
         <aws.sdk.version>2.29.43</aws.sdk.version>
         <spring-boot.version>3.4.1</spring-boot.version>
-        <lombok.version>1.18.36</lombok.version>
+
         <micrometer.version>1.14.2</micrometer.version>
         <docker.registry>fabianaguero</docker.registry>
         <docker.username>fabianaguero</docker.username>
@@ -135,7 +135,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.38</version>
+            <version>${lombok.version}</version>
 
             <scope>provided</scope>
         </dependency>

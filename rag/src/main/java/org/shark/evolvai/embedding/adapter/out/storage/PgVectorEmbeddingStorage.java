@@ -5,6 +5,7 @@ import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
+
 import org.shark.evolvai.embedding.port.out.EmbeddingStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

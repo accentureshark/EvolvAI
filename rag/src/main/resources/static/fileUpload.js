@@ -24,12 +24,8 @@ export function setupFileUpload() {
         }
     }
 
-    // Mostrar el diálogo de archivos al hacer click en el clip
-    if (fileLabel && fileInput) {
-        fileLabel.onclick = function () {
-            fileInput.click();
-        };
-    }
+
+
 
     fileInput.addEventListener("change", function () {
         fileList.innerHTML = "";
@@ -50,8 +46,7 @@ export function setupFileUpload() {
         formData.append("file", file);
 
         saveIcon.textContent = "⏳";
-        // El endpoint correcto es /api/inference/upload
-        fetch(`${BACKEND_URL}/api/inference/upload`, {
+        fetch(`${BACKEND_URL}/api/embeddings/upload`, {
             method: "POST",
             body: formData
         })

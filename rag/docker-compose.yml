@@ -14,7 +14,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./src/main/sql/initdb:/docker-entrypoint-initdb.d
+      - ./rag/src/main/sql/initdb:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 10s
@@ -22,30 +22,34 @@ services:
       retries: 5
 
   ollama:
-    image: docker.io/ollama/ollama:latest
+    image: ollama/ollama:latest
     ports:
       - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-    restart: unless-stopped
-    mem_limit: 32g
-    cpus: 8
     environment:
       - OLLAMA_MODELS=phi3:mini
+      - OLLAMA_DEBUG=INFO
+    volumes:
+      - ollama-data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   ollama-init:
-    image: docker.io/curlimages/curl
+    image: curlimages/curl:latest
     depends_on:
-      - ollama
+      ollama:
+        condition: service_healthy
     entrypoint: >
-      sh -c "
-        until curl -s http://ollama:11434/; do sleep 2; done;
-        curl -X POST http://ollama:11434/api/pull -d '{\"name\":\"phi3:mini\"}'
+      /bin/sh -c "
+      echo 'Esperando a que Ollama esté listo...';
+      sleep 5;
+      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"phi3:mini\"}' -H 'Content-Type: application/json';
+      echo 'Modelo phi3:mini descargado';
       "
-    volumes:
-      - ollama_data:/root/.ollama
     restart: "no"
 
 volumes:
   pgvector_data:
-  ollama_data:
+  ollama-data:

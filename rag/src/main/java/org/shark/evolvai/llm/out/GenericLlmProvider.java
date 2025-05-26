@@ -42,7 +42,7 @@ public class GenericLlmProvider implements LlmProvider {
 
     @Override
     public ChatMessage send(List<ChatMessage> messages) {
-        log.warn("⚠️ Método send(...) fue invocado directamente. Esto omite el uso de prompt del YAML.");
+        log.warn("⚠️ Método send(.{}.) fue invocado directamente. Esto omite el uso de prompt del YAML.",messages.toString());
         if (!isModelLoaded(modelName)) {
             throw new ModelNotLoadedException(modelName);
         }

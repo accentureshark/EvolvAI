@@ -1,4 +1,4 @@
-package org.shark.evolvai.inference.adapter.input.rest;
+package org.shark.evolvai.inference.adapter.in.rest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

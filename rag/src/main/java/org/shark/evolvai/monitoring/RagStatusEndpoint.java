@@ -3,7 +3,7 @@ package org.shark.evolvai.monitoring;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.UserMessage;
 import lombok.RequiredArgsConstructor;
-import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
+import org.shark.evolvai.embedding.port.out.EmbeddingStorage;
 import org.shark.evolvai.llm.port.out.LlmProvider;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;

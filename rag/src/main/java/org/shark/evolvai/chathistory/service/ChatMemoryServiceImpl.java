@@ -28,12 +28,6 @@ public class ChatMemoryServiceImpl implements ChatMemoryService {
     }
 
     @Override
-    public void deleteMessages(String conversationId) {
-        chatMemoryStore.deleteMessages(conversationId);
-
-    }
-
-    @Override
     public List<ChatMessage> getAllMessages() {
         return List.of();
     }

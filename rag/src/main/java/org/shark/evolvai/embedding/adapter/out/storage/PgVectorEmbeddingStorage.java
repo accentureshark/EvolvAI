@@ -3,15 +3,13 @@ package org.shark.evolvai.embedding.adapter.out.storage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
-import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
-import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
+import org.shark.evolvai.embedding.port.out.EmbeddingStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;

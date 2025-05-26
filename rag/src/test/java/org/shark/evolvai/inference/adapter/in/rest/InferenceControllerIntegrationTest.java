@@ -1,4 +1,4 @@
-package org.shark.evolvai.inference.adapter.input.rest;
+package org.shark.evolvai.inference.adapter.in.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

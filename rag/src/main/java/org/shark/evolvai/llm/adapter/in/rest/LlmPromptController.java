@@ -1,4 +1,4 @@
-package org.shark.evolvai.llm.adapter.input.rest;
+package org.shark.evolvai.llm.adapter.in.rest;
 
 import lombok.RequiredArgsConstructor;
 

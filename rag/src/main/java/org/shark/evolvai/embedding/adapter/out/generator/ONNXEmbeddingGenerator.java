@@ -2,7 +2,7 @@ package org.shark.evolvai.embedding.adapter.out.generator;
 
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
-import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
+import org.shark.evolvai.embedding.port.out.EmbeddingGenerator;
 import org.shark.evolvai.embedding.provider.ONNXProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

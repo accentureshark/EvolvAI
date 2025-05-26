@@ -1,4 +1,4 @@
-package org.shark.evolvai.inference.adapter.input.rest;
+package org.shark.evolvai.inference.adapter.in.rest;
 
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
@@ -7,8 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.shark.evolvai.chathistory.port.in.ChatMemoryService;
 import org.shark.evolvai.config.RagProperties;
-import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
-import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
+import org.shark.evolvai.embedding.port.out.EmbeddingGenerator;
+import org.shark.evolvai.embedding.port.out.EmbeddingStorage;
 import org.shark.evolvai.inference.controller.QueryResponse;
 import org.shark.evolvai.inference.controller.RagQueryRequest;
 import org.shark.evolvai.inference.service.InferenceService;

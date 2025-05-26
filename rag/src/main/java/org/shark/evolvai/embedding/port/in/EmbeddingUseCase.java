@@ -1,4 +1,4 @@
-package org.shark.evolvai.embedding.port.input;
+package org.shark.evolvai.embedding.port.in;
 
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;

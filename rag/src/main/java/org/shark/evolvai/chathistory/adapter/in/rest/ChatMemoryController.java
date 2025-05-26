@@ -1,4 +1,4 @@
-package org.shark.evolvai.chathistory.adapter.in;
+package org.shark.evolvai.chathistory.adapter.in.rest;
 
 import dev.langchain4j.data.message.ChatMessage;
 import org.shark.evolvai.chathistory.port.in.ChatMemoryService;

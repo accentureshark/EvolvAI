@@ -1,4 +1,4 @@
-package org.shark.evolvai.inference.adapter.input.rest;
+package org.shark.evolvai.inference.adapter.in.rest;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

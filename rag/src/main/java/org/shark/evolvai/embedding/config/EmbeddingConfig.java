@@ -1,8 +1,8 @@
 package org.shark.evolvai.embedding.config;
 
 import org.shark.evolvai.embedding.domain.service.TextChunkingService;
-import org.shark.evolvai.embedding.port.output.EmbeddingGenerator;
-import org.shark.evolvai.embedding.port.output.EmbeddingStorage;
+import org.shark.evolvai.embedding.port.out.EmbeddingGenerator;
+import org.shark.evolvai.embedding.port.out.EmbeddingStorage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

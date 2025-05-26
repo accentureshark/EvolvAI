@@ -14,7 +14,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./rag/src/main/sql/initdb:/docker-entrypoint-initdb.d
+      - ./src/main/sql/initdb:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 10s
@@ -46,8 +46,10 @@ services:
       echo 'Esperando a que Ollama esté listo...';
       sleep 5;
       curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"phi3:mini\"}' -H 'Content-Type: application/json';
-      echo 'Modelo phi3:mini descargado';
+      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"nomic-embed-text\"}' -H 'Content-Type: application/json';
+      echo 'Modelos phi3:mini y nomic-embed-text descargados';
       "
+
     restart: "no"
 
 volumes:

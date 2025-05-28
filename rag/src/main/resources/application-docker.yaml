@@ -1,0 +1,133 @@
+server:
+  port: 8081
+
+embedding:
+  chunking:
+    size: 20        # ajustable: 20-50 es ideal para frases tipo ítems
+    overlap: 5      # para dar contexto si hay más de un chunk
+  storage:
+    type: pgVector  # Opciones: inMemory, pgVector
+  generator:
+    type: ollama    # Opciones: onnx, ollama
+  pgvector:
+    host: pgvector
+    port: 5432
+    database: evolvai
+    user: postgres
+    password: postgres1234
+    tableName: embedding.embeddings
+    dimensions: 2000
+  onnx:
+    model-path: classpath:all-MiniLM-L6-v2.onnx
+  ollama:
+    base-url: http://localhost:11434
+    model: nomic-embed-text  # Más específico y liviano para embeddings
+  tokenizer:
+    path: classpath:tokenizer/tokenizer.json
+  enrichWith:
+    - documentId
+    - area
+    - nivel
+
+rag:
+  llm:
+    provider: "ollama"
+    prompt: |
+      Respondé exclusivamente usando el contexto provisto. Si no encontrás una respuesta clara o relevante en el contexto, respondé con No hay información suficiente para responder a esa pregunta.
+    ollama:
+      base-url: "http://localhost:11434"
+      model: "phi3:mini"
+      temperature: 0.0
+      timeout-sec: 180
+    llama:
+      base-url: "http://localhost:8000/v1"
+      api-key: "test_api_key"
+      model: "llama2"
+      temperature: 0.7
+      max-tokens: 512
+      top-p: 0.95
+      top-k: 50
+  inference:
+    max-results: 5
+    min-score: 0.85
+  metadata:
+    enrich-with:
+      - nivel
+      - area
+      - documentId
+
+
+chatmemory-persistence:
+  provider: "jpa"
+  memory:
+    file-path: "./chat-memory.db"
+  jpa:
+    table-name: "chat_memory"
+
+spring:
+  application:
+    name: evolvAI
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:postgresql://pgvector:5432/evolvai
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres1234
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+
+# Docker compose (usado por referencia)
+---
+services:
+  pgvector:
+    image: "pgvector/pgvector:pg17"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres1234"
+      POSTGRES_DB: "evolvai"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgvector-data:/var/lib/postgresql/data
+      - ./init_pgvector.sql:/docker-entrypoint-initdb.d/init_pgvector.sql
+
+volumes:
+  pgvector-data:
+
+
+# Logging detallado
+logging:
+  level:
+    root: INFO
+    org.shark.evolvai: INFO
+    org.springframework.web: INFO
+    org.springdoc: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql: INFO
+    org.hibernate.orm.jdbc.bind: INFO
+    org.hibernate.engine.jdbc.spi: INFO
+
+# Configuración de Springdoc
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  cors:
+    allowed-origins: "*"
+    allowed-methods: "*"
+    allowed-headers: "*"

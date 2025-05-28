@@ -16,7 +16,7 @@
     <name>evolvAI-parent</name>
     <description>Parent POM for evolvAI projects</description>
     <modules>
-        <module>pre-parser</module>
+        <!--module>pre-parser</module-->
         <module>rag</module>
     </modules>
 

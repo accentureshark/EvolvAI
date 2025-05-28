@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  pgvector:
+    image: ankane/pgvector
+    container_name: evolvai_pgvector
+    restart: always
+    environment:
+      POSTGRES_DB: evolvai
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres1234
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./rag/src/main/sql/initdb:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: evolvai_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:11434" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ollama-puller:
+      image: curlimages/curl:latest
+      depends_on:
+        - ollama
+      command: >
+        sh -c "sleep 10 && curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"nomic-embed-text\"}' -H 'Content-Type: application/json'"
+      restart: "no"
+#  maven-cache:
+#    image: maven:3.9-eclipse-temurin-17-alpine
+#
+#    volumes:
+#      - maven-repo:/root/.m2
+#    command: tail -f /dev/null
+#
+#  backend:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile.backend
+#    container_name: evolvai_backend
+#    volumes:
+#      - maven-repo:/root/.m2
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      pgvector:
+#        condition: service_healthy
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#
+#
+#  webapp:
+#    image: nginx:alpine
+#    container_name: evolvai_web
+#    ports:
+#      - "8080:80"
+#    volumes:
+#      - ./webapp:/usr/share/nginx/html:ro
+#    depends_on:
+#      - backend
+
+volumes:
+  ollama-data:
+  pgvector-data:
+  maven-repo:
+
+

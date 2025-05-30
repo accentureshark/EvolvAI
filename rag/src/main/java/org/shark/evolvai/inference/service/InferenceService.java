@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,83 +62,67 @@ public class InferenceService implements InferenceUseCase {
     }
 
     private QueryResponse doRagQuery(RagQueryRequest request, boolean isAdvanced) {
-        Embedding queryEmbedding = embeddingGenerator.generateEmbedding(request.getQuery());
+        String enrichedQuery = enrichQueryForEmbedding(request.getQuery());
+        log.info("Consulta enriquecida: {}", enrichedQuery);
 
-        Map<String, String> baseFilter = Optional.ofNullable(request.getContextMetadata())
-                .map(ctx -> ctx.entrySet().stream()
-                        .filter(e -> e.getValue() != null)
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                e -> String.valueOf(e.getValue())
-                        )))
-                .orElse(Collections.emptyMap());
-
-        Metadata filterMetadata = Metadata.from(baseFilter);
-        log.info("Metadata usada para filtrar embeddings: {}", baseFilter);
+        Embedding queryEmbedding = embeddingGenerator.generateEmbedding(enrichedQuery);
+        log.info("Dimensión embedding consulta: {}", queryEmbedding.vector().length);
 
         List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(
                 queryEmbedding,
                 isAdvanced ? request.getMaxResults() : ragProperties.getInference().getMaxResults(),
-                isAdvanced ? request.getMinSimilarity() : ragProperties.getInference().getMinScore(),
-                filterMetadata
+                isAdvanced ? request.getMinSimilarity() : ragProperties.getInference().getMinScore()
         );
 
-        log.info("Se encontraron {} documentos similares.", matches.size());
+        log.info("Se encontraron {} embeddings similares (sin ningún filtro).", matches.size());
+
+        if (matches.isEmpty()) {
+            return new QueryResponse("No hay información suficiente para responder a esa pregunta.", null, request.getConversationId());
+        }
 
         String context = matches.stream()
                 .map(EmbeddingMatch::embedded)
-                .reduce("", (a, b) -> a + "\n" + b);
+                .collect(Collectors.joining("\n"));
 
         String conversationId = Optional.ofNullable(request.getConversationId())
                 .filter(id -> !id.isBlank())
-                .orElseGet(() -> {
-                    String newId = UUID.randomUUID().toString();
-                    log.debug("No se proporcionó conversationId, se genera uno nuevo: {}", newId);
-                    return newId;
-                });
+                .orElseGet(() -> UUID.randomUUID().toString());
 
         List<ChatMessage> conversationHistory = chatMemoryService.getMessages(conversationId);
 
         String prompt = Optional.ofNullable(request.getCustomPrompt())
                 .filter(p -> !p.isBlank())
-                .orElseGet(() -> ragProperties.getPrompt().toString() );
+                .orElseGet(() -> ragProperties.getPrompt().toString());
 
-        String answer;
+        String contextualPrompt = prompt + "\n\n" + context;
+        String answer = llmProvider.generateResponse(conversationHistory, request.getQuery(), contextualPrompt);
 
-        if (matches.isEmpty()) {
-            answer = "No hay información suficiente para responder a esa pregunta.";
-            log.info("Sin contexto relevante. Se responde con fallback.");
-        } else {
-            answer = llmProvider.generateResponse(
-                    conversationHistory,
-                    request.getQuery(),
-                    prompt
-            );
-        }
-
-
-        log.info("Respuesta generada: {}", answer);
-
-        List<ChatMessage> updatedMessages = new ArrayList<>(conversationHistory);
-        updatedMessages.add(new UserMessage(request.getQuery()));
-        updatedMessages.add(new AiMessage(answer));
-        chatMemoryService.updateMessages(conversationId, updatedMessages);
+        chatMemoryService.updateMessages(conversationId, List.of(
+                new UserMessage(request.getQuery()),
+                new AiMessage(answer)
+        ));
 
         List<EmbeddingMatchDto> dtos = matches.stream()
-                .map(m -> new EmbeddingMatchDto(
-                        m.score(),
-                        m.embeddingId(),
-                        m.embedding().vector(),
-                        m.embedded()
-                ))
+                .map(m -> new EmbeddingMatchDto(m.score(), m.embeddingId(), m.embedding().vector(), m.embedded()))
                 .collect(Collectors.toList());
 
-        log.info("Consulta {} finalizada. includeMatches={}", isAdvanced ? "avanzada" : "básica", request.isIncludeMatches());
+        return new QueryResponse(answer, request.isIncludeMatches() ? dtos : null, conversationId);
+    }
 
-        return new QueryResponse(
-                answer,
-                request.isIncludeMatches() ? dtos : null,
-                conversationId
-        );
+    private String enrichQueryForEmbedding(String original) {
+        String normalized = original.toLowerCase(Locale.ROOT);
+
+        Pattern levelPattern = Pattern.compile("level\\s*(\\d+)");
+        Matcher levelMatcher = levelPattern.matcher(normalized);
+
+        String nivel = levelMatcher.find() ? levelMatcher.group(1) : null;
+
+        if (nivel != null && normalized.contains("tecnico")) {
+            return "Nivel " + nivel + " - Área TECNICO: " + original;
+        } else if (nivel != null && normalized.contains("carrera")) {
+            return "Nivel " + nivel + " - Área CARRERA: " + original;
+        } else {
+            return original; // sin enriquecimiento
+        }
     }
 }

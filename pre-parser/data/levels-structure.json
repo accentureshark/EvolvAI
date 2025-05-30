@@ -16,5 +16,6 @@
   "itemRegex": {
     "pattern": "^\\s*◦\\s+(.+)",
     "key": "texto"
-  }
+  },
+  "enrichText": "Nivel {nivel} - Área {area}: {texto}"
 }

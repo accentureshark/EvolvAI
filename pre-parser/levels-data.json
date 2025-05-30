@@ -1,15 +1,15 @@
 {
   "metadata" : {
-    "estructuraContent" : "{\n  \"nivelRegex\": {\n    \"pattern\": \"^LEVEL\\\\s+(\\\\d+)\",\n    \"key\": \"nivel\"\n  },\n  \"secciones\": [\n    {\n      \"regex\": \"^Nivel carrera\",\n      \"metadata\": { \"area\": \"CARRERA\" }\n    },\n    {\n      \"regex\": \"^Nivel tecnico\",\n      \"metadata\": { \"area\": \"TECNICO\" }\n    }\n  ],\n  \"itemRegex\": {\n    \"pattern\": \"^\\\\s*◦\\\\s+(.+)\",\n    \"key\": \"texto\"\n  }\n}\n",
+    "estructuraContent" : "{\n  \"nivelRegex\": {\n    \"pattern\": \"^LEVEL\\\\s+(\\\\d+)\",\n    \"key\": \"nivel\"\n  },\n  \"secciones\": [\n    {\n      \"regex\": \"^Nivel carrera\",\n      \"metadata\": { \"area\": \"CARRERA\" }\n    },\n    {\n      \"regex\": \"^Nivel tecnico\",\n      \"metadata\": { \"area\": \"TECNICO\" }\n    }\n  ],\n  \"itemRegex\": {\n    \"pattern\": \"^\\\\s*◦\\\\s+(.+)\",\n    \"key\": \"texto\"\n  },\n  \"enrichText\": \"Nivel {nivel} - Área {area}: {texto}\"\n}\n",
     "originalFile" : "data/levels.txt",
     "estructuraId" : "levels-structure.json",
     "documentId" : "levels",
-    "uuid" : "ba4b99f0-d851-49af-a63d-615cc97f9313",
-    "timestamp" : "2025-05-24T19:56:43.256940335"
+    "uuid" : "fb2f8c8d-6d28-4743-8cfe-6054b1ecce2c",
+    "timestamp" : "2025-05-29T21:17:57.656644797"
   },
   "data" : [ {
     "area" : "CARRERA",
-    "texto" : "Definición de planes de carrera y crecimiento ágil.™",
+    "texto" : "Nivel 8 - Área CARRERA: Definición de planes de carrera y crecimiento ágil.™",
     "charStart" : 0,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 52,
@@ -17,10 +17,10 @@
     "section" : "fragment-0",
     "chunkIndex" : 0,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.250889158"
+    "timestamp" : "2025-05-29T21:17:57.650482774"
   }, {
     "area" : "CARRERA",
-    "texto" : "Ver rotación de gente, ver la situación de la gente por sobre la del contrato. ™",
+    "texto" : "Nivel 8 - Área CARRERA: Ver rotación de gente, ver la situación de la gente por sobre la del contrato. ™",
     "charStart" : 53,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 133,
@@ -28,10 +28,10 @@
     "section" : "fragment-1",
     "chunkIndex" : 1,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251088324"
+    "timestamp" : "2025-05-29T21:17:57.650685635"
   }, {
     "area" : "CARRERA",
-    "texto" : "Que pueda hacer un seguimiento de cada una de las personas que de él dependen.",
+    "texto" : "Nivel 8 - Área CARRERA: Que pueda hacer un seguimiento de cada una de las personas que de él dependen.",
     "charStart" : 134,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 212,
@@ -39,10 +39,10 @@
     "section" : "fragment-2",
     "chunkIndex" : 2,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251168685"
+    "timestamp" : "2025-05-29T21:17:57.650780382"
   }, {
     "area" : "CARRERA",
-    "texto" : "Que pueda inculcar a su gente para que todo lo que tenga que ver con crecimiento de la gente y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.",
+    "texto" : "Nivel 8 - Área CARRERA: Que pueda inculcar a su gente para que todo lo que tenga que ver con crecimiento de la gente y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.",
     "charStart" : 213,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 451,
@@ -50,10 +50,10 @@
     "section" : "fragment-3",
     "chunkIndex" : 3,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251282480"
+    "timestamp" : "2025-05-29T21:17:57.650915356"
   }, {
     "area" : "TECNICO",
-    "texto" : "Generar un vínculo de confianza con las contrapartes del cliente/proyecto a fin de ser socio en la toma de decisiones tácticas y estratégicas. (TM/TE)",
+    "texto" : "Nivel 8 - Área TECNICO: Generar un vínculo de confianza con las contrapartes del cliente/proyecto a fin de ser socio en la toma de decisiones tácticas y estratégicas. (TM/TE)",
     "charStart" : 452,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 602,
@@ -61,10 +61,10 @@
     "section" : "fragment-4",
     "chunkIndex" : 4,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251374493"
+    "timestamp" : "2025-05-29T21:17:57.651021324"
   }, {
     "area" : "TECNICO",
-    "texto" : "Ser referente técnico tanto para el proyecto como para la tribu entendiendo el qué , el por qué y el cómo.(TE)",
+    "texto" : "Nivel 8 - Área TECNICO: Ser referente técnico tanto para el proyecto como para la tribu entendiendo el qué , el por qué y el cómo.(TE)",
     "charStart" : 603,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 713,
@@ -72,10 +72,10 @@
     "section" : "fragment-5",
     "chunkIndex" : 5,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251560313"
+    "timestamp" : "2025-05-29T21:17:57.651096476"
   }, {
     "area" : "TECNICO",
-    "texto" : "Entender las expectativas funcionales y no funcionales del producto para garantizar que la solución sea óptima en términos de calidad, performance y valor de negocio.(TE)",
+    "texto" : "Nivel 8 - Área TECNICO: Entender las expectativas funcionales y no funcionales del producto para garantizar que la solución sea óptima en términos de calidad, performance y valor de negocio.(TE)",
     "charStart" : 714,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 884,
@@ -83,10 +83,10 @@
     "section" : "fragment-6",
     "chunkIndex" : 6,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251643781"
+    "timestamp" : "2025-05-29T21:17:57.651172037"
   }, {
     "area" : "TECNICO",
-    "texto" : "Paquetizar componentes reusables y detectar aceleradores de los proyectos / clientes.(TE)",
+    "texto" : "Nivel 8 - Área TECNICO: Paquetizar componentes reusables y detectar aceleradores de los proyectos / clientes.(TE)",
     "charStart" : 885,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 974,
@@ -94,10 +94,10 @@
     "section" : "fragment-7",
     "chunkIndex" : 7,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251697352"
+    "timestamp" : "2025-05-29T21:17:57.651240586"
   }, {
     "area" : "TECNICO",
-    "texto" : "Transmitir los conocimientos y experiencias a fin de preparar otros candidatos y aumentar la solidez de la tribu.",
+    "texto" : "Nivel 8 - Área TECNICO: Transmitir los conocimientos y experiencias a fin de preparar otros candidatos y aumentar la solidez de la tribu.",
     "charStart" : 975,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 1088,
@@ -105,10 +105,10 @@
     "section" : "fragment-8",
     "chunkIndex" : 8,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251747867"
+    "timestamp" : "2025-05-29T21:17:57.651320336"
   }, {
     "area" : "TECNICO",
-    "texto" : "Definir una solución completa desde la arquitectura macro (TE)",
+    "texto" : "Nivel 8 - Área TECNICO: Definir una solución completa desde la arquitectura macro (TE)",
     "charStart" : 1089,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 1151,
@@ -116,10 +116,10 @@
     "section" : "fragment-9",
     "chunkIndex" : 9,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251795918"
+    "timestamp" : "2025-05-29T21:17:57.651382602"
   }, {
     "area" : "TECNICO",
-    "texto" : "Abstracción óptima para definir un modelo de solución técnico a gran escala para dimensionar una oportunidad de negocio (TM)",
+    "texto" : "Nivel 8 - Área TECNICO: Abstracción óptima para definir un modelo de solución técnico a gran escala para dimensionar una oportunidad de negocio (TM)",
     "charStart" : 1152,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 1276,
@@ -127,10 +127,10 @@
     "section" : "fragment-10",
     "chunkIndex" : 10,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251849248"
+    "timestamp" : "2025-05-29T21:17:57.651460208"
   }, {
     "area" : "TECNICO",
-    "texto" : "Asegurar un servicio que respete los lineamientos contractuales, las expectativas del cliente y el bienestar del grupo de trabajo.™",
+    "texto" : "Nivel 8 - Área TECNICO: Asegurar un servicio que respete los lineamientos contractuales, las expectativas del cliente y el bienestar del grupo de trabajo.™",
     "charStart" : 1277,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 1408,
@@ -138,10 +138,10 @@
     "section" : "fragment-11",
     "chunkIndex" : 11,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251916144"
+    "timestamp" : "2025-05-29T21:17:57.651569133"
   }, {
     "area" : "TECNICO",
-    "texto" : "Maximizar la performance de los equipos (TM/TE)",
+    "texto" : "Nivel 8 - Área TECNICO: Maximizar la performance de los equipos (TM/TE)",
     "charStart" : 1409,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 1456,
@@ -149,10 +149,10 @@
     "section" : "fragment-12",
     "chunkIndex" : 12,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.251960698"
+    "timestamp" : "2025-05-29T21:17:57.651629506"
   }, {
     "area" : "TECNICO",
-    "texto" : "Diseño inteligente del ramp up del proyecto ™",
+    "texto" : "Nivel 8 - Área TECNICO: Diseño inteligente del ramp up del proyecto ™",
     "charStart" : 1457,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 1502,
@@ -160,10 +160,10 @@
     "section" : "fragment-13",
     "chunkIndex" : 13,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.252004992"
+    "timestamp" : "2025-05-29T21:17:57.651693225"
   }, {
     "area" : "TECNICO",
-    "texto" : "Encontrar el punto de equilibrio entre la inversión y el retorno de inversión. ™",
+    "texto" : "Nivel 8 - Área TECNICO: Encontrar el punto de equilibrio entre la inversión y el retorno de inversión. ™",
     "charStart" : 1503,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 1583,
@@ -171,10 +171,10 @@
     "section" : "fragment-14",
     "chunkIndex" : 14,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.252050297"
+    "timestamp" : "2025-05-29T21:17:57.651763377"
   }, {
     "area" : "TECNICO",
-    "texto" : "Detectar attrition proactivo dentro del equipo para gestionar rotaciones, incorporaciones y promociones ™",
+    "texto" : "Nivel 8 - Área TECNICO: Detectar attrition proactivo dentro del equipo para gestionar rotaciones, incorporaciones y promociones ™",
     "charStart" : 1584,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 1689,
@@ -182,10 +182,10 @@
     "section" : "fragment-15",
     "chunkIndex" : 15,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.252096033"
+    "timestamp" : "2025-05-29T21:17:57.651839490"
   }, {
     "area" : "TECNICO",
-    "texto" : "Generar un vínculo de confianza con las contrapartes del cliente/proyecto a fin de ser socio en la toma de decisiones tácticas y estrategicas. (TM/TE)",
+    "texto" : "Nivel 8 - Área TECNICO: Generar un vínculo de confianza con las contrapartes del cliente/proyecto a fin de ser socio en la toma de decisiones tácticas y estrategicas. (TM/TE)",
     "charStart" : 1690,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 1840,
@@ -193,10 +193,10 @@
     "section" : "fragment-16",
     "chunkIndex" : 16,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.252148312"
+    "timestamp" : "2025-05-29T21:17:57.651907437"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en la estrategia de la tribu en alguna de las áreas de valor",
+    "texto" : "Nivel 8 - Área TECNICO: Participar en la estrategia de la tribu en alguna de las áreas de valor",
     "charStart" : 1841,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 1912,
@@ -204,10 +204,10 @@
     "section" : "fragment-17",
     "chunkIndex" : 17,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.252222742"
+    "timestamp" : "2025-05-29T21:17:57.651980224"
   }, {
     "area" : "TECNICO",
-    "texto" : "Ser un role model para la comunidad tomando las mejores prácticas personales y profesionales de otros líderes en pos de formar referentes",
+    "texto" : "Nivel 8 - Área TECNICO: Ser un role model para la comunidad tomando las mejores prácticas personales y profesionales de otros líderes en pos de formar referentes",
     "charStart" : 1913,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 2050,
@@ -215,10 +215,10 @@
     "section" : "fragment-18",
     "chunkIndex" : 18,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.252271073"
+    "timestamp" : "2025-05-29T21:17:57.652049193"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en entrevistas técnicas",
+    "texto" : "Nivel 8 - Área TECNICO: Participar en entrevistas técnicas",
     "charStart" : 2051,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 2085,
@@ -226,10 +226,10 @@
     "section" : "fragment-19",
     "chunkIndex" : 19,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.252319374"
+    "timestamp" : "2025-05-29T21:17:57.652108635"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar brindando una charla técnica internas (reunión de comunidad)",
+    "texto" : "Nivel 8 - Área TECNICO: Participar brindando una charla técnica internas (reunión de comunidad)",
     "charStart" : 2086,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 2157,
@@ -237,10 +237,10 @@
     "section" : "fragment-20",
     "chunkIndex" : 20,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.252365111"
+    "timestamp" : "2025-05-29T21:17:57.652165141"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar brindando una charla técnica externas (eventos en institutos, universidades, otras comunidades tecnológicas)",
+    "texto" : "Nivel 8 - Área TECNICO: Participar brindando una charla técnica externas (eventos en institutos, universidades, otras comunidades tecnológicas)",
     "charStart" : 2158,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 2277,
@@ -248,10 +248,10 @@
     "section" : "fragment-21",
     "chunkIndex" : 21,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.252416718"
+    "timestamp" : "2025-05-29T21:17:57.652230253"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar como embajador activo de la comunidad comentando en las redes sociales como linkEdin eventos destacables de la comunidad o bien dar a conocer experiencias propias de la firma.",
+    "texto" : "Nivel 8 - Área TECNICO: Participar como embajador activo de la comunidad comentando en las redes sociales como linkEdin eventos destacables de la comunidad o bien dar a conocer experiencias propias de la firma.",
     "charStart" : 2278,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 2464,
@@ -259,10 +259,10 @@
     "section" : "fragment-22",
     "chunkIndex" : 22,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.252483915"
+    "timestamp" : "2025-05-29T21:17:57.652326895"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en la charla de comunidad, al menos como asistente (obligatorio)",
+    "texto" : "Nivel 8 - Área TECNICO: Participar en la charla de comunidad, al menos como asistente (obligatorio)",
     "charStart" : 2465,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 2540,
@@ -270,10 +270,10 @@
     "section" : "fragment-23",
     "chunkIndex" : 23,
     "nivel" : "8",
-    "timestamp" : "2025-05-24T19:56:43.252537385"
+    "timestamp" : "2025-05-29T21:17:57.652389502"
   }, {
     "area" : "CARRERA",
-    "texto" : "Que pueda hacer un seguimiento de cada una de las personas que de él dependen.",
+    "texto" : "Nivel 9 - Área CARRERA: Que pueda hacer un seguimiento de cada una de las personas que de él dependen.",
     "charStart" : 2541,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 2619,
@@ -281,10 +281,10 @@
     "section" : "fragment-24",
     "chunkIndex" : 24,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.252629229"
+    "timestamp" : "2025-05-29T21:17:57.652491163"
   }, {
     "area" : "CARRERA",
-    "texto" : "Que pueda inculcar a su gente para que todo lo que tenga que ver con crecimiento de la gente y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.",
+    "texto" : "Nivel 9 - Área CARRERA: Que pueda inculcar a su gente para que todo lo que tenga que ver con crecimiento de la gente y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.",
     "charStart" : 2620,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 2858,
@@ -292,10 +292,10 @@
     "section" : "fragment-25",
     "chunkIndex" : 25,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.252703468"
+    "timestamp" : "2025-05-29T21:17:57.652564420"
   }, {
     "area" : "CARRERA",
-    "texto" : "Te juntaste con tu People Lead? Al menos una charla cada mes y medio.",
+    "texto" : "Nivel 9 - Área CARRERA: Te juntaste con tu People Lead? Al menos una charla cada mes y medio.",
     "charStart" : 2859,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 2928,
@@ -303,10 +303,10 @@
     "section" : "fragment-26",
     "chunkIndex" : 26,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.252741871"
+    "timestamp" : "2025-05-29T21:17:57.652620165"
   }, {
     "area" : "CARRERA",
-    "texto" : "Te juntaste con tu Counselee? Cargar las reuniones de feedback en la herramienta de Feedback y en la herramienta de Performance Achievement.",
+    "texto" : "Nivel 9 - Área CARRERA: Te juntaste con tu Counselee? Cargar las reuniones de feedback en la herramienta de Feedback y en la herramienta de Performance Achievement.",
     "charStart" : 2929,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 3069,
@@ -314,10 +314,10 @@
     "section" : "fragment-27",
     "chunkIndex" : 27,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.252792106"
+    "timestamp" : "2025-05-29T21:17:57.652723990"
   }, {
     "area" : "CARRERA",
-    "texto" : "¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?",
+    "texto" : "Nivel 9 - Área CARRERA: ¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?",
     "charStart" : 3070,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 3151,
@@ -325,10 +325,10 @@
     "section" : "fragment-28",
     "chunkIndex" : 28,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.252891583"
+    "timestamp" : "2025-05-29T21:17:57.652785235"
   }, {
     "area" : "CARRERA",
-    "texto" : "¿Cómo estás hoy en tu asignación?",
+    "texto" : "Nivel 9 - Área CARRERA: ¿Cómo estás hoy en tu asignación?",
     "charStart" : 3152,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 3185,
@@ -336,10 +336,10 @@
     "section" : "fragment-29",
     "chunkIndex" : 29,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.252930346"
+    "timestamp" : "2025-05-29T21:17:57.652842292"
   }, {
     "area" : "TECNICO",
-    "texto" : "Que pueda brindar soporte técnico a los problemas que se presentan",
+    "texto" : "Nivel 9 - Área TECNICO: Que pueda brindar soporte técnico a los problemas que se presentan",
     "charStart" : 3186,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 3252,
@@ -347,10 +347,10 @@
     "section" : "fragment-30",
     "chunkIndex" : 30,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253007882"
+    "timestamp" : "2025-05-29T21:17:57.652956035"
   }, {
     "area" : "TECNICO",
-    "texto" : "Que pueda brindar soporte necesario al equipo para poder salir adelante",
+    "texto" : "Nivel 9 - Área TECNICO: Que pueda brindar soporte necesario al equipo para poder salir adelante",
     "charStart" : 3253,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 3324,
@@ -358,10 +358,10 @@
     "section" : "fragment-31",
     "chunkIndex" : 31,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253049671"
+    "timestamp" : "2025-05-29T21:17:57.653064649"
   }, {
     "area" : "TECNICO",
-    "texto" : "Poder diseñar y construir los sistemas de acuerdo a la arquitectura planteada en cada cliente, teniendo en cuenta las mejores prácticas de programación",
+    "texto" : "Nivel 9 - Área TECNICO: Poder diseñar y construir los sistemas de acuerdo a la arquitectura planteada en cada cliente, teniendo en cuenta las mejores prácticas de programación",
     "charStart" : 3325,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 3476,
@@ -369,10 +369,10 @@
     "section" : "fragment-32",
     "chunkIndex" : 32,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253117429"
+    "timestamp" : "2025-05-29T21:17:57.653135612"
   }, {
     "area" : "TECNICO",
-    "texto" : "Detectar issues en los evolutivos que puedan afectar temas de performance / calidad del entregable hacia el cliente.",
+    "texto" : "Nivel 9 - Área TECNICO: Detectar issues en los evolutivos que puedan afectar temas de performance / calidad del entregable hacia el cliente.",
     "charStart" : 3477,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 3593,
@@ -380,10 +380,10 @@
     "section" : "fragment-33",
     "chunkIndex" : 33,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253171611"
+    "timestamp" : "2025-05-29T21:17:57.653193862"
   }, {
     "area" : "TECNICO",
-    "texto" : "Tener la capacidad de abstracción para poder atacar un problema",
+    "texto" : "Nivel 9 - Área TECNICO: Tener la capacidad de abstracción para poder atacar un problema",
     "charStart" : 3594,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 3657,
@@ -391,10 +391,10 @@
     "section" : "fragment-34",
     "chunkIndex" : 34,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253212839"
+    "timestamp" : "2025-05-29T21:17:57.653245248"
   }, {
     "area" : "TECNICO",
-    "texto" : "Como líder es muy posible que tengas un equipo a cargo, por lo cual debe tener las cualidades necesarias para poder coordinar al equipo en cuanto a gestionar las tareas de la gente (técnicamente o según tiempos de roadmap)",
+    "texto" : "Nivel 9 - Área TECNICO: Como líder es muy posible que tengas un equipo a cargo, por lo cual debe tener las cualidades necesarias para poder coordinar al equipo en cuanto a gestionar las tareas de la gente (técnicamente o según tiempos de roadmap)",
     "charStart" : 3658,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 3880,
@@ -402,10 +402,10 @@
     "section" : "fragment-35",
     "chunkIndex" : 35,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253290325"
+    "timestamp" : "2025-05-29T21:17:57.653324687"
   }, {
     "area" : "TECNICO",
-    "texto" : "Manejar la capacidad del equipo (no tomar más tareas de las que podemos, ni menos de las que debemos)",
+    "texto" : "Nivel 9 - Área TECNICO: Manejar la capacidad del equipo (no tomar más tareas de las que podemos, ni menos de las que debemos)",
     "charStart" : 3881,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 3982,
@@ -413,10 +413,10 @@
     "section" : "fragment-36",
     "chunkIndex" : 36,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253370446"
+    "timestamp" : "2025-05-29T21:17:57.653377065"
   }, {
     "area" : "TECNICO",
-    "texto" : "Poder cumplir con las fechas comprometidas",
+    "texto" : "Nivel 9 - Área TECNICO: Poder cumplir con las fechas comprometidas",
     "charStart" : 3983,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4025,
@@ -424,10 +424,10 @@
     "section" : "fragment-37",
     "chunkIndex" : 37,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253431911"
+    "timestamp" : "2025-05-29T21:17:57.653426017"
   }, {
     "area" : "TECNICO",
-    "texto" : "Gestionar desvíos",
+    "texto" : "Nivel 9 - Área TECNICO: Gestionar desvíos",
     "charStart" : 4026,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4043,
@@ -435,10 +435,10 @@
     "section" : "fragment-38",
     "chunkIndex" : 38,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253495341"
+    "timestamp" : "2025-05-29T21:17:57.653476532"
   }, {
     "area" : "TECNICO",
-    "texto" : "Poder participar en estimaciones, no importa la metodología de trabajo (Cascada, Scrum,etc)",
+    "texto" : "Nivel 9 - Área TECNICO: Poder participar en estimaciones, no importa la metodología de trabajo (Cascada, Scrum,etc)",
     "charStart" : 4044,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4135,
@@ -446,10 +446,10 @@
     "section" : "fragment-39",
     "chunkIndex" : 39,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253552649"
+    "timestamp" : "2025-05-29T21:17:57.653529822"
   }, {
     "area" : "TECNICO",
-    "texto" : "Poder hacer propuesta de migrar / actualizar stack tecnológicos",
+    "texto" : "Nivel 9 - Área TECNICO: Poder hacer propuesta de migrar / actualizar stack tecnológicos",
     "charStart" : 4136,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4199,
@@ -457,10 +457,10 @@
     "section" : "fragment-40",
     "chunkIndex" : 40,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253611520"
+    "timestamp" : "2025-05-29T21:17:57.653584675"
   }, {
     "area" : "TECNICO",
-    "texto" : "Un líder no nace, se hace",
+    "texto" : "Nivel 9 - Área TECNICO: Un líder no nace, se hace",
     "charStart" : 4200,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4225,
@@ -468,10 +468,10 @@
     "section" : "fragment-41",
     "chunkIndex" : 41,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253668778"
+    "timestamp" : "2025-05-29T21:17:57.653628237"
   }, {
     "area" : "TECNICO",
-    "texto" : "Ser un role model para la comunidad tomando las mejores prácticas personales y profesionales de otros líderes en pos de formar referentes",
+    "texto" : "Nivel 9 - Área TECNICO: Ser un role model para la comunidad tomando las mejores prácticas personales y profesionales de otros líderes en pos de formar referentes",
     "charStart" : 4226,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4363,
@@ -479,10 +479,10 @@
     "section" : "fragment-42",
     "chunkIndex" : 42,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253747837"
+    "timestamp" : "2025-05-29T21:17:57.653709820"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar activamente de alguna manera en alguna de las áreas de valor de la tribu ya sea como referente de alguna de las áreas, o siendo partícipe de las mismas",
+    "texto" : "Nivel 9 - Área TECNICO: Participar activamente de alguna manera en alguna de las áreas de valor de la tribu ya sea como referente de alguna de las áreas, o siendo partícipe de las mismas",
     "charStart" : 4364,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4526,
@@ -490,10 +490,10 @@
     "section" : "fragment-43",
     "chunkIndex" : 43,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253828469"
+    "timestamp" : "2025-05-29T21:17:57.653765564"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en entrevistas técnicas",
+    "texto" : "Nivel 9 - Área TECNICO: Participar en entrevistas técnicas",
     "charStart" : 4527,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4561,
@@ -501,10 +501,10 @@
     "section" : "fragment-44",
     "chunkIndex" : 44,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253906216"
+    "timestamp" : "2025-05-29T21:17:57.653809577"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar brindando una charla técnica internas (reunión de comunidad)",
+    "texto" : "Nivel 9 - Área TECNICO: Participar brindando una charla técnica internas (reunión de comunidad)",
     "charStart" : 4562,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4633,
@@ -512,10 +512,10 @@
     "section" : "fragment-45",
     "chunkIndex" : 45,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.253971990"
+    "timestamp" : "2025-05-29T21:17:57.653859060"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar brindando una charla técnica externas (eventos en institutos, universidades, otras comunidades tecnológicas)",
+    "texto" : "Nivel 9 - Área TECNICO: Participar brindando una charla técnica externas (eventos en institutos, universidades, otras comunidades tecnológicas)",
     "charStart" : 4634,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4753,
@@ -523,10 +523,10 @@
     "section" : "fragment-46",
     "chunkIndex" : 46,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.254036882"
+    "timestamp" : "2025-05-29T21:17:57.653909074"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar como embajador activo de la comunidad comentando en las redes sociales como linkEdin eventos destacables de la comunidad o bien dar a conocer experiencias propias de la firma.",
+    "texto" : "Nivel 9 - Área TECNICO: Participar como embajador activo de la comunidad comentando en las redes sociales como linkEdin eventos destacables de la comunidad o bien dar a conocer experiencias propias de la firma.",
     "charStart" : 4754,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4940,
@@ -534,10 +534,10 @@
     "section" : "fragment-47",
     "chunkIndex" : 47,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.254108587"
+    "timestamp" : "2025-05-29T21:17:57.653966421"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en la iniciativa de Shark mate",
+    "texto" : "Nivel 9 - Área TECNICO: Participar en la iniciativa de Shark mate",
     "charStart" : 4941,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 4982,
@@ -545,10 +545,10 @@
     "section" : "fragment-48",
     "chunkIndex" : 48,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.254170404"
+    "timestamp" : "2025-05-29T21:17:57.654010484"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en los laboratorios de Innovación",
+    "texto" : "Nivel 9 - Área TECNICO: Participar en los laboratorios de Innovación",
     "charStart" : 4983,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 5027,
@@ -556,10 +556,10 @@
     "section" : "fragment-49",
     "chunkIndex" : 49,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.254221650"
+    "timestamp" : "2025-05-29T21:17:57.654051591"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en la charla de comunidad, al menos como asistente (obligatorio)",
+    "texto" : "Nivel 9 - Área TECNICO: Participar en la charla de comunidad, al menos como asistente (obligatorio)",
     "charStart" : 5028,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 5103,
@@ -567,10 +567,10 @@
     "section" : "fragment-50",
     "chunkIndex" : 50,
     "nivel" : "9",
-    "timestamp" : "2025-05-24T19:56:43.254381171"
+    "timestamp" : "2025-05-29T21:17:57.654096996"
   }, {
     "area" : "CARRERA",
-    "texto" : "Que todo lo que tenga que ver con su crecimiento y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.",
+    "texto" : "Nivel 10 - Área CARRERA: Que todo lo que tenga que ver con su crecimiento y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.",
     "charStart" : 5104,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 5298,
@@ -578,10 +578,10 @@
     "section" : "fragment-51",
     "chunkIndex" : 51,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.254536504"
+    "timestamp" : "2025-05-29T21:17:57.654176926"
   }, {
     "area" : "CARRERA",
-    "texto" : "Te juntaste con tu People Lead? Al menos una charla cada mes y medio.",
+    "texto" : "Nivel 10 - Área CARRERA: Te juntaste con tu People Lead? Al menos una charla cada mes y medio.",
     "charStart" : 5299,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 5368,
@@ -589,10 +589,10 @@
     "section" : "fragment-52",
     "chunkIndex" : 52,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.254623057"
+    "timestamp" : "2025-05-29T21:17:57.654223083"
   }, {
     "area" : "CARRERA",
-    "texto" : "¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?",
+    "texto" : "Nivel 10 - Área CARRERA: ¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?",
     "charStart" : 5369,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 5450,
@@ -600,10 +600,10 @@
     "section" : "fragment-53",
     "chunkIndex" : 53,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.254753292"
+    "timestamp" : "2025-05-29T21:17:57.654270672"
   }, {
     "area" : "CARRERA",
-    "texto" : "Realizar al menos un curso técnico por Q. Tener en cuenta el poder planificarlos revisando previamente con el líder de equipo y los compromisos pendientes, de manera de no afectar el servicio",
+    "texto" : "Nivel 10 - Área CARRERA: Realizar al menos un curso técnico por Q. Tener en cuenta el poder planificarlos revisando previamente con el líder de equipo y los compromisos pendientes, de manera de no afectar el servicio",
     "charStart" : 5451,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 5642,
@@ -611,10 +611,10 @@
     "section" : "fragment-54",
     "chunkIndex" : 54,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.254813827"
+    "timestamp" : "2025-05-29T21:17:57.654323281"
   }, {
     "area" : "TECNICO",
-    "texto" : "Que pueda brindar soporte técnico a los problemas que se presentan",
+    "texto" : "Nivel 10 - Área TECNICO: Que pueda brindar soporte técnico a los problemas que se presentan",
     "charStart" : 5643,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 5709,
@@ -622,10 +622,10 @@
     "section" : "fragment-55",
     "chunkIndex" : 55,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.254935145"
+    "timestamp" : "2025-05-29T21:17:57.654384866"
   }, {
     "area" : "TECNICO",
-    "texto" : "Que pueda brindar soporte necesario al equipo para poder salir adelante",
+    "texto" : "Nivel 10 - Área TECNICO: Que pueda brindar soporte necesario al equipo para poder salir adelante",
     "charStart" : 5710,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 5781,
@@ -633,10 +633,10 @@
     "section" : "fragment-56",
     "chunkIndex" : 56,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.254981052"
+    "timestamp" : "2025-05-29T21:17:57.654432596"
   }, {
     "area" : "TECNICO",
-    "texto" : "Poder diseñar y construir los sistemas de acuerdo a la arquitectura planteada en cada cliente, teniendo en cuenta las mejores prácticas de programación",
+    "texto" : "Nivel 10 - Área TECNICO: Poder diseñar y construir los sistemas de acuerdo a la arquitectura planteada en cada cliente, teniendo en cuenta las mejores prácticas de programación",
     "charStart" : 5782,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 5933,
@@ -644,10 +644,10 @@
     "section" : "fragment-57",
     "chunkIndex" : 57,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255028641"
+    "timestamp" : "2025-05-29T21:17:57.654488902"
   }, {
     "area" : "TECNICO",
-    "texto" : "Detectar issues en los evolutivos que puedan afectar temas de performance / calidad del entregable hacia el cliente.",
+    "texto" : "Nivel 10 - Área TECNICO: Detectar issues en los evolutivos que puedan afectar temas de performance / calidad del entregable hacia el cliente.",
     "charStart" : 5934,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 6050,
@@ -655,10 +655,10 @@
     "section" : "fragment-58",
     "chunkIndex" : 58,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255076181"
+    "timestamp" : "2025-05-29T21:17:57.654533014"
   }, {
     "area" : "TECNICO",
-    "texto" : "Tener la capacidad de abstracción para poder atacar un problema",
+    "texto" : "Nivel 10 - Área TECNICO: Tener la capacidad de abstracción para poder atacar un problema",
     "charStart" : 6051,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 6114,
@@ -666,10 +666,10 @@
     "section" : "fragment-59",
     "chunkIndex" : 59,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255119693"
+    "timestamp" : "2025-05-29T21:17:57.654575264"
   }, {
     "area" : "TECNICO",
-    "texto" : "Si tiene un equipo o gente a cargo, debe tener las cualidades necesarias para poder coordinar al equipo en cuanto a gestionar las tareas de la gente",
+    "texto" : "Nivel 10 - Área TECNICO: Si tiene un equipo o gente a cargo, debe tener las cualidades necesarias para poder coordinar al equipo en cuanto a gestionar las tareas de la gente",
     "charStart" : 6115,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 6263,
@@ -677,10 +677,10 @@
     "section" : "fragment-60",
     "chunkIndex" : 60,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255212167"
+    "timestamp" : "2025-05-29T21:17:57.654632892"
   }, {
     "area" : "TECNICO",
-    "texto" : "Poder cumplir con las fechas comprometidas",
+    "texto" : "Nivel 10 - Área TECNICO: Poder cumplir con las fechas comprometidas",
     "charStart" : 6264,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 6306,
@@ -688,10 +688,10 @@
     "section" : "fragment-61",
     "chunkIndex" : 61,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255256381"
+    "timestamp" : "2025-05-29T21:17:57.654672817"
   }, {
     "area" : "TECNICO",
-    "texto" : "Gestionar desvíos",
+    "texto" : "Nivel 10 - Área TECNICO: Gestionar desvíos",
     "charStart" : 6307,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 6324,
@@ -699,10 +699,10 @@
     "section" : "fragment-62",
     "chunkIndex" : 62,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255317185"
+    "timestamp" : "2025-05-29T21:17:57.654713162"
   }, {
     "area" : "TECNICO",
-    "texto" : "Poder participar en estimaciones, no importa la metodología de trabajo (Cascada, Scrum,etc)",
+    "texto" : "Nivel 10 - Área TECNICO: Poder participar en estimaciones, no importa la metodología de trabajo (Cascada, Scrum,etc)",
     "charStart" : 6325,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 6416,
@@ -710,10 +710,10 @@
     "section" : "fragment-63",
     "chunkIndex" : 63,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255381146"
+    "timestamp" : "2025-05-29T21:17:57.654761794"
   }, {
     "area" : "TECNICO",
-    "texto" : "Poder hacer propuesta de migrar / actualizar stack tecnológicos",
+    "texto" : "Nivel 10 - Área TECNICO: Poder hacer propuesta de migrar / actualizar stack tecnológicos",
     "charStart" : 6417,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 6480,
@@ -721,10 +721,10 @@
     "section" : "fragment-64",
     "chunkIndex" : 64,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255490472"
+    "timestamp" : "2025-05-29T21:17:57.654805065"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar activamente de alguna manera en alguna de las áreas de valor de la Capability, siendo partícipe de las mismas",
+    "texto" : "Nivel 10 - Área TECNICO: Participar activamente de alguna manera en alguna de las áreas de valor de la Capability, siendo partícipe de las mismas",
     "charStart" : 6481,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 6601,
@@ -732,10 +732,10 @@
     "section" : "fragment-65",
     "chunkIndex" : 65,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255617491"
+    "timestamp" : "2025-05-29T21:17:57.654866220"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en entrevistas técnicas",
+    "texto" : "Nivel 10 - Área TECNICO: Participar en entrevistas técnicas",
     "charStart" : 6602,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 6636,
@@ -743,10 +743,10 @@
     "section" : "fragment-66",
     "chunkIndex" : 66,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255668287"
+    "timestamp" : "2025-05-29T21:17:57.654913508"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar brindando una charla técnica internas (reunión de comunidad)",
+    "texto" : "Nivel 10 - Área TECNICO: Participar brindando una charla técnica internas (reunión de comunidad)",
     "charStart" : 6637,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 6708,
@@ -754,10 +754,10 @@
     "section" : "fragment-67",
     "chunkIndex" : 67,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255739241"
+    "timestamp" : "2025-05-29T21:17:57.655006813"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar brindando una charla técnica externas (eventos en institutos, universidades,otras comunidades tecnológicas)",
+    "texto" : "Nivel 10 - Área TECNICO: Participar brindando una charla técnica externas (eventos en institutos, universidades,otras comunidades tecnológicas)",
     "charStart" : 6709,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 6827,
@@ -765,10 +765,10 @@
     "section" : "fragment-68",
     "chunkIndex" : 68,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255776130"
+    "timestamp" : "2025-05-29T21:17:57.655056637"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar como embajador activo de la comunidad comentando en las redes sociales como Linkedin eventos destacables de la comunidad o bien dar a conocer experiencias propias de la firma.",
+    "texto" : "Nivel 10 - Área TECNICO: Participar como embajador activo de la comunidad comentando en las redes sociales como Linkedin eventos destacables de la comunidad o bien dar a conocer experiencias propias de la firma.",
     "charStart" : 6828,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 7014,
@@ -776,10 +776,10 @@
     "section" : "fragment-69",
     "chunkIndex" : 69,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255827126"
+    "timestamp" : "2025-05-29T21:17:57.655107132"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en la iniciativa de Shark mate",
+    "texto" : "Nivel 10 - Área TECNICO: Participar en la iniciativa de Shark mate",
     "charStart" : 7015,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 7056,
@@ -787,10 +787,10 @@
     "section" : "fragment-70",
     "chunkIndex" : 70,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255869626"
+    "timestamp" : "2025-05-29T21:17:57.655144602"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en los laboratorios de Innovación",
+    "texto" : "Nivel 10 - Área TECNICO: Participar en los laboratorios de Innovación",
     "charStart" : 7057,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 7101,
@@ -798,10 +798,10 @@
     "section" : "fragment-71",
     "chunkIndex" : 71,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255900875"
+    "timestamp" : "2025-05-29T21:17:57.655182854"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en la charla de comunidad, al menos como asistente (obligatorio)",
+    "texto" : "Nivel 10 - Área TECNICO: Participar en la charla de comunidad, al menos como asistente (obligatorio)",
     "charStart" : 7102,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 7177,
@@ -809,10 +809,10 @@
     "section" : "fragment-72",
     "chunkIndex" : 72,
     "nivel" : "10",
-    "timestamp" : "2025-05-24T19:56:43.255933296"
+    "timestamp" : "2025-05-29T21:17:57.655230523"
   }, {
     "area" : "CARRERA",
-    "texto" : "Que todo lo que tenga que ver con su crecimiento y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.",
+    "texto" : "Nivel 11 - Área CARRERA: Que todo lo que tenga que ver con su crecimiento y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.",
     "charStart" : 7178,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 7372,
@@ -820,10 +820,10 @@
     "section" : "fragment-73",
     "chunkIndex" : 73,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.255997217"
+    "timestamp" : "2025-05-29T21:17:57.655319971"
   }, {
     "area" : "CARRERA",
-    "texto" : "Te juntaste con tu People Lead? Al menos una charla cada mes y medio.",
+    "texto" : "Nivel 11 - Área CARRERA: Te juntaste con tu People Lead? Al menos una charla cada mes y medio.",
     "charStart" : 7373,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 7442,
@@ -831,10 +831,10 @@
     "section" : "fragment-74",
     "chunkIndex" : 74,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256032463"
+    "timestamp" : "2025-05-29T21:17:57.655363312"
   }, {
     "area" : "CARRERA",
-    "texto" : "¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?",
+    "texto" : "Nivel 11 - Área CARRERA: ¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?",
     "charStart" : 7443,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 7524,
@@ -842,10 +842,10 @@
     "section" : "fragment-75",
     "chunkIndex" : 75,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256060987"
+    "timestamp" : "2025-05-29T21:17:57.655406714"
   }, {
     "area" : "CARRERA",
-    "texto" : "Realizar al menos un curso técnico por Q. Tener en cuenta el poder planificarlos revisando previamente con el líder de equipo y los compromisos pendientes, de manera de no afectar el servicio.",
+    "texto" : "Nivel 11 - Área CARRERA: Realizar al menos un curso técnico por Q. Tener en cuenta el poder planificarlos revisando previamente con el líder de equipo y los compromisos pendientes, de manera de no afectar el servicio.",
     "charStart" : 7525,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 7717,
@@ -853,10 +853,10 @@
     "section" : "fragment-76",
     "chunkIndex" : 76,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256100522"
+    "timestamp" : "2025-05-29T21:17:57.655470323"
   }, {
     "area" : "TECNICO",
-    "texto" : "Que pueda brindar soporte técnico a los problemas que se presentan de complejidad media/baja",
+    "texto" : "Nivel 11 - Área TECNICO: Que pueda brindar soporte técnico a los problemas que se presentan de complejidad media/baja",
     "charStart" : 7718,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 7810,
@@ -864,10 +864,10 @@
     "section" : "fragment-77",
     "chunkIndex" : 77,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256142280"
+    "timestamp" : "2025-05-29T21:17:57.655526308"
   }, {
     "area" : "TECNICO",
-    "texto" : "Detectar issues en los evolutivos que puedan afectar temas de performance / calidad del entregable hacia el cliente.",
+    "texto" : "Nivel 11 - Área TECNICO: Detectar issues en los evolutivos que puedan afectar temas de performance / calidad del entregable hacia el cliente.",
     "charStart" : 7811,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 7927,
@@ -875,10 +875,10 @@
     "section" : "fragment-78",
     "chunkIndex" : 78,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256174381"
+    "timestamp" : "2025-05-29T21:17:57.655566434"
   }, {
     "area" : "TECNICO",
-    "texto" : "Tener la capacidad de abstracción para poder atacar un problema",
+    "texto" : "Nivel 11 - Área TECNICO: Tener la capacidad de abstracción para poder atacar un problema",
     "charStart" : 7928,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 7991,
@@ -886,10 +886,10 @@
     "section" : "fragment-79",
     "chunkIndex" : 79,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256204938"
+    "timestamp" : "2025-05-29T21:17:57.655607270"
   }, {
     "area" : "TECNICO",
-    "texto" : "Poder cumplir con las fechas comprometidas",
+    "texto" : "Nivel 11 - Área TECNICO: Poder cumplir con las fechas comprometidas",
     "charStart" : 7992,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 8034,
@@ -897,10 +897,10 @@
     "section" : "fragment-80",
     "chunkIndex" : 80,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256242740"
+    "timestamp" : "2025-05-29T21:17:57.655651874"
   }, {
     "area" : "TECNICO",
-    "texto" : "Avisar en caso de posibles desvíos cuanto antes",
+    "texto" : "Nivel 11 - Área TECNICO: Avisar en caso de posibles desvíos cuanto antes",
     "charStart" : 8035,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 8082,
@@ -908,10 +908,10 @@
     "section" : "fragment-81",
     "chunkIndex" : 81,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256270141"
+    "timestamp" : "2025-05-29T21:17:57.655688042"
   }, {
     "area" : "TECNICO",
-    "texto" : "Comenzar a participar en estimaciones, no importa la metodología de trabajo (Cascada,Scrum, etc)",
+    "texto" : "Nivel 11 - Área TECNICO: Comenzar a participar en estimaciones, no importa la metodología de trabajo (Cascada,Scrum, etc)",
     "charStart" : 8083,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 8179,
@@ -919,10 +919,10 @@
     "section" : "fragment-82",
     "chunkIndex" : 82,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256301200"
+    "timestamp" : "2025-05-29T21:17:57.655734880"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar activamente de alguna manera en alguna de las áreas de valor de la Capability, siendo partícipe de las mismas",
+    "texto" : "Nivel 11 - Área TECNICO: Participar activamente de alguna manera en alguna de las áreas de valor de la Capability, siendo partícipe de las mismas",
     "charStart" : 8180,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 8300,
@@ -930,10 +930,10 @@
     "section" : "fragment-83",
     "chunkIndex" : 83,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256367675"
+    "timestamp" : "2025-05-29T21:17:57.655788290"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar brindando una charla técnica internas (reunión de comunidad)",
+    "texto" : "Nivel 11 - Área TECNICO: Participar brindando una charla técnica internas (reunión de comunidad)",
     "charStart" : 8301,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 8372,
@@ -941,10 +941,10 @@
     "section" : "fragment-84",
     "chunkIndex" : 84,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256398924"
+    "timestamp" : "2025-05-29T21:17:57.655958690"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en la iniciativa de Shark mate",
+    "texto" : "Nivel 11 - Área TECNICO: Participar en la iniciativa de Shark mate",
     "charStart" : 8373,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 8414,
@@ -952,10 +952,10 @@
     "section" : "fragment-85",
     "chunkIndex" : 85,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256427318"
+    "timestamp" : "2025-05-29T21:17:57.656010196"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en la charla de comunidad, al menos como asistente (obligatorio)",
+    "texto" : "Nivel 11 - Área TECNICO: Participar en la charla de comunidad, al menos como asistente (obligatorio)",
     "charStart" : 8415,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 8490,
@@ -963,10 +963,10 @@
     "section" : "fragment-86",
     "chunkIndex" : 86,
     "nivel" : "11",
-    "timestamp" : "2025-05-24T19:56:43.256456172"
+    "timestamp" : "2025-05-29T21:17:57.656047747"
   }, {
     "area" : "CARRERA",
-    "texto" : "Que todo lo que tenga que ver con su crecimiento y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.",
+    "texto" : "Nivel 12 - Área CARRERA: Que todo lo que tenga que ver con su crecimiento y el modelo de carrera en Accenture, sea una tarea más del día a día y no algo tedioso de completar a último momento para cumplir con las fechas.",
     "charStart" : 8491,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 8685,
@@ -974,10 +974,10 @@
     "section" : "fragment-87",
     "chunkIndex" : 87,
     "nivel" : "12",
-    "timestamp" : "2025-05-24T19:56:43.256512438"
+    "timestamp" : "2025-05-29T21:17:57.656108301"
   }, {
     "area" : "CARRERA",
-    "texto" : "Te juntaste con tu People Lead? Al menos una charla cada mes y medio.",
+    "texto" : "Nivel 12 - Área CARRERA: Te juntaste con tu People Lead? Al menos una charla cada mes y medio.",
     "charStart" : 8686,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 8755,
@@ -985,10 +985,10 @@
     "section" : "fragment-88",
     "chunkIndex" : 88,
     "nivel" : "12",
-    "timestamp" : "2025-05-24T19:56:43.256542044"
+    "timestamp" : "2025-05-29T21:17:57.656169335"
   }, {
     "area" : "CARRERA",
-    "texto" : "¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?",
+    "texto" : "Nivel 12 - Área CARRERA: ¿Tenés las prioridades/acciones actualizadas y al día en Performance Achievement?",
     "charStart" : 8756,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 8837,
@@ -996,10 +996,10 @@
     "section" : "fragment-89",
     "chunkIndex" : 89,
     "nivel" : "12",
-    "timestamp" : "2025-05-24T19:56:43.256570848"
+    "timestamp" : "2025-05-29T21:17:57.656206435"
   }, {
     "area" : "CARRERA",
-    "texto" : "Realizar al menos un curso técnico por Q. Tener en cuenta el poder planificarlos revisando previamente con el líder de equipo y los compromisos pendientes, de manera de noafectar el servicio.",
+    "texto" : "Nivel 12 - Área CARRERA: Realizar al menos un curso técnico por Q. Tener en cuenta el poder planificarlos revisando previamente con el líder de equipo y los compromisos pendientes, de manera de noafectar el servicio.",
     "charStart" : 8838,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 9029,
@@ -1007,10 +1007,10 @@
     "section" : "fragment-90",
     "chunkIndex" : 90,
     "nivel" : "12",
-    "timestamp" : "2025-05-24T19:56:43.256617797"
+    "timestamp" : "2025-05-29T21:17:57.656251369"
   }, {
     "area" : "TECNICO",
-    "texto" : "Que pueda brindar soporte técnico a los problemas que se presentan de complejidad baja",
+    "texto" : "Nivel 12 - Área TECNICO: Que pueda brindar soporte técnico a los problemas que se presentan de complejidad baja",
     "charStart" : 9030,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 9116,
@@ -1018,10 +1018,10 @@
     "section" : "fragment-91",
     "chunkIndex" : 91,
     "nivel" : "12",
-    "timestamp" : "2025-05-24T19:56:43.256662511"
+    "timestamp" : "2025-05-29T21:17:57.656299549"
   }, {
     "area" : "TECNICO",
-    "texto" : "Poder cumplir con las fechas comprometidas",
+    "texto" : "Nivel 12 - Área TECNICO: Poder cumplir con las fechas comprometidas",
     "charStart" : 9117,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 9159,
@@ -1029,10 +1029,10 @@
     "section" : "fragment-92",
     "chunkIndex" : 92,
     "nivel" : "12",
-    "timestamp" : "2025-05-24T19:56:43.256701985"
+    "timestamp" : "2025-05-29T21:17:57.656336569"
   }, {
     "area" : "TECNICO",
-    "texto" : "Avisar en caso de posibles desvíos cuanto antes",
+    "texto" : "Nivel 12 - Área TECNICO: Avisar en caso de posibles desvíos cuanto antes",
     "charStart" : 9160,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 9207,
@@ -1040,10 +1040,10 @@
     "section" : "fragment-93",
     "chunkIndex" : 93,
     "nivel" : "12",
-    "timestamp" : "2025-05-24T19:56:43.256728275"
+    "timestamp" : "2025-05-29T21:17:57.656370543"
   }, {
     "area" : "TECNICO",
-    "texto" : "Participar en la charla de comunidad, al menos como asistente (obligatorio)",
+    "texto" : "Nivel 12 - Área TECNICO: Participar en la charla de comunidad, al menos como asistente (obligatorio)",
     "charStart" : 9208,
     "estructuraId" : "levels-structure.json",
     "charEnd" : 9283,
@@ -1051,6 +1051,6 @@
     "section" : "fragment-94",
     "chunkIndex" : 94,
     "nivel" : "12",
-    "timestamp" : "2025-05-24T19:56:43.256773811"
+    "timestamp" : "2025-05-29T21:17:57.656407712"
   } ]
 }

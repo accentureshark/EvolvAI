@@ -60,6 +60,8 @@ public class PdfJsonStructuredConverter {
 
         List<Map<String, Object>> secciones = (List<Map<String, Object>>) schema.get("secciones");
 
+        String enrichTemplate = (String) schema.getOrDefault("enrichText", "{texto}");
+
         List<Map<String, Object>> chunks = new ArrayList<>();
         String currentNivel = null;
         Map<String, String> currentMetadata = new HashMap<>();
@@ -87,9 +89,21 @@ public class PdfJsonStructuredConverter {
 
             Matcher itemMatcher = itemPattern.matcher(line);
             if (itemMatcher.find() && currentNivel != null && currentMetadata != null) {
-                String chunkText = itemMatcher.group(1).trim();
+                String originalText = itemMatcher.group(1).trim();
                 int charStart = charCount;
-                int charEnd = charStart + chunkText.length();
+                int charEnd = charStart + originalText.length();
+
+                // Preparar contexto para enriquecer texto
+                Map<String, String> context = new HashMap<>(currentMetadata);
+                context.put(nivelKey, currentNivel);
+                context.put("texto", originalText);
+                context.put("chunkIndex", String.valueOf(chunkIndex));
+
+                // Reemplazar variables en la plantilla enrichText
+                String enrichedText = enrichTemplate;
+                for (Map.Entry<String, String> entry : context.entrySet()) {
+                    enrichedText = enrichedText.replace("{" + entry.getKey() + "}", entry.getValue());
+                }
 
                 Map<String, Object> chunk = new HashMap<>(currentMetadata);
                 chunk.put("documentId", documentId);
@@ -98,7 +112,7 @@ public class PdfJsonStructuredConverter {
                 chunk.put("charStart", charStart);
                 chunk.put("charEnd", charEnd);
                 chunk.put(nivelKey, currentNivel);
-                chunk.put("texto", chunkText);
+                chunk.put(itemKey, enrichedText);
                 chunk.put("estructuraId", Paths.get(schemaPath).getFileName().toString());
                 chunk.put("timestamp", LocalDateTime.now().toString());
 

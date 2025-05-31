@@ -51,10 +51,10 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
 
             String docName = id;
             if (segment.metadata() != null && segment.metadata().asMap().containsKey("chunkIndex")) {
-                docName += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
+                //docName += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
             }
 
-            embeddingStorage.store(docName, embedding, segment.text(), segment.metadata());
+            embeddingStorage.store(id, embedding, segment.text(), segment.metadata());
             log.info("Fragmento almacenado con id: {}", docName);
         }
 
@@ -111,7 +111,7 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
 
             String docName = id;
             if (segment.metadata() != null && segment.metadata().asMap().containsKey("chunkIndex")) {
-                docName += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
+                //docName += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
             }
 
             embeddingStorage.store(docName, embedding, segment.text(), segment.metadata());
@@ -134,7 +134,7 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
 
             String chunkId = docId;
             if (segment.metadata() != null && segment.metadata().asMap().containsKey("chunkIndex")) {
-                chunkId += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
+                //chunkId += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
             }
 
             embeddingStorage.store(chunkId, embedding, segment.text(), segment.metadata());

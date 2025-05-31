@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./rag/src/main/sql/initdb:/docker-entrypoint-initdb.d
+      - ./src/main/sql/initdb:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 10s
@@ -25,6 +25,9 @@ services:
     container_name: evolvai_ollama
     ports:
       - "11434:11434"
+    environment:
+      - OLLAMA_MODELS=nomic-embed-text,phi3:mini
+      - OLLAMA_DEBUG=INFO
     volumes:
       - ollama-data:/root/.ollama
     healthcheck:
@@ -40,6 +43,11 @@ services:
       command: >
         sh -c "sleep 10 && curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"nomic-embed-text\"}' -H 'Content-Type: application/json'"
       restart: "no"
+
+volumes:
+  ollama-data:
+  pgvector-data:
+  maven-repo:
 #  maven-cache:
 #    image: maven:3.9-eclipse-temurin-17-alpine
 #
@@ -73,9 +81,5 @@ services:
 #    depends_on:
 #      - backend
 
-volumes:
-  ollama-data:
-  pgvector-data:
-  maven-repo:
 
 

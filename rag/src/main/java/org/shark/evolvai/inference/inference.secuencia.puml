@@ -1,0 +1,19 @@
+@startuml
+actor Usuario
+participant "Controller REST\n(InferenceController)" as Controller
+participant "InferenceService"
+participant "EmbeddingService"
+participant "EmbeddingStorage"
+participant "Modelo LLM/Embeddings"
+
+Usuario -> Controller : Solicita inferencia (texto, prompt, etc.)
+Controller -> InferenceService : procesarSolicitudInferencia(request)
+InferenceService -> EmbeddingService : generarEmbedding(texto)
+EmbeddingService -> "Modelo LLM/Embeddings" : inferirEmbedding(texto)
+"Modelo LLM/Embeddings" --> EmbeddingService : embedding
+EmbeddingService --> InferenceService : embedding
+InferenceService -> EmbeddingStorage : buscarDocumentosRelevantes(embedding)
+EmbeddingStorage --> InferenceService : listaDocumentos
+InferenceService --> Controller : respuestaInferencia(documentos)
+Controller --> Usuario : resultado
+@enduml

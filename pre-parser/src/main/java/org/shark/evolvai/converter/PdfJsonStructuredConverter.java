@@ -26,7 +26,9 @@ public class PdfJsonStructuredConverter {
         String schemaPath = args[1];
         String outputPath = args[2];
 
-        String documentId = Paths.get(inputPath).getFileName().toString().replaceAll("\\.[^.]+$", "");
+        // documentId ahora es el nombre del archivo de salida JSON
+        String documentId = Paths.get(outputPath).getFileName().toString();
+
         String text = extractText(inputPath);
         Map<String, Object> output = parseStructuredJson(text, schemaPath, documentId, inputPath);
 

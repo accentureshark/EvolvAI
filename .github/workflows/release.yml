@@ -1,0 +1,28 @@
+name: Release Notes Automático
+
+on:
+  push:
+    tags:
+      - 'v*'   # Ejecuta solo cuando pusheás un tag tipo v0.1.0, v1.0.0, etc.
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Generar Release Notes con Conventional Commits
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v4
+        with:
+        # Opcional: podés customizar la config si querés
+        # configuration: .github/changelog-configuration.json
+
+      - name: Crear release en GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ steps.changelog.outputs.changelog }}
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}

@@ -1,0 +1,25 @@
+{
+  "template": "## 🚀 Cambios en esta versión\n{{CHANGELOG}}\n",
+  "categories": [
+    {
+      "title": "🚀 Features",
+      "labels": ["feat"]
+    },
+    {
+      "title": "🐞 Fixes",
+      "labels": ["fix"]
+    },
+    {
+      "title": "🧹 Refactor",
+      "labels": ["refactor"]
+    },
+    {
+      "title": "📝 Docs",
+      "labels": ["docs"]
+    },
+    {
+      "title": "🔧 Chores",
+      "labels": ["chore"]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+// utils.js
 // Funciones auxiliares generales para la app modularizada
 
 export function log(msg) {
@@ -13,9 +14,9 @@ export function showSpinner(show) {
         spinner = document.createElement("div");
         spinner.id = "spinner";
         spinner.className = "spinner";
-        spinner.innerHTML = `<img src=\"logo.png\" alt=\"Cargando...\" class=\"spinner-logo\">`;
+        spinner.innerHTML = `<img src="logo.png" alt="Cargando..." class="spinner-logo">`;
         document.getElementById("chat-area")?.prepend(spinner);
     }
-    spinner.style.display = show ? "block" : "none";
+    spinner.style.display = show ? "flex" : "none";
 }
 

@@ -15,7 +15,7 @@ embedding:
     database: evolvai
     user: postgres
     password: postgres1234
-    tableName: embedding.embeddings
+
     dimensions: 2000
   onnx:
     model-path: classpath:all-MiniLM-L6-v2.onnx

@@ -19,7 +19,7 @@ embedding:
     database: evolvai
     user: postgres
     password: postgres1234
-    tableName: embeddings
+
     dimensions: 1536
 
 # Asegurar que usamos el proveedor de memoria para tests

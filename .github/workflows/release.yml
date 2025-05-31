@@ -16,9 +16,9 @@ jobs:
       - name: Generar Release Notes con Conventional Commits
         id: changelog
         uses: mikepenz/release-changelog-builder-action@v4
-        with: .github/workflows/changelog-configuration.json
+        with:
         # Opcional: podés customizar la config si querés
-        # configuration: .github/changelog-configuration.json
+          configuration: .github/workflows/changelog-configuration.json
 
       - name: Crear release en GitHub
         uses: softprops/action-gh-release@v2

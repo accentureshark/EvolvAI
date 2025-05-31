@@ -21,7 +21,7 @@ jobs:
           configuration: .github/workflows/changelog-configuration.json
 
         env:
-          GITHUB_TOKEN: ${{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 }
+          GITHUB_TOKEN: ${{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 }}
 
       - name: Crear release en GitHub
         uses: softprops/action-gh-release@v2

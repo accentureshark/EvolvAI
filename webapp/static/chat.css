@@ -43,6 +43,7 @@ body {
     line-height: 1.6;
     padding: 8px 12px;
 }
+
 #log-panel {
     background: rgba(255, 255, 255, 0.6);
     border-radius: 12px;
@@ -52,6 +53,7 @@ body {
     margin-top: 20px;
     overflow: hidden;
 }
+
 #log-panel.collapsed #log-entries {
     display: none;
 }
@@ -63,7 +65,6 @@ body {
 #log-toggle {
     transition: transform 0.2s ease;
 }
-
 
 #log-header {
     background: rgba(0, 0, 0, 0.05);
@@ -85,8 +86,6 @@ body {
     font-family: 'Inter', sans-serif;
     color: #1e1b4b;
 }
-
-
 
 .message.bot {
     align-self: flex-start;
@@ -274,6 +273,7 @@ body {
 #file-input {
     display: none;
 }
+
 #settings-button {
     margin-left: auto;
     background: transparent;
@@ -283,6 +283,7 @@ body {
     color: #4c1d95;
     transition: transform 0.2s ease;
 }
+
 #settings-button:hover {
     transform: rotate(30deg);
 }
@@ -297,9 +298,11 @@ body {
     justify-content: center;
     z-index: 999;
 }
+
 .modal.hidden {
     display: none;
 }
+
 .modal-content {
     background: white;
     padding: 20px;
@@ -311,9 +314,11 @@ body {
     color: #1e1b4b;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+
 .modal-content ul {
     padding-left: 20px;
 }
+
 .modal-content pre {
     background: #f4f4f4;
     padding: 12px;
@@ -322,12 +327,14 @@ body {
     font-size: 13px;
     white-space: pre-wrap;
 }
+
 .close-button {
     float: right;
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
 }
+
 #toast {
     position: fixed;
     bottom: 20px;
@@ -340,12 +347,12 @@ body {
     z-index: 1001;
     font-family: 'Inter', sans-serif;
 }
+
 #toast span#toast-close {
     margin-left: 12px;
     cursor: pointer;
     font-weight: bold;
 }
-
 
 #prompt-panel {
     background: rgba(255, 255, 255, 0.6);
@@ -443,22 +450,63 @@ body {
     background: rgba(30, 27, 75, 0.03);
 }
 
-
 .spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
 }
 
 .spinner-logo {
-  width: 60px;
-  height: 60px;
-  animation: spin 1.5s linear infinite;
-  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.2));
+    width: 60px;
+    height: 60px;
+    animation: spin 1.5s linear infinite;
+    filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.2));
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
+
+/* Estilo para el archivo seleccionado */
+#file-list li.selected {
+    background-color: #d0ebff;
+    font-weight: bold;
+}
+
+/* ============================
+   Estilos para la lista de archivos con checkbox
+   ============================ */
+
+/* Hacemos que el <ul> no muestre bala predeterminada */
+#file-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Cada <li> mostrará ahora un checkbox + texto en fila */
+#file-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Cuando el <li> está “seleccionado” (checkbox checked), cambiar fondo */
+#file-list li.selected {
+    background-color: #d0ebff;
+    font-weight: bold;
+}
+
+/* Checkbox más legible */
+#file-list li input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #7c3aed; /* color púrpura para el check, si el navegador lo admite */
+}
+

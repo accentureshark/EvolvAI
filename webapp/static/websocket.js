@@ -1,4 +1,6 @@
+// websocket.js
 // Lógica de WebSocket/logs
+
 import { log } from './utils.js';
 import { BACKEND_URL } from './api.js';
 
@@ -14,4 +16,3 @@ export function setupWebSocketLogs() {
         log("❌ Error de conexión WebSocket: " + error);
     });
 }
-

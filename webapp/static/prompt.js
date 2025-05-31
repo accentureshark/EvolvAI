@@ -1,4 +1,3 @@
-// Lógica de prompt personalizado
 import { log } from './utils.js';
 import { fetchDefaultPrompt } from './api.js';
 
@@ -6,13 +5,13 @@ export function loadDefaultPrompt() {
     fetchDefaultPrompt()
         .then(text => {
             const textarea = document.getElementById("custom-prompt");
-            if (textarea && textarea.value.trim() === "") {
-                textarea.value = text;
-                log("📝 Prompt por defecto cargado.");
+            if (textarea) {
+                textarea.value = text; // SIEMPRE sobreescribe al cargar
+                log("📝 Prompt cargado.");
             }
         })
         .catch(err => {
-            log("❌ Error al cargar el prompt por defecto: " + err.message);
+            log("❌ Error al cargar el prompt: " + err.message);
         });
 }
 
@@ -23,4 +22,3 @@ export function togglePrompt() {
     toggleBtn.textContent = collapsed ? "▲" : "▼";
     localStorage.setItem("promptCollapsed", collapsed ? "true" : "false");
 }
-

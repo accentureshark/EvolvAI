@@ -1,4 +1,6 @@
-// Modularización para futura migración a React
+// chat.js
+// Agrupa e importa todos los módulos de la app (simula un entrypoint para un futuro React)
+
 import './utils.js';
 import './api.js';
 import './messages.js';
@@ -9,8 +11,7 @@ import './websocket.js';
 import './modal.js';
 import './main.js';
 
-// Si necesitas exponer funciones globales para el HTML (por ejemplo, loadActuator)
+// Exponer funciones globales para el HTML, si se usan en chat.html
 import { loadActuator, copyActuatorOutput } from './modal.js';
 window.loadActuator = loadActuator;
 window.copyActuatorOutput = copyActuatorOutput;
-

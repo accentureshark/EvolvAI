@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component("ollamaEmbeddingGenerator")
-@ConditionalOnProperty(name = "embedding.generator.type", havingValue = "ollama")
 public class OllamaEmbeddingGenerator implements EmbeddingGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(OllamaEmbeddingGenerator.class);

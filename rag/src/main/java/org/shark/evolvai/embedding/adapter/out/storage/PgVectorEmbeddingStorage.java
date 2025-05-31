@@ -5,7 +5,6 @@ import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
-
 import org.shark.evolvai.embedding.port.out.EmbeddingStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component("pgVectorEmbeddingStorage")
-@ConditionalOnProperty(name = "embedding.storage.type", havingValue = "pgVector")
+@ConditionalOnProperty(name = "rag.embedding.storage.type", havingValue = "pgVector")
 public class PgVectorEmbeddingStorage implements EmbeddingStorage {
 
     private static final Logger log = LoggerFactory.getLogger(PgVectorEmbeddingStorage.class);
@@ -32,13 +31,13 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     private final int targetDimension;
 
     public PgVectorEmbeddingStorage(
-            @Value("${embedding.pgvector.host}") String host,
-            @Value("${embedding.pgvector.port}") int port,
-            @Value("${embedding.pgvector.database}") String database,
-            @Value("${embedding.pgvector.user}") String user,
-            @Value("${embedding.pgvector.password}") String password,
-            @Value("${embedding.pgvector.tableName}") String tableName,
-            @Value("${embedding.pgvector.dimensions}") int dimensions
+            @Value("${rag.embedding.pgvector.host}") String host,
+            @Value("${rag.embedding.pgvector.port}") int port,
+            @Value("${rag.embedding.pgvector.database}") String database,
+            @Value("${rag.embedding.pgvector.user}") String user,
+            @Value("${rag.embedding.pgvector.password}") String password,
+            @Value("${rag.embedding.pgvector.tableName}") String tableName,
+            @Value("${rag.embedding.pgvector.dimensions}") int dimensions
     ) {
         this.embeddingStore = PgVectorEmbeddingStore.builder()
                 .host(host)
@@ -63,18 +62,18 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     }
 
     @Override
-    public void store(String id, Embedding embedding, String text, Metadata metadata) {
+    public void store(String documentId, Embedding embedding, String text, Metadata metadata) {
         String hash = hashText(text);
-        String documentId = id + "/" + hash;
+        String fragmentId = documentId + "/" + hash;
 
-        if (existsDocumentId(documentId)) {
-            log.warn("Ya existe un documento con document_id={}. No se insertará nuevamente.", documentId);
+        if (existsDocumentId(fragmentId)) {
+            log.warn("Ya existe un documento con document_id={}. No se insertará nuevamente.", fragmentId);
             return;
         }
 
         if (metadata == null) {
             Map<String, Object> defaultMeta = new HashMap<>();
-            defaultMeta.put("documentName", id);
+            defaultMeta.put("documentName", documentId);
             defaultMeta.put("usuario", "desconocido");
             defaultMeta.put("timestamp", String.valueOf(Instant.now().toEpochMilli()));
             metadata = Metadata.from(defaultMeta);
@@ -82,14 +81,11 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
 
         float[] padded = padToDimension(embedding.vector(), targetDimension);
 
-        Map<String, Object> metaMap = metadata.asMap().entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> (Object) e.getValue()
-                ));
+        Map<String, Object> metaMap = new HashMap<>();
+        metadata.toMap().forEach(metaMap::put);
 
         insertEmbedding(UUID.randomUUID(), padded, documentId, text, metaMap);
-        log.info("Embedding almacenado en PgVector con document_id={}, dimensiones={}, metadatos={}", documentId, padded.length, metadata);
+        log.info("Embedding almacenado en PgVector con document_id={}, dimensiones={}, metadatos={}", fragmentId, padded.length, metadata);
     }
 
     private boolean existsDocumentId(String documentId) {
@@ -136,20 +132,19 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         float[] padded = padToDimension(embedding.vector(), targetDimension);
         Embedding paddedEmbedding = new Embedding(padded);
 
-        return embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore)
+        List<EmbeddingMatch<String>> results = embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore)
                 .stream()
-                .map(match -> {
-                    String documentName = Optional.ofNullable(match.embedded().metadata().get("documentId"))
-                            .map(Object::toString)
-                            .orElse("desconocido");
-                    return new EmbeddingMatch<>(
-                            match.score(),
-                            documentName,
-                            match.embedding(),
-                            match.embedded().text()
-                    );
-                })
+                .map(match -> new EmbeddingMatch<>(
+                        match.score(),
+                        match.embeddingId(),
+                        match.embedding(),
+                        match.embedded().text()
+                ))
                 .collect(Collectors.toList());
+
+        log.info("findSimilar sin filtro: resultados={}, minScore={}, maxResults={}", results.size(), minScore, maxResults);
+        results.forEach(match -> log.debug("Match: id={}, score={}, snippet={}", match.embeddingId(), match.score(), match.embedded().substring(0, Math.min(50, match.embedded().length()))));
+        return results;
     }
 
     @Override
@@ -157,40 +152,32 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         float[] padded = padToDimension(embedding.vector(), targetDimension);
         Embedding paddedEmbedding = new Embedding(padded);
 
-        Map<String, Object> filterMap = filter.asMap().entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> (Object) e.getValue()
-                ));
+        Map<String, Object> filterMap = new HashMap<>();
+        filter.toMap().forEach(filterMap::put);
 
-        return embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore).stream()
+        List<EmbeddingMatch<String>> filtered = embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore).stream()
                 .filter(match -> {
-                    Map<String, Object> meta = match.embedded().metadata().asMap().entrySet().stream()
-                            .collect(Collectors.toMap(
-                                    Map.Entry::getKey,
-                                    e -> (Object) e.getValue()
-                            ));
+                    Map<String, Object> meta = new HashMap<>();
+                    match.embedded().metadata().toMap().forEach(meta::put);
                     return filterMap.entrySet().stream()
                             .allMatch(e -> e.getValue().toString().equals(
                                     Optional.ofNullable(meta.get(e.getKey())).map(Object::toString).orElse(null)));
                 })
-                .map(match -> {
-                    String documentName = Optional.ofNullable(match.embedded().metadata().get("documentId"))
-                            .map(Object::toString)
-                            .orElse("desconocido");
-                    return new EmbeddingMatch<>(
-                            match.score(),
-                            documentName,
-                            match.embedding(),
-                            match.embedded().text()
-                    );
-                })
+                .map(match -> new EmbeddingMatch<>(
+                        match.score(),
+                        match.embeddingId(),
+                        match.embedding(),
+                        match.embedded().text()
+                ))
                 .collect(Collectors.toList());
+
+        log.info("findSimilar con filtro: resultados={}, minScore={}, maxResults={}, filtro={}", filtered.size(), minScore, maxResults, filter);
+        return filtered;
     }
 
     @Override
     public List<String> findAllDocumentIds() {
-        String sql = "SELECT DISTINCT split_part(document_id, '/', 1) FROM " + tableName;
+        String sql = "SELECT DISTINCT document_id FROM " + tableName;
         List<String> ids = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -230,4 +217,27 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
             throw new RuntimeException("No se pudo calcular el hash SHA-256", e);
         }
     }
+
+    @Override
+    public Optional<Map<String, Object>> findMetadataByDocumentId(String documentId) {
+        String sql = "SELECT metadata FROM " + tableName + " WHERE document_id LIKE ? LIMIT 1";
+        try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, documentId + "/%");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String json = rs.getString("metadata");
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    Map<String, Object> metadata = objectMapper.readValue(json, Map.class);
+                    return Optional.of(metadata);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error extrayendo metadata desde PgVector para document_id={}", documentId, e);
+        }
+        return Optional.empty();
+    }
+
+
 }

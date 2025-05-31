@@ -23,8 +23,7 @@ public interface EmbeddingGenerator {
     List<Embedding> generateEmbeddings(List<TextSegment> segments);
 
     /**
-     * Genera un embedding a partir de vectores tokenizados manualmente
-     * compatibles con modelos ONNX (input_ids y attention_mask).
+     * Genera un embedding a partir de vectores tokenizados manualmente     *
      */
     Embedding generateEmbedding(int[] inputIds, int[] attentionMask);
 }

@@ -11,6 +11,10 @@ import java.util.*;
 @Service
 public class SemanticJsonChunkingService {
 
+    /**
+     * Divide una lista de entradas JSON (cada una con "texto") en TextSegments.
+     * Usa siempre el documentId que viene de baseMetadata.
+     */
     public List<TextSegment> chunk(List<Map<String, Object>> data, Map<String, String> baseMetadata) {
         List<TextSegment> segments = new ArrayList<>();
         int chunkIndex = 0;
@@ -28,24 +32,24 @@ public class SemanticJsonChunkingService {
                 continue;
             }
 
-            Map<String, String> combinedMetadata = new HashMap<>(baseMetadata);
-            combinedMetadata.put("chunkIndex", String.valueOf(chunkIndex));
-            combinedMetadata.put("section", "fragment-" + chunkIndex);
+            // Clona la metadata base y suma los datos de chunk/contexto
+            Map<String, String> metadata = new HashMap<>(baseMetadata);
+            metadata.put("chunkIndex", String.valueOf(chunkIndex));
 
-            for (Map.Entry<String, Object> meta : entry.entrySet()) {
-                if (!"texto".equals(meta.getKey()) && meta.getValue() != null) {
-                    combinedMetadata.put(meta.getKey(), meta.getValue().toString());
+            // (Opcional: podés sumar más datos si tu entry tiene más campos relevantes)
+            // Ejemplo: si querés meter 'area' o 'nivel'
+            entry.forEach((k, v) -> {
+                if (v != null && !"texto".equals(k)) {
+                    metadata.put(k, v.toString());
                 }
-            }
+            });
 
-            Metadata metadata = Metadata.from(combinedMetadata);
-            segments.add(new TextSegment(text, metadata));
-            log.info("Fragmento generado (chunkIndex={}): '{}'", chunkIndex, text);
+            // ¡NO toques el documentId! Solo loguealo para auditar
+            log.debug("Creando chunk index={} documentId={}", chunkIndex, metadata.get("documentId"));
 
+            segments.add(new TextSegment(text, Metadata.from(metadata)));
             chunkIndex++;
         }
-
-        log.info("Chunking semántico finalizado: {} fragmentos generados.", segments.size());
         return segments;
     }
 }

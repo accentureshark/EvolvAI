@@ -1,0 +1,43 @@
+@startuml
+actor Usuario
+participant "EmbeddingController" as Controller
+participant "EmbeddingUseCase"
+participant "SmartChunkingService"
+participant "HuggingFaceTokenizer"
+participant "RagProperties"
+participant "FileSystemDocumentLoader"
+participant "Document"
+
+Usuario -> Controller : uploadDocument(file)
+Controller -> SmartChunkingService : chunk(input, baseMetadata)
+SmartChunkingService --> Controller : List<TextSegment>
+Controller -> EmbeddingUseCase : index(chunks)
+EmbeddingUseCase --> Controller : void
+Controller --> Usuario : Respuesta (OK/Error)
+
+Usuario -> Controller : embedFile(file)
+Controller -> FileSystemDocumentLoader : loadDocument(path)
+FileSystemDocumentLoader --> Controller : Document
+Controller -> HuggingFaceTokenizer : encode(cleanText)
+HuggingFaceTokenizer --> Controller : encoding
+Controller -> EmbeddingUseCase : generateEmbedding(inputIds, attentionMask)
+EmbeddingUseCase --> Controller : embedding
+Controller --> Usuario : embedding.vectorAsList()
+
+Usuario -> Controller : indexDocument(request)
+Controller -> EmbeddingUseCase : indexDocument(id, text, customPrompt)
+EmbeddingUseCase --> Controller : void
+Controller --> Usuario : OK
+
+Usuario -> Controller : search(query, maxResults, minScore)
+Controller -> RagProperties : getInference()
+RagProperties --> Controller : config
+Controller -> EmbeddingUseCase : findSimilarDocuments(query, results, score)
+EmbeddingUseCase --> Controller : List<String>
+Controller --> Usuario : List<String>
+
+Usuario -> Controller : listDocuments()
+Controller -> EmbeddingUseCase : listDocumentIds()
+EmbeddingUseCase --> Controller : List<String>
+Controller --> Usuario : List<String>
+@enduml

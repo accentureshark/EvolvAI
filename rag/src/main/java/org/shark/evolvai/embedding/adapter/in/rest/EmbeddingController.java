@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.shark.evolvai.config.RagProperties;
 import org.shark.evolvai.embedding.port.in.EmbeddingUseCase;
+import org.shark.evolvai.metrics.MonitoredEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +59,7 @@ public class EmbeddingController {
             }
     )
     @PostMapping("/upload")
+    @MonitoredEndpoint(name = "api.embedding.upload" )
     public ResponseEntity<?> uploadDocument(@RequestParam("file") MultipartFile file) {
         try {
             String filename = file.getOriginalFilename();
@@ -102,6 +104,7 @@ public class EmbeddingController {
 
 
     @PostMapping("/index")
+    @MonitoredEndpoint(name = "api.embedding.index" )
     public ResponseEntity<Void> indexDocument(@RequestBody DocumentRequest request) {
         String id = request.getId() != null ? request.getId() : UUID.randomUUID().toString();
         embeddingUseCase.indexDocument(id, request.getText(), request.getCustomPrompt());
@@ -109,6 +112,7 @@ public class EmbeddingController {
     }
 
     @GetMapping("/search")
+    @MonitoredEndpoint(name = "api.embedding.search" )
     public ResponseEntity<List<String>> search(
             @RequestParam String query,
             @RequestParam(required = false) Integer maxResults,
@@ -120,6 +124,7 @@ public class EmbeddingController {
     }
 
     @GetMapping("/documents")
+    @MonitoredEndpoint(name = "api.embedding.documents" )
     public ResponseEntity<List<String>> listDocuments() {
         log.info("Recibida solicitud para listar document_id distintos.");
         List<String> ids = embeddingUseCase.listDocumentIds();
@@ -132,6 +137,7 @@ public class EmbeddingController {
             summary = "Elimina todos los embeddings del almacenamiento",
             description = "Borra todos los embeddings actualmente almacenados en PgVector u otro backend configurado."
     )
+    @MonitoredEndpoint(name = "api.embedding.remove-all" )
     public ResponseEntity<String> removeAllEmbeddings() {
         try {
             embeddingUseCase.removeAllDocuments();

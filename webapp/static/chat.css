@@ -499,6 +499,40 @@ body {
 }
 
 /* -------------------- LISTA DE ARCHIVOS -------------------- */
+/* Estilo moderno para el select de documentos */
+#file-list {
+    width: 100%;
+    padding: 8px 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    color: #4a4a4a;
+    background-color: #f4eaff; /* lila muy suave */
+    border: 2px solid #7c3aed; /* violeta */
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.2);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#file-list:hover, #file-list:focus {
+    border-color: #6b21a8; /* violeta más oscuro */
+    box-shadow: 0 6px 14px rgba(107, 33, 168, 0.4);
+    background-color: #f0e6ff;
+}
+
+#file-list option {
+    padding: 8px;
+    background-color: white;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Si querés opciones seleccionadas con color personalizado */
+#file-list option:checked {
+    background-color: #7c3aed;
+    color: white;
+}
 
 #file-list {
     list-style: none;

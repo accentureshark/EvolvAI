@@ -123,20 +123,27 @@ logging:
     org.hibernate.type.descriptor.sql: INFO
     org.hibernate.orm.jdbc.bind: INFO
     org.hibernate.engine.jdbc.spi: INFO
+    io.micrometer: INFO
+    org.springframework.boot.actuate: INFO
 
-# Configuración de Springdoc
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
+
 
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
-  cors:
-    allowed-origins: "*"
-    allowed-methods: "*"
-    allowed-headers: "*"
+        include: "health,info,metrics,prometheus"  # Habilita endpoints clave
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      dynatrace:
+        enabled: true
+        api-token: dummy-token   # Poné cualquier string para testeo
+        uri: http://localhost:14499/api/v2/metrics/ingest # O el que tengas apuntando a WireMock o Dynatrace
+        device-id: evolvai-dev
+        technology-type: spring-boot
+      prometheus:
+        enabled: true
+

@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.shark.evolvai.inference.controller.QueryResponse;
 import org.shark.evolvai.inference.controller.RagQueryRequest;
 import org.shark.evolvai.inference.port.input.InferenceUseCase;
+import org.shark.evolvai.metrics.MonitoredEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,7 @@ public class InferenceController {
                     @ApiResponse(responseCode = "400", description = "Solicitud inválida")
             }
     )
+    @MonitoredEndpoint(name = "api.inference.query" )
     public ResponseEntity<QueryResponse> query(
             @Parameter(description = "Datos de la consulta", required = true)
             @Valid @RequestBody RagQueryRequest request) {
@@ -74,6 +76,7 @@ public class InferenceController {
                     @ApiResponse(responseCode = "400", description = "Solicitud inválida")
             }
     )
+    @MonitoredEndpoint(name = "api.inference.advancedQuery" )
     public ResponseEntity<QueryResponse> advancedQuery(
             @Parameter(description = "Datos de la consulta avanzada", required = true)
             @Valid @RequestBody RagQueryRequest request) {

@@ -1,6 +1,4 @@
 // main.js
-// Inicialización y eventos DOM principales
-
 import { setupFileUpload, loadUploadedFiles, selectedDocumentId } from './fileUpload.js';
 import { addMessage } from './messages.js';
 import { loadChatMemory } from './memory.js';
@@ -71,37 +69,115 @@ document.addEventListener("DOMContentLoaded", function () {
         addMessage(msg, "user");
         userInput.value = "";
 
-        // Spinner ON
-        showSpinner(true);
-
         // Armar el payload incluyendo documentId
         const payload = {
             query: msg,
             documentId: selectedDocumentId
-            // Puedes agregar más campos aquí según tu backend (prompt, context, etc.)
         };
 
-        log(`➡️ Enviando consulta al backend con documentId: ${selectedDocumentId}`);
+        // Chequeá si el checkbox está activo
+        const useStreaming = document.getElementById("stream-toggle")?.checked;
+        const url = useStreaming
+            ? `${BACKEND_URL}/api/inference/query-stream`
+            : `${BACKEND_URL}/api/inference/query`;
+
+        log(`➡️ Enviando consulta a: ${url} | documentId: ${selectedDocumentId}`);
 
         try {
-            const response = await fetch(`${BACKEND_URL}/api/inference/query`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-            if (!response.ok) {
-                const errMsg = await response.text();
-                log("❌ Error del backend: " + errMsg);
-                addMessage("Error del backend: " + errMsg, "bot");
-                return;
+            if (useStreaming) {
+                // NO mostrar spinner en modo streaming
+                addMessage("", "bot");
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errMsg = await response.text();
+                    log("❌ Error del backend: " + errMsg);
+                    updateLastBotMessage("Error del backend: " + errMsg, true);
+                    return;
+                }
+
+                const reader = response.body.getReader();
+                let partial = "";
+                let done = false;
+                let decoder = new TextDecoder();
+                let buffer = "";
+
+                while (!done) {
+                    const { value, done: chunkDone } = await reader.read();
+                    done = chunkDone;
+                    if (value) {
+                        buffer += decoder.decode(value, { stream: !done });
+                        let lines = buffer.split('\n');
+                        buffer = lines.pop() || '';
+                        for (let line of lines) {
+                            line = line.replace(/^data:\s*/, '');
+                            if (!line) continue;
+                            if (line === "\\n" || line === "\n") {
+                                partial += "\n";
+                            } else if (line.trim() === "") {
+                                partial += " ";
+                            } else {
+                                if (
+                                    partial.length > 0 &&
+                                    !partial.endsWith(" ") &&
+                                    !partial.endsWith("\n") &&
+                                    !line.match(/^[.,;:?!]/)
+                                ) {
+                                    partial += " ";
+                                }
+                                partial += line;
+                            }
+                            updateLastBotMessage(partial);
+                        }
+                    }
+                }
+                if (buffer.length > 0) {
+                    if (buffer === "\\n" || buffer === "\n") {
+                        partial += "\n";
+                    } else if (buffer.trim() === "") {
+                        partial += " ";
+                    } else {
+                        if (
+                            partial.length > 0 &&
+                            !partial.endsWith(" ") &&
+                            !partial.endsWith("\n") &&
+                            !buffer.match(/^[.,;:?!]/)
+                        ) {
+                            partial += " ";
+                        }
+                        partial += buffer;
+                    }
+                }
+                partial = partial.replace(/\\n/g, "\n");
+                updateLastBotMessage(partial, true);
+
+            } else {
+                // SOLO en REST: spinner ON
+                showSpinner(true);
+
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errMsg = await response.text();
+                    log("❌ Error del backend: " + errMsg);
+                    addMessage("Error del backend: " + errMsg, "bot");
+                    return;
+                }
+                const result = await response.json();
+                addMessage(result.answer, "bot");
             }
-            const result = await response.json();
-            addMessage(result.answer, "bot");
         } catch (err) {
             log("❌ Error conectando al backend: " + err.message);
             addMessage("Error de conexión: " + err.message, "bot");
         } finally {
-            // Spinner OFF
+            // Apaga el spinner siempre (no pasa nada si ya estaba oculto)
             showSpinner(false);
         }
     });
@@ -119,6 +195,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 10);
     }
 });
+
+// Función para actualizar el último mensaje del bot incrementalmente
+function updateLastBotMessage(text, finalize = false) {
+    const container = document.getElementById("messages");
+    const last = [...container.querySelectorAll(".message.bot")].pop();
+    if (!last) {
+        // Si no hay, agregalo de cero
+        addMessage(text, "bot");
+        return;
+    }
+    // Solo actualiza el texto, sin avatar
+    const textDiv = last.querySelector(".text");
+    if (textDiv) {
+        textDiv.textContent = text;
+        if (finalize) {
+            // Scroll abajo si corresponde
+            container.scrollTop = container.scrollHeight;
+        }
+    }
+}
 
 // Lógica para colapsar/expandir el panel de logs
 window.toggleLog = function() {

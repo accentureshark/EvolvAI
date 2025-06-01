@@ -24,6 +24,7 @@ public class MonitoredEndpointAspect {
     private final MeterRegistry meterRegistry;
 
     @Around("@annotation(MonitoredEndpoint)")
+
     public Object measureExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         MonitoredEndpoint annotation = method.getAnnotation(MonitoredEndpoint.class);
@@ -40,8 +41,10 @@ public class MonitoredEndpointAspect {
             throw ex;
         } finally {
             long end = System.nanoTime();
-            double durationSeconds = (end - start) / 1_000_000_000.0;
-            meterRegistry.timer("http.endpoint.duration", Tags.of("endpoint", endpointName)).record((long) durationSeconds, java.util.concurrent.TimeUnit.SECONDS);
+            long durationMillis = (end - start) / 1_000_000;
+            meterRegistry.timer("http.endpoint.duration", Tags.of("endpoint", endpointName))
+                    .record(durationMillis, java.util.concurrent.TimeUnit.MILLISECONDS);
         }
     }
+
 }

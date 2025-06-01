@@ -7,7 +7,7 @@ import { loadChatMemory } from './memory.js';
 import { loadDefaultPrompt, togglePrompt } from './prompt.js';
 import { setupWebSocketLogs } from './websocket.js';
 import { setupModal } from './modal.js';
-import { log } from './utils.js';
+import { log, showSpinner } from './utils.js';
 import { BACKEND_URL } from './api.js';
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Inicializar envío de mensajes con documentId
     const form = document.getElementById('input-area');
     const userInput = document.getElementById('user-input');
+
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
         const msg = userInput.value.trim();
@@ -70,6 +71,9 @@ document.addEventListener("DOMContentLoaded", function () {
         addMessage(msg, "user");
         userInput.value = "";
 
+        // Spinner ON
+        showSpinner(true);
+
         // Armar el payload incluyendo documentId
         const payload = {
             query: msg,
@@ -79,7 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         log(`➡️ Enviando consulta al backend con documentId: ${selectedDocumentId}`);
 
-        // Enviar al backend
         try {
             const response = await fetch(`${BACKEND_URL}/api/inference/query`, {
                 method: "POST",
@@ -97,6 +100,9 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (err) {
             log("❌ Error conectando al backend: " + err.message);
             addMessage("Error de conexión: " + err.message, "bot");
+        } finally {
+            // Spinner OFF
+            showSpinner(false);
         }
     });
 

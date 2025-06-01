@@ -1,94 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Chat EvolvAI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="chat.css" />
+    <meta charset="UTF-8"/>
+    <title>Chat EvolvAI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="chat.css"/>
 </head>
 <body>
 <div id="main-container">
-  <header id="main-header">
-    <img src="shark-ia.png" alt="Logo" id="header-logo" />
-    <span id="header-title">EvolvAI Chat</span>
-    <button id="settings-button" title="Estado del sistema">⚙️</button>
-  </header>
-
-  <div id="chat">
-    <div id="sidebar-right">
-      <div class="sidebar-pane" id="sidebar-files">
-        <div style="display: flex; align-items: center;">
-          <h4 style="margin: 0;">Archivos subidos</h4>
-          <div id="file-upload-panel" style="margin-left: 10px; display: flex; align-items: center;">
-            <label for="file-input" id="file-label"
-                   title="Subir archivo (.txt, .json, .xml, .pdf)" style="cursor:pointer;">📎</label>
-            <input accept=".txt,.pdf,.json,.xml" id="file-input" type="file" style="display:none;" />
-          </div>
+    <header id="main-header">
+        <img src="shark-ia.png" alt="Logo" id="header-logo"/>
+        <span id="header-title">EvolvAI Chat</span>
+        <button id="settings-button" title="Estado del sistema">⚙️</button>
+    </header>
+    <div id="chat">
+        <div id="sidebar-right">
+            <div class="sidebar-pane" id="sidebar-files">
+                <div style="display: flex; align-items: center;">
+                    <h4 style="margin: 0;">Documentos registrados</h4>
+                    <div id="file-upload-panel" style="margin-left: 10px; display: flex; align-items: center;">
+                        <label for="file-input" id="file-label"
+                               title="Subir archivo (.txt, .json, .xml, .pdf)" style="cursor:pointer;">📎</label>
+                        <input accept=".txt,.pdf,.json,.xml" id="file-input" type="file" style="display:none;"/>
+                    </div>
+                </div>
+                <ul id="file-list"></ul>
+            </div>
         </div>
-        <ul id="file-list"></ul>
-      </div>
-    </div>
-
-    <div id="chat-area">
-      <div id="spinner" class="spinner" style="display: none;">
-        <img src="shark-bot.png" alt="Cargando..." class="spinner-logo" />
-      </div>
-
-      <div id="messages"></div>
-      <div id="scroll-anchor"></div>
-      <form id="input-area">
-        <div class="input-row">
-          <input autocomplete="off" id="user-input" placeholder="Escribe tu mensaje..." type="text" />
-          <button type="submit" id="send-btn">➤</button>
+        <!-- PANEL DE CHAT CENTRAL ESTILO WHATSAPP -->
+        <div id="chat-area">
+            <div id="main-chat-panel">
+                <div id="spinner" class="spinner" style="display: none;">
+                    <img src="logo.png" alt="Cargando..." class="spinner-logo" />
+                </div>
+                <div id="messages"></div>
+                <form id="input-area" autocomplete="off">
+                    <div class="input-row">
+                        <input autocomplete="off" id="user-input" placeholder="Escribe tu mensaje..." type="text" />
+                        <button type="submit" id="send-btn">➤</button>
+                    </div>
+                </form>
+            </div>
+            <div id="prompt-panel" class="sidebar-pane">
+                <div id="prompt-header">
+                    <span>Prompt personalizado</span>
+                    <button id="prompt-toggle">▼</button>
+                </div>
+                <textarea id="custom-prompt" placeholder="Prompt aquí..."></textarea>
+            </div>
         </div>
-      </form>
-      <div id="prompt-panel" class="sidebar-pane">
-        <div id="prompt-header">
-          <span>Prompt personalizado</span>
-          <button id="prompt-toggle">▼</button>
+        <div id="sidebar-left">
+            <div class="sidebar-pane" id="sidebar-memory">
+                <h4>Memoria</h4>
+                <p>Memoria activa o contexto.</p>
+            </div>
         </div>
-        <textarea id="custom-prompt" placeholder="Prompt aquí..."></textarea>
-      </div>
     </div>
-
-    <div id="sidebar-left">
-      <div class="sidebar-pane" id="sidebar-memory">
-        <h4>Memoria</h4>
-        <p>Memoria activa o contexto.</p>
-      </div>
+    <div id="log-panel">
+        <div id="log-header" onclick="toggleLog()">
+            <span>🩵 Log</span>
+            <button id="log-toggle">▼</button>
+        </div>
+        <div id="log-entries">🖥️ Consola iniciada...</div>
     </div>
-  </div>
-
-  <div id="log-panel">
-    <div id="log-header" onclick="toggleLog()">
-      <span>🩵 Log</span>
-      <button id="log-toggle">▼</button>
-    </div>
-    <div id="log-entries">🖥️ Consola iniciada...</div>
-  </div>
 </div>
-
-<!-- Modal Actuator -->
+<!-- Modal Actuator y Toast, igual que antes -->
 <div id="actuator-modal" class="modal hidden">
-  <div class="modal-content">
-    <span class="close-button" id="close-modal">&times;</span>
-    <h3>Endpoints Actuator</h3>
-    <ul>
-      <li><a href="#" onclick="loadActuator('/actuator')">/actuator</a></li>
-      <li><a href="#" onclick="loadActuator('/actuator/rag-status')">/actuator/rag-status</a></li>
-      <li><a href="#" onclick="loadActuator('/actuator/rag-config')">/actuator/rag-config</a></li>
-    </ul>
-    <pre id="actuator-output">Selecciona un endpoint para ver su contenido...</pre>
-    <button onclick="copyActuatorOutput()" style="margin-top: 10px;">📋 Copiar</button>
-  </div>
+    <div class="modal-content">
+        <span class="close-button" id="close-modal">&times;</span>
+        <h3>Endpoints Actuator</h3>
+        <ul>
+            <li><a href="#" onclick="loadActuator('/actuator')">/actuator</a></li>
+            <li><a href="#" onclick="loadActuator('/actuator/rag-status')">/actuator/rag-status</a></li>
+            <li><a href="#" onclick="loadActuator('/actuator/rag-config')">/actuator/rag-config</a></li>
+        </ul>
+        <pre id="actuator-output">Selecciona un endpoint para ver su contenido...</pre>
+        <button onclick="copyActuatorOutput()" style="margin-top: 10px;">📋 Copiar</button>
+    </div>
 </div>
-
-<!-- Toast -->
 <div id="toast">
-  <span id="toast-msg"></span>
-  <span id="toast-close">&times;</span>
+    <span id="toast-msg"></span>
+    <span id="toast-close">&times;</span>
 </div>
-
 <script type="module" src="chat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>

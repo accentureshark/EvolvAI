@@ -24,7 +24,8 @@
                         <input accept=".txt,.pdf,.json,.xml" id="file-input" type="file" style="display:none;"/>
                     </div>
                 </div>
-                <ul id="file-list"></ul>
+                <!-- Cambio aquí: de ul a select para lista desplegable -->
+                <select id="file-list" size="5" style="width: 100%; cursor: pointer;"></select>
             </div>
         </div>
         <!-- PANEL DE CHAT CENTRAL ESTILO WHATSAPP -->
@@ -40,7 +41,7 @@
                         <button type="submit" id="send-btn">➤</button>
                         <label style="margin-left:16px; font-size:13px;">
                             <input type="checkbox" id="stream-toggle" style="vertical-align:middle;" />
-                            Respuesta streaming
+                            Streaming
                         </label>
                     </div>
                 </form>

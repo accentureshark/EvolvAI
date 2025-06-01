@@ -29,18 +29,12 @@ public class InferenceStreamController {
         this.ragProperties = ragProperties;
 
         String baseUrl = ragProperties.getLlm().getOllama().getBaseUrl();
-        this.webClient = WebClient.create(baseUrl);
-
-        String yamlEndpoint = null;
-        try {
-            yamlEndpoint = ragProperties.getLlm().getOllama().getClass().getDeclaredField("endpoint") != null
-                    ? (String) ragProperties.getLlm().getOllama().getClass().getMethod("getEndpoint").invoke(ragProperties.getLlm().getOllama())
-                    : null;
-        } catch (Exception e) {
-            log.warn("No se pudo obtener el endpoint desde RagProperties, usando default", e);
+        if (baseUrl.endsWith("/")) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
         }
-        this.endpoint = (yamlEndpoint != null && !yamlEndpoint.isEmpty()) ? yamlEndpoint : "/api/generate";
-        log.info("InferenceStreamController inicializado con endpoint: {}", this.endpoint);
+        this.webClient = WebClient.create(baseUrl);
+        this.endpoint = "/api/generate";
+        log.info("InferenceStreamController inicializado con baseUrl: {} y endpoint: {}", baseUrl, this.endpoint);
     }
 
     @PostMapping(value = "/query-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -62,13 +56,13 @@ public class InferenceStreamController {
                 .bodyValue(body)
                 .retrieve()
                 .bodyToFlux(String.class)
-                .doOnSubscribe(sub -> log.info("Enviando request a Ollama endpoint: {}", endpoint))
+                .doOnSubscribe(sub -> log.info("Enviando request a Ollama endpoint: {}{}", webClient, endpoint))
                 .doOnNext(chunk -> log.debug("Chunk recibido: {}", chunk))
                 .doOnError(e -> log.error("Error en consulta stream a Ollama", e))
                 .transform(this::groupFragmentsForUi);
     }
 
-    // Nuevo método para agrupar tokens/frases antes de emitir al frontend
+    // Agrupa tokens/frases antes de emitir al frontend
     private Flux<String> groupFragmentsForUi(Flux<String> incoming) {
         return Flux.create(sink -> {
             StringBuilder buffer = new StringBuilder();
@@ -100,7 +94,6 @@ public class InferenceStreamController {
             );
         });
     }
-
 
     private String extractResponseChunk(String chunk) {
         int start = chunk.indexOf("\"response\":\"");

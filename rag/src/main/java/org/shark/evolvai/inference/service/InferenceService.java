@@ -57,7 +57,6 @@ public class InferenceService implements InferenceUseCase {
         this.webClient = WebClient.create(baseUrl);
     }
 
-    // DTO interno para pasar contexto
     private record EmbeddingContext(
             String enrichedQuery,
             String enrichedQueryWithContext,
@@ -90,7 +89,6 @@ public class InferenceService implements InferenceUseCase {
     @Override
     public QueryResponse advancedQuery(RagQueryRequest request) {
         log.info("Iniciando consulta avanzada: {}", request.getQuery());
-        // Podés reutilizar el query con parámetros avanzados si querés extender prepareEmbeddingContext para eso
         return query(request);
     }
 
@@ -111,6 +109,8 @@ public class InferenceService implements InferenceUseCase {
 
         String prompt = Optional.ofNullable(request.getCustomPrompt()).orElse("");
         String combinedPrompt = prompt + "\n\n" + ctx.enrichedQueryWithContext();
+
+        log.info("Prompt combinado enviado a Ollama (streaming):\n{}", combinedPrompt);
 
         body.put("prompt", combinedPrompt);
         body.put("stream", true);
@@ -149,6 +149,8 @@ public class InferenceService implements InferenceUseCase {
         }
 
         Embedding queryEmbedding = embeddingGenerator.generateEmbedding(enrichedQuery);
+        log.info("Vector embedding consulta (primeros 5 valores): {}", Arrays.toString(Arrays.copyOf(queryEmbedding.vector(), Math.min(5, queryEmbedding.vector().length))));
+
         int actualDimensions = queryEmbedding.vector().length;
         int expectedDimensions = ragProperties.getEmbedding().getPgvector().getDimensions();
 
@@ -164,6 +166,8 @@ public class InferenceService implements InferenceUseCase {
         List<EmbeddingMatch<String>> matches;
         Map<String, String> contextMap = request.getContextMetadata();
 
+        log.info("Usando metadata para búsqueda de embeddings: {}", contextMap);
+
         if ((contextMap != null && !contextMap.isEmpty()) ||
                 (request.getDocumentId() != null && !request.getDocumentId().isBlank())) {
 
@@ -176,11 +180,14 @@ public class InferenceService implements InferenceUseCase {
             }
             Metadata contextMetadata = Metadata.from(combinedMap);
 
+            log.info("Realizando búsqueda findSimilar con filtro: {}", contextMetadata);
+
             matches = embeddingStorage.findSimilar(queryEmbedding,
                     ragProperties.getInference().getMaxResults(),
                     ragProperties.getInference().getMinScore(),
                     contextMetadata);
         } else {
+            log.info("Realizando búsqueda findSimilar sin filtro");
             matches = embeddingStorage.findSimilar(queryEmbedding,
                     ragProperties.getInference().getMaxResults(),
                     ragProperties.getInference().getMinScore());
@@ -222,7 +229,11 @@ public class InferenceService implements InferenceUseCase {
         );
     }
 
-    // Método privado para agrupar chunks antes de enviar al cliente (igual que antes)
+    /**
+     * @todo: Migrar a otra clase
+     * @param incoming
+     * @return
+     */
     private Flux<String> groupFragmentsForUi(Flux<String> incoming) {
         return Flux.create(sink -> {
             StringBuilder buffer = new StringBuilder();

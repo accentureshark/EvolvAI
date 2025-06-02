@@ -76,7 +76,15 @@ public class InferenceService implements InferenceUseCase {
             return new QueryResponse("No hay información suficiente para responder a esa pregunta.", null, ctx.conversationId());
         }
 
-        String answer = llmProvider.generateResponse(ctx.conversationHistory(), ctx.enrichedQueryWithContext(), request.getCustomPrompt());
+        String promptTemplate = Optional.ofNullable(request.getCustomPrompt()).orElse(ragProperties.getLlm().getPrompt());
+
+        // Reemplazo manual de placeholders
+        String finalPrompt = promptTemplate.replace("{query}", request.getQuery())
+                .replace("{context}", ctx.context());
+
+        log.info("Prompt final enviado a LLM:\n{}", finalPrompt);
+
+        String answer = llmProvider.generateResponse(ctx.conversationHistory(), finalPrompt, null);
 
         chatMemoryService.updateMessages(ctx.conversationId(), List.of(
                 new UserMessage(request.getQuery()),
@@ -107,8 +115,9 @@ public class InferenceService implements InferenceUseCase {
 
         body.put("model", ollama.getModel());
 
-        String prompt = Optional.ofNullable(request.getCustomPrompt()).orElse("");
-        String combinedPrompt = prompt + "\n\n" + ctx.enrichedQueryWithContext();
+        String promptTemplate = Optional.ofNullable(request.getCustomPrompt()).orElse(ragProperties.getLlm().getPrompt());
+        String combinedPrompt = promptTemplate.replace("{query}", request.getQuery())
+                .replace("{context}", ctx.context());
 
         log.info("Prompt combinado enviado a Ollama (streaming):\n{}", combinedPrompt);
 

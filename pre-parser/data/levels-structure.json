@@ -1,6 +1,6 @@
 {
   "nivelRegex": {
-    "pattern": "^LEVEL\\s+(\\d+)",
+    "pattern": "^\\s*LEVEL\\s+(\\d+):?",
     "key": "nivel"
   },
   "secciones": [
@@ -11,10 +11,18 @@
     {
       "regex": "^Nivel tecnico",
       "metadata": { "area": "TECNICO" }
+    },
+    {
+      "regex": "^Nivel liderazgo y gestion",
+      "metadata": { "area": "LIDERAZGO" }
+    },
+    {
+      "regex": "^Nivel tribu",
+      "metadata": { "area": "TRIBU" }
     }
   ],
   "itemRegex": {
-    "pattern": "^\\s*◦\\s+(.+)",
+    "pattern": "^\\s*[•◦]\\s+(.+)",
     "key": "texto"
   },
   "enrichText": "Nivel {nivel} - Área {area}: {texto}"

@@ -21,15 +21,4 @@ public class QueryResponse {
     @Schema(description = "ID de conversación para mantener el contexto", example = "conv-123456")
     private String conversationId;
 
-    public String getAnswer() {
-        return answer;
-    }
-
-    public List<EmbeddingMatchDto> getMatches() {
-        return matches;
-    }
-
-    public String getConversationId() {
-        return conversationId;
-    }
 }

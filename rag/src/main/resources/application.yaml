@@ -125,7 +125,8 @@ logging:
     root: INFO
     org.shark.evolvai: INFO
     org.springframework.web: INFO
-    org.springdoc: INFO
+    org.springdoc: DEBUG
+    io.swagger.v3: DEBUG
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql: INFO
     org.hibernate.orm.jdbc.bind: INFO

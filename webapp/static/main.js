@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         const msg = userInput.value.trim();
         if (!msg) return;
+
         if (!selectedDocumentId) {
             alert("Seleccioná un documento antes de consultar.");
             return;
@@ -69,10 +70,11 @@ document.addEventListener("DOMContentLoaded", function () {
         addMessage(msg, "user");
         userInput.value = "";
 
-        // Armar el payload incluyendo documentId
+        // Armar el payload incluyendo documentId y prompt personalizado
         const payload = {
             query: msg,
-            documentId: selectedDocumentId
+            documentId: selectedDocumentId,
+            customPrompt: customPrompt?.value || ''
         };
 
         // Chequeá si el checkbox está activo

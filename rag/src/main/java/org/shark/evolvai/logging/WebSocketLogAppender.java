@@ -16,6 +16,8 @@ public class WebSocketLogAppender extends AppenderBase<ILoggingEvent> {
     protected void append(ILoggingEvent eventObject) {
         if (messagingTemplate != null) {
             messagingTemplate.convertAndSend("/topic/logs", eventObject.getFormattedMessage());
+
         }
     }
+
 }

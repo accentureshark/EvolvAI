@@ -69,6 +69,7 @@ public class GenericLlmProvider implements LlmProvider {
             log.info("Prompt usado para LLM: {}", prompt);
             // Construir la lista de mensajes: prompt como primer mensaje, luego contexto, luego query
             List<ChatMessage> messages = new java.util.ArrayList<>();
+
             messages.add(new UserMessage(prompt));
             if (context != null && !context.isEmpty()) {
                 messages.addAll(context);

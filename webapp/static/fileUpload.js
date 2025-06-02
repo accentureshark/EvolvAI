@@ -5,15 +5,7 @@ import { BACKEND_URL } from './api.js';
 // Variable global/exportada para saber cuál está seleccionado
 export let selectedDocumentId = null;
 
-// Función para marcar el archivo/documento seleccionado visualmente
-function markSelectedDocument(li, docId) {
-    document.querySelectorAll("#file-list li").forEach(node => node.classList.remove("selected"));
-    li.classList.add("selected");
-    selectedDocumentId = docId;
-    log(`📝 Documento seleccionado para consultas: ${docId}`);
-}
-
-// Renderiza la lista de archivos/documentos subidos y habilita selección
+// Función para renderizar y manejar selección en el combo select
 export function populateFileList(files) {
     const fileList = document.getElementById("file-list");
     fileList.innerHTML = "";
@@ -22,17 +14,24 @@ export function populateFileList(files) {
         return;
     }
     files.forEach(docId => {
-        const li = document.createElement("li");
-        li.textContent = docId;
-        li.title = "Usar este documento para consultas RAG";
-        li.style.cursor = "pointer";
-        li.onclick = () => markSelectedDocument(li, docId);
-        fileList.appendChild(li);
+        const option = document.createElement("option");
+        option.value = docId;
+        option.textContent = docId;
+        option.title = "Usar este documento para consultas RAG";
+        fileList.appendChild(option);
     });
-    // Si nada seleccionado, por defecto el primero
-    if (!selectedDocumentId && fileList.children.length > 0) {
-        markSelectedDocument(fileList.children[0], files[0]);
+    // Selecciona el primero por defecto si no hay uno seleccionado
+    if (!selectedDocumentId && files.length > 0) {
+        selectedDocumentId = files[0];
     }
+    // Refleja la selección en el select
+    fileList.value = selectedDocumentId;
+
+    // Escuchar cambios de selección para actualizar selectedDocumentId
+    fileList.onchange = (e) => {
+        selectedDocumentId = e.target.value;
+        log(`📝 Documento seleccionado para consultas: ${selectedDocumentId}`);
+    };
 }
 
 // Carga la lista de archivos/documentos subidos desde el backend
@@ -107,9 +106,9 @@ export function setupFileUpload() {
     fileInput.addEventListener("change", function () {
         fileList.innerHTML = "";
         for (const file of fileInput.files) {
-            const li = document.createElement("li");
-            li.textContent = file.name;
-            fileList.appendChild(li);
+            const option = document.createElement("option");
+            option.textContent = file.name;
+            fileList.appendChild(option);
         }
         log(`📎 Archivos cargados: ${fileInput.files.length}`);
         saveIcon.style.display = fileInput.files.length > 0 ? "inline-block" : "none";

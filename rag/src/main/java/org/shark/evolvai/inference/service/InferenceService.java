@@ -19,6 +19,8 @@ import org.shark.evolvai.llm.port.out.LlmProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,6 +35,7 @@ public class InferenceService implements InferenceUseCase {
     private final LlmProvider llmProvider;
     private final ChatMemoryService chatMemoryService;
     private final RagProperties ragProperties;
+    private final WebClient webClient;
 
     public InferenceService(
             EmbeddingGenerator embeddingGenerator,
@@ -46,22 +49,89 @@ public class InferenceService implements InferenceUseCase {
         this.llmProvider = llmProvider;
         this.chatMemoryService = chatMemoryService;
         this.ragProperties = ragProperties;
+
+        String baseUrl = ragProperties.getLlm().getOllama().getBaseUrl();
+        if (baseUrl.endsWith("/")) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+        this.webClient = WebClient.create(baseUrl);
     }
+
+    // DTO interno para pasar contexto
+    private record EmbeddingContext(
+            String enrichedQuery,
+            String enrichedQueryWithContext,
+            String context,
+            List<EmbeddingMatchDto> matchDtos,
+            String conversationId,
+            List<ChatMessage> conversationHistory
+    ) {}
 
     @Override
     public QueryResponse query(RagQueryRequest request) {
         log.info("Iniciando consulta básica: {}", request.getQuery());
-        log.info("Query original: {}", request);
-        return doRagQuery(request, false);
+
+        EmbeddingContext ctx = prepareEmbeddingContext(request);
+
+        if (ctx.matchDtos().isEmpty()) {
+            return new QueryResponse("No hay información suficiente para responder a esa pregunta.", null, ctx.conversationId());
+        }
+
+        String answer = llmProvider.generateResponse(ctx.conversationHistory(), ctx.enrichedQueryWithContext(), request.getCustomPrompt());
+
+        chatMemoryService.updateMessages(ctx.conversationId(), List.of(
+                new UserMessage(request.getQuery()),
+                new AiMessage(answer)
+        ));
+
+        return new QueryResponse(answer, request.isIncludeMatches() ? ctx.matchDtos() : null, ctx.conversationId());
     }
 
     @Override
     public QueryResponse advancedQuery(RagQueryRequest request) {
         log.info("Iniciando consulta avanzada: {}", request.getQuery());
-        return doRagQuery(request, true);
+        // Podés reutilizar el query con parámetros avanzados si querés extender prepareEmbeddingContext para eso
+        return query(request);
     }
 
-    private QueryResponse doRagQuery(RagQueryRequest request, boolean isAdvanced) {
+    @Override
+    public Flux<String> queryStream(RagQueryRequest request) {
+        log.info("Iniciando consulta streaming: {}", request.getQuery());
+
+        EmbeddingContext ctx = prepareEmbeddingContext(request);
+
+        if (ctx.matchDtos().isEmpty()) {
+            return Flux.just("No hay información suficiente para responder a esa pregunta.");
+        }
+
+        Map<String, Object> body = new HashMap<>();
+        var ollama = ragProperties.getLlm().getOllama();
+
+        body.put("model", ollama.getModel());
+
+        String prompt = Optional.ofNullable(request.getCustomPrompt()).orElse("");
+        String combinedPrompt = prompt + "\n\n" + ctx.enrichedQueryWithContext();
+
+        body.put("prompt", combinedPrompt);
+        body.put("stream", true);
+
+        if (ollama.getTemperature() > 0) {
+            body.put("temperature", ollama.getTemperature());
+        }
+
+        return webClient.post()
+                .uri("/api/generate")
+                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .retrieve()
+                .bodyToFlux(String.class)
+                .doOnSubscribe(sub -> log.info("Enviando request streaming a Ollama"))
+                .doOnNext(chunk -> log.debug("Chunk recibido: {}", chunk))
+                .doOnError(e -> log.error("Error en streaming Ollama", e))
+                .transform(this::groupFragmentsForUi);
+    }
+
+    private EmbeddingContext prepareEmbeddingContext(RagQueryRequest request) {
         String enrichedQuery = request.getQuery();
 
         if (request.getContextMetadata() == null && request.getDocumentId() != null) {
@@ -82,8 +152,6 @@ public class InferenceService implements InferenceUseCase {
         int actualDimensions = queryEmbedding.vector().length;
         int expectedDimensions = ragProperties.getEmbedding().getPgvector().getDimensions();
 
-        log.info("Dimensión embedding consulta: {}, esperada: {}", actualDimensions, expectedDimensions);
-
         if (actualDimensions < expectedDimensions) {
             float[] padded = Arrays.copyOf(queryEmbedding.vector(), expectedDimensions);
             queryEmbedding = new Embedding(padded);
@@ -101,7 +169,7 @@ public class InferenceService implements InferenceUseCase {
 
             Map<String, Object> combinedMap = new HashMap<>();
             if (contextMap != null) {
-                contextMap.forEach(combinedMap::put);
+                combinedMap.putAll(contextMap);
             }
             if (request.getDocumentId() != null && !request.getDocumentId().isBlank()) {
                 combinedMap.put("documentId", request.getDocumentId());
@@ -109,13 +177,13 @@ public class InferenceService implements InferenceUseCase {
             Metadata contextMetadata = Metadata.from(combinedMap);
 
             matches = embeddingStorage.findSimilar(queryEmbedding,
-                    isAdvanced ? request.getMaxResults() : ragProperties.getInference().getMaxResults(),
-                    isAdvanced ? request.getMinSimilarity() : ragProperties.getInference().getMinScore(),
+                    ragProperties.getInference().getMaxResults(),
+                    ragProperties.getInference().getMinScore(),
                     contextMetadata);
         } else {
             matches = embeddingStorage.findSimilar(queryEmbedding,
-                    isAdvanced ? request.getMaxResults() : ragProperties.getInference().getMaxResults(),
-                    isAdvanced ? request.getMinSimilarity() : ragProperties.getInference().getMinScore());
+                    ragProperties.getInference().getMaxResults(),
+                    ragProperties.getInference().getMinScore());
         }
 
         log.info("Se encontraron {} embeddings similares.", matches.size());
@@ -131,11 +199,6 @@ public class InferenceService implements InferenceUseCase {
                 ))
                 .collect(Collectors.toList());
 
-        if (matchDtos.isEmpty()) {
-            log.warn("No se encontraron documentos relevantes para la query: {}", request.getQuery());
-            return new QueryResponse("No hay información suficiente para responder a esa pregunta.", null, request.getConversationId());
-        }
-
         enrichedQuery = EnrichmentUtil.smartEnrichQuery(request.getQuery(), matchDtos);
         String context = EnrichmentUtil.rebuildContextFromMatches(matchDtos);
         log.info("Contexto generado para el prompt:\n{}", context);
@@ -149,13 +212,54 @@ public class InferenceService implements InferenceUseCase {
         String enrichedQueryWithContext = enrichedQuery + "\n\nContexto relevante:\n" + context;
         log.info("Query enriquecida con contexto embebido:\n{}", enrichedQueryWithContext);
 
-        String answer = llmProvider.generateResponse(conversationHistory, enrichedQueryWithContext, null);
+        return new EmbeddingContext(
+                enrichedQuery,
+                enrichedQueryWithContext,
+                context,
+                matchDtos,
+                conversationId,
+                conversationHistory
+        );
+    }
 
-        chatMemoryService.updateMessages(conversationId, List.of(
-                new UserMessage(request.getQuery()),
-                new AiMessage(answer)
-        ));
+    // Método privado para agrupar chunks antes de enviar al cliente (igual que antes)
+    private Flux<String> groupFragmentsForUi(Flux<String> incoming) {
+        return Flux.create(sink -> {
+            StringBuilder buffer = new StringBuilder();
+            incoming.subscribe(
+                    chunk -> {
+                        String token = extractResponseChunk(chunk);
+                        if (token == null || token.isEmpty()) return;
 
-        return new QueryResponse(answer, request.isIncludeMatches() ? matchDtos : null, conversationId);
+                        buffer.append(token);
+
+                        if (buffer.length() > 0 && (
+                                Character.isWhitespace(buffer.charAt(buffer.length() - 1))
+                                        || ".!?,;:".indexOf(buffer.charAt(buffer.length() - 1)) >= 0
+                                        || buffer.toString().endsWith("\\n")
+                                        || buffer.toString().endsWith("\n")
+                        )) {
+                            sink.next(buffer.toString());
+                            buffer.setLength(0);
+                        }
+                    },
+                    sink::error,
+                    () -> {
+                        if (buffer.length() > 0) sink.next(buffer.toString());
+                        sink.complete();
+                    }
+            );
+        });
+    }
+
+    private String extractResponseChunk(String chunk) {
+        int start = chunk.indexOf("\"response\":\"");
+        if (start == -1) {
+            log.warn("No se encontró campo 'response' en chunk: {}", chunk);
+            return "";
+        }
+        start += 12;
+        int end = chunk.indexOf("\"", start);
+        return chunk.substring(start, end);
     }
 }

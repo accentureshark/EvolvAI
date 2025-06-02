@@ -8,6 +8,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -26,10 +27,11 @@ public class PdfJsonStructuredConverter {
         String schemaPath = args[1];
         String outputPath = args[2];
 
-        // documentId ahora es el nombre del archivo de salida JSON
         String documentId = Paths.get(outputPath).getFileName().toString();
 
         String text = extractText(inputPath);
+        System.out.println("Texto extraído (primeros 500 caracteres):\n" + text.substring(0, Math.min(500, text.length())));
+
         Map<String, Object> output = parseStructuredJson(text, schemaPath, documentId, inputPath);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -48,12 +50,13 @@ public class PdfJsonStructuredConverter {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static Map<String, Object> parseStructuredJson(String text, String schemaPath, String documentId, String originalFilePath) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> schema = mapper.readValue(new File(schemaPath), new TypeReference<>() {});
 
         Map<String, Object> nivelConfig = (Map<String, Object>) schema.get("nivelRegex");
-        Pattern nivelPattern = Pattern.compile((String) nivelConfig.get("pattern"));
+        Pattern nivelPattern = Pattern.compile("^\\s*LEVEL\\s+(\\d+)\\s*:?\\s*$", Pattern.CASE_INSENSITIVE);
         String nivelKey = (String) nivelConfig.get("key");
 
         Map<String, Object> itemConfig = (Map<String, Object>) schema.get("itemRegex");
@@ -66,28 +69,37 @@ public class PdfJsonStructuredConverter {
 
         List<Map<String, Object>> chunks = new ArrayList<>();
         String currentNivel = null;
-        Map<String, String> currentMetadata = new HashMap<>();
+        Map<String, String> currentMetadata = null;
 
         int charCount = 0;
         int chunkIndex = 0;
 
         for (String line : text.split("\\R")) {
-            line = line.trim();
+            // Normalizar y eliminar caracteres invisibles
+            line = Normalizer.normalize(line, Normalizer.Form.NFKC).replaceAll("\\p{C}", "").trim();
             if (line.isEmpty()) continue;
 
+            System.out.println("Procesando línea: '" + line + "'");
+
             Matcher nivelMatcher = nivelPattern.matcher(line);
-            if (nivelMatcher.find()) {
+            if (nivelMatcher.matches()) {
                 currentNivel = nivelMatcher.group(1);
+                // No reseteamos currentMetadata para mantener la sección activa
+                charCount = 0; // reset contador por nivel
+                System.out.println("Detectado nivel: " + currentNivel);
                 continue;
             }
 
+            boolean matchedSection = false;
             for (Map<String, Object> sec : secciones) {
                 Pattern sectionPattern = Pattern.compile((String) sec.get("regex"), Pattern.CASE_INSENSITIVE);
                 if (sectionPattern.matcher(line).find()) {
                     currentMetadata = new HashMap<>((Map<String, String>) sec.get("metadata"));
+                    matchedSection = true;
                     break;
                 }
             }
+            // Si no encuentra nueva sección, mantiene currentMetadata igual
 
             Matcher itemMatcher = itemPattern.matcher(line);
             if (itemMatcher.find() && currentNivel != null && currentMetadata != null) {
@@ -95,13 +107,11 @@ public class PdfJsonStructuredConverter {
                 int charStart = charCount;
                 int charEnd = charStart + originalText.length();
 
-                // Preparar contexto para enriquecer texto
                 Map<String, String> context = new HashMap<>(currentMetadata);
                 context.put(nivelKey, currentNivel);
                 context.put("texto", originalText);
                 context.put("chunkIndex", String.valueOf(chunkIndex));
 
-                // Reemplazar variables en la plantilla enrichText
                 String enrichedText = enrichTemplate;
                 for (Map.Entry<String, String> entry : context.entrySet()) {
                     enrichedText = enrichedText.replace("{" + entry.getKey() + "}", entry.getValue());
@@ -119,6 +129,8 @@ public class PdfJsonStructuredConverter {
                 chunk.put("timestamp", LocalDateTime.now().toString());
 
                 chunks.add(chunk);
+
+                System.out.println("Chunk agregado: nivel=" + currentNivel + ", area=" + currentMetadata.get("area") + ", texto='" + originalText + "'");
 
                 charCount = charEnd + 1;
                 chunkIndex++;

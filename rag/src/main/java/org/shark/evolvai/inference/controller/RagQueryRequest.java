@@ -41,52 +41,7 @@ public class RagQueryRequest {
     @Schema(description = "ID del documento fuente a utilizar como filtro", example = "plan-carrera")
     private String documentId;
 
-    @Schema(description = "Rol del usuario en el contexto de la consulta", example = "Tech Lead")
-    private String rol;
-
-    @Schema(description = "Nivel de carrera o experiencia del usuario", example = "Level 12")
-    private String nivel;
-
     @Schema(description = "Metadatos adicionales para filtrar los documentos relevantes", example = "{\"organizacion\":\"Accenture\"}")
     private Map<String, String> contextMetadata;
 
-    public String getQuery() {
-        return query;
-    }
-
-    public String getConversationId() {
-        return conversationId;
-    }
-
-    public int getMaxResults() {
-        return maxResults;
-    }
-
-    public double getMinSimilarity() {
-        return minSimilarity;
-    }
-
-    public boolean isIncludeMatches() {
-        return includeMatches;
-    }
-
-    public String getCustomPrompt() {
-        return customPrompt;
-    }
-
-    public String getDocumentId() {
-        return documentId;
-    }
-
-    public String getRol() {
-        return rol;
-    }
-
-    public String getNivel() {
-        return nivel;
-    }
-
-    public Map<String, String> getContextMetadata() {
-        return contextMetadata;
-    }
 }

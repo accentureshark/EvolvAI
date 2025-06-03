@@ -1,11 +1,9 @@
-version: '3.8'
-
 services:
 
   pgvector:
-    image: ankane/pgvector
-    container_name: evolvai_pgvector
-    restart: always
+    image: pgvector/pgvector:pg17
+    container_name: evolvai-pgvector
+    restart: unless-stopped
     environment:
       POSTGRES_DB: evolvai
       POSTGRES_USER: postgres
@@ -14,6 +12,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      - pgvector-data:/var/lib/postgresql/data
       - ./src/main/sql/initdb:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
@@ -23,35 +22,52 @@ services:
 
   ollama:
     image: ollama/ollama:latest
+    container_name: evolvai-ollama
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - gpu
     ports:
       - "11434:11434"
     environment:
-      - OLLAMA_MODELS=phi3:mini
-      - OLLAMA_DEBUG=INFO
+      CUDA_VISIBLE_DEVICES: 0
+      OLLAMA_KEEP_ALIVE: -1
+      OLLAMA_FLASH_ATTENTION: 1
+      OLLAMA_KV_CACHE_TYPE: q8_0
+      OLLAMA_DEBUG: 1
     volumes:
       - ollama-data:/root/.ollama
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434"]
+      test: ["CMD", "ollama", "--version"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   ollama-init:
     image: curlimages/curl:latest
+    container_name: evolvai-ollama-init
+    restart: no
     depends_on:
       ollama:
         condition: service_healthy
-    entrypoint: >
-      /bin/sh -c "
-      echo 'Esperando a que Ollama esté listo...';
-      sleep 5;
-      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"phi3:mini\"}' -H 'Content-Type: application/json';
-      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"nomic-embed-text\"}' -H 'Content-Type: application/json';
-      echo 'Modelos phi3:mini y nomic-embed-text descargados';
-      "
-
-    restart: "no"
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        echo 'Pulling LLM'
+        curl http://ollama:11434/api/pull -H 'Content-Type: application/json' -d '{"name":"phi3:mini"}'
+        echo 'Preloading LLM'
+        curl http://ollama:11434/api/generate -H 'Content-Type: application/json' -d '{"model":"phi3:mini"}'
+        echo 'Pulling embedding model'
+        curl http://ollama:11434/api/pull -H 'Content-Type: application/json' -d '{"name":"nomic-embed-text"}'
+        echo 'Preloading embedding model'
+        curl http://ollama:11434/api/embed -H 'Content-Type: application/json' -d '{"model":"nomic-embed-text"}'
 
 volumes:
-  pgvector_data:
+  pgvector-data:
   ollama-data:

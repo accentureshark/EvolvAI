@@ -50,7 +50,7 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
             Embedding embedding = embeddingGenerator.generateEmbedding(new TextSegment(promptFragment, segment.metadata()));
 
             String docName = id;
-            if (segment.metadata() != null && segment.metadata().asMap().containsKey("chunkIndex")) {
+            if (segment.metadata() != null && segment.metadata().toMap().containsKey("chunkIndex")) {
                 //docName += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
             }
 
@@ -110,7 +110,7 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
             Embedding embedding = embeddingGenerator.generateEmbedding(new TextSegment(promptFragment, segment.metadata()));
 
             String docName = id;
-            if (segment.metadata() != null && segment.metadata().asMap().containsKey("chunkIndex")) {
+            if (segment.metadata() != null && segment.metadata().toMap().containsKey("chunkIndex")) {
                 //docName += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
             }
 
@@ -125,15 +125,14 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
     public void index(List<TextSegment> segments) {
         log.info("Indexando lista de {} fragmentos manuales.", segments.size());
         for (TextSegment segment : segments) {
-            String docId = Optional.ofNullable(segment.metadata().get("documentId"))
-                    .map(Object::toString)
+            String docId = Optional.ofNullable(segment.metadata().getString("documentId"))
                     .orElse(UUID.randomUUID().toString());
 
             String prompt = DEFAULT_PROMPT + "\n" + segment.text();
             Embedding embedding = embeddingGenerator.generateEmbedding(new TextSegment(prompt, segment.metadata()));
 
             String chunkId = docId;
-            if (segment.metadata() != null && segment.metadata().asMap().containsKey("chunkIndex")) {
+            if (segment.metadata() != null && segment.metadata().toMap().containsKey("chunkIndex")) {
                 //chunkId += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
             }
 

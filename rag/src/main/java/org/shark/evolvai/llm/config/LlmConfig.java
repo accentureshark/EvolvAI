@@ -1,6 +1,6 @@
 package org.shark.evolvai.llm.config;
 
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import org.shark.evolvai.config.RagProperties;
@@ -19,7 +19,7 @@ public class LlmConfig {
     }
 
     @Bean
-    public ChatLanguageModel chatLanguageModel() {
+    public ChatModel chatModel() {
         RagProperties.Llm llm = ragProperties.getLlm();
         String provider = llm.getProvider();
 

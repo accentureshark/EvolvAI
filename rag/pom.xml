@@ -23,8 +23,10 @@
         <docker.registry>fabianaguero</docker.registry>
         <docker.username>fabianaguero</docker.username>
         <docker.password>dckr_pat_oQ8IqIDO6QjVWYVlbeo8DgZQcJU</docker.password>
-        <langchain4j.version>0.37.0-SNAPSHOT</langchain4j.version>
-        <langchain4j-pgvector.version>0.37.0-SNAPSHOT</langchain4j-pgvector.version>
+        <langchain4j.version>1.0.1</langchain4j.version>
+        <langchain4j-ollama.version>1.0.1-beta6</langchain4j-ollama.version>
+        <langchain4j-pgvector.version>1.0.1-beta6</langchain4j-pgvector.version>
+        <langchain4j-embeddings.version>1.0.1-beta6</langchain4j-embeddings.version>
         <onnxruntime.version>1.20.0</onnxruntime.version>
         <jackson.version>2.15.2</jackson.version>
         <mapdb.version>3.0.9</mapdb.version>
@@ -107,17 +109,12 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-ollama</artifactId>
-            <version>${langchain4j.version}</version>
+            <version>${langchain4j-ollama.version}</version>
         </dependency>
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-embeddings</artifactId>
-            <version>${langchain4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-qdrant</artifactId>
-            <version>${langchain4j.version}</version>
+            <version>${langchain4j-embeddings.version}</version>
         </dependency>
 
         <!-- Micrometer/Actuator -->

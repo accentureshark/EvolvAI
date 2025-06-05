@@ -76,8 +76,11 @@ public class EmbeddingController {
             if (filename.endsWith(".json")) {
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, Object> doc = mapper.readValue(file.getInputStream(), new TypeReference<>() {});
-                baseMetadata.putAll((Map<String, String>) doc.get("metadata"));
-                docId = baseMetadata.getOrDefault("documentId", filename);  // Usa el que vino o el nuevo UUID
+                Object metadataObj = doc.get("metadata");
+                if (metadataObj instanceof Map) {
+                    baseMetadata.putAll((Map<String, String>) metadataObj);
+                }
+                docId = baseMetadata.getOrDefault("documentId", filename);
                 input = doc.get("data");
             }
 

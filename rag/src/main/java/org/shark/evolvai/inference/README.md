@@ -49,7 +49,8 @@ Consulta RAG **básica**.
     - `200 OK`: consulta exitosa.
     - `400 Bad Request`: validación fallida.
 
-![sequence-diagram-query](\images\sequence\InferenceController-query.png)
+
+![sequence-diagram-uploadContent](../../../../../../../../images/sequence/InferenceController-query.png)
 
 - **Archivo fuente**: `\images\sequence\InferenceController-query.png`
 
@@ -66,7 +67,8 @@ Consulta **streaming** (respuesta en tiempo real).
 - **Content-Type**: `text/event-stream`
 - **Nota**: En caso de no encontrar documentos relevantes, devuelve un único fragmento con el mensaje informativo (`"No hay información suficiente..."`) y no un código HTTP distinto.
 
-![sequence-diagram-queryStream](\images\sequence\InferenceStreamController-queryStream.png)
+
+![sequence-diagram-uploadContent](../../../../../../../../images/sequence/InferenceStreamController-queryStream.png)
 - **Archivo fuente**: `\images\sequence\InferenceStreamController-queryStream.png`
 
 ---
@@ -86,7 +88,8 @@ Consulta **streaming** (respuesta en tiempo real).
     - Se guarda el historial conversacional con `ChatMemoryService`.
     - Se devuelve la respuesta generada.
 
-![sequence-diagram-general](\images\sequence\inference.secuencia.png)
+
+![sequence-diagram-uploadContent](../../../../../../../../images/sequence/inference.secuencia.png)
 - **Archivo fuente**: `\images\sequence\inference.secuencia.png`
 
 ---

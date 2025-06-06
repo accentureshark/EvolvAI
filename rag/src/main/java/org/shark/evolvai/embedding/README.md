@@ -43,9 +43,12 @@ Los embeddings generados son almacenados en un backend vectorial (por defecto, `
 - `200 OK` con mensaje informando la cantidad de fragmentos indexados.
 - `400 Bad Request` si no se generaron fragmentos útiles.
 
-![sequence-diagram-uploadContent](\images\sequence\EmbeddingController-uploadDocument.png)
 
-> Archivo fuente: `\images\sequence\EmbeddingController-uploadDocument.png`
+![sequence-diagram-uploadContent](../../../../../../../../images/sequence/EmbeddingController-uploadDocument.png)
+
+
+
+
 
 
 ---
@@ -67,8 +70,9 @@ Los embeddings generados son almacenados en un backend vectorial (por defecto, `
 
 **Respuesta:** `200 OK` o error 500 con mensaje.
 
-![sequence-diagram-indexDocument](\images\sequence\EmbeddingController-indexDocument.png)
 
+
+![sequence-diagram-uploadContent](../../../../../../../../images/sequence/EmbeddingController-indexDocument.png)
 > Archivo fuente: `\images\sequence\EmbeddingController-indexDocument.png`
 
 ### 🔎 `GET /api/embeddings/search`
@@ -94,7 +98,7 @@ Los embeddings generados son almacenados en un backend vectorial (por defecto, `
 **Respuesta:**
 - `200 OK`: lista de IDs.
 
-![sequence-diagram-listDocuments](\images\sequence\EmbeddingController-listDocuments.png)
+![sequence-diagram-uploadContent](../../../../../../../../images/sequence/EmbeddingController-listDocuments.png)
 
 > Archivo fuente: `\images\sequence\EmbeddingController-listDocuments.png`
 
@@ -109,7 +113,7 @@ Los embeddings generados son almacenados en un backend vectorial (por defecto, `
 - `200 OK`: éxito.
 - `500 Internal Server Error`: si algo falla durante la eliminación.
 
-![sequence-diagram-removeAll](\images\sequence\EmbeddingController-removeAllEmbeddings.png)
+![sequence-diagram-uploadContent](../../../../../../../../images/sequence/EmbeddingController-removeAll.png)
 
 > Archivo fuente: `\images\sequence\EmbeddingController-removeAll.png`
 

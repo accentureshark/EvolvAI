@@ -1,43 +1,56 @@
 server:
   port: 8081
 
-embedding:
-  chunking:
-    size: 20        # ajustable: 20-50 es ideal para frases tipo ítems
-    overlap: 5      # para dar contexto si hay más de un chunk
-  storage:
-    type: pgVector  # Opciones: inMemory, pgVector
-  generator:
-    type: ollama    # Opciones: onnx, ollama
-  pgvector:
-    host: pgvector
-    port: 5432
-    database: evolvai
-    user: postgres
-    password: postgres1234
-
-    dimensions: 2000
-  onnx:
-    model-path: classpath:all-MiniLM-L6-v2.onnx
-  ollama:
-    base-url: http://localhost:11434
-    model: nomic-embed-text  # Más específico y liviano para embeddings
-  tokenizer:
-    path: classpath:tokenizer/tokenizer.json
-  enrichWith:
-    - documentId
-    - area
-    - nivel
-
 rag:
+  embedding:
+    chunking:
+      size: 20        # ajustable: 20-50 es ideal para frases tipo ítems
+      overlap: 5      # para dar contexto si hay más de un chunk
+    storage:
+      type: pgVector  # Opciones: inMemory, pgVector
+    generator:
+      provider: ollama
+      model: bge-large-en
+    pgvector:
+      host: pgvector
+      port: 5432
+      database: evolvai
+      user: postgres
+      password: postgres1234
+      tableName: embedding.embeddings
+      dimensions: 1024 # Asegúrate de que coincida con el modelo de embeddings
+    ollama:
+      base-url: http://ollama:11434
+      model: nomic-embed-text  # Más específico y liviano para embeddings
+    tokenizer:
+      path: classpath:tokenizer/tokenizer.json
+      generator:
+        provider: ollama
+
   llm:
     provider: "ollama"
     prompt: |
-      Respondé exclusivamente usando el contexto provisto. Si no encontrás una respuesta clara o relevante en el contexto, respondé con No hay información suficiente para responder a esa pregunta.
+      Eres un asistente experto que responde únicamente con información extraída de documentos provistos.      
+      Sigue estas reglas estrictamente:      
+      1. Si la respuesta NO está explícitamente en los documentos, responde exactamente: "No hay información suficiente en los documentos".
+      2. No agregues opiniones, explicaciones, inferencias ni información que no esté textual en el contexto.
+      3. Responde SOLO con frases literales copiadas textualmente de los fragmentos relevantes.
+      4. Si la pregunta no tiene respuesta clara en el contexto, di la frase exacta mencionada en el punto 1.
+      5. No completes ni inventes nada.
+      
+      Aquí está la pregunta del usuario:
+      [CONSULTA DEL USUARIO]
+      {query}
+      
+      Aquí está el contexto disponible, formado por fragmentos extraídos de documentos:
+      [CONTEXT RELEVANTE]
+      {context}
+      
+      proporciona una respuesta clara y precisa usando solo el contexto.
     ollama:
-      base-url: "http://localhost:11434"
+      base-url: "http://ollama:11434"
       model: "phi3:mini"
-      temperature: 0.0
+      temperature: 0.2
       timeout-sec: 180
     llama:
       base-url: "http://localhost:8000/v1"
@@ -49,7 +62,7 @@ rag:
       top-k: 50
   inference:
     max-results: 5
-    min-score: 0.85
+    min-score: 0.7
   metadata:
     enrich-with:
       - nivel
@@ -109,25 +122,33 @@ logging:
     root: INFO
     org.shark.evolvai: INFO
     org.springframework.web: INFO
-    org.springdoc: INFO
+    org.springdoc: DEBUG
+    io.swagger.v3: DEBUG
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql: INFO
     org.hibernate.orm.jdbc.bind: INFO
     org.hibernate.engine.jdbc.spi: INFO
+    io.micrometer: INFO
+    org.springframework.boot.actuate: INFO
 
-# Configuración de Springdoc
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
+
 
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
-  cors:
-    allowed-origins: "*"
-    allowed-methods: "*"
-    allowed-headers: "*"
+        include: "health,info,metrics,prometheus"  # Habilita endpoints clave
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      dynatrace:
+        enabled: true
+        api-token: dummy-token   # Poné cualquier string para testeo
+        uri: http://localhost:14499/api/v2/metrics/ingest # O el que tengas apuntando a WireMock o Dynatrace
+        device-id: evolvai-dev
+        technology-type: spring-boot
+      prometheus:
+        enabled: true
+

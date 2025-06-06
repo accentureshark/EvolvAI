@@ -1,0 +1,34 @@
+@startuml
+skinparam dpi 300
+skinparam maxMessageSize 120
+
+actor Usuario
+boundary EmbeddingController
+control RAGEmbeddingService
+entity EmbeddingStorage
+entity EmbeddingStore
+database PostgreSQL
+
+Usuario -> EmbeddingController : DELETE /api/embeddings/remove-all
+
+note right of EmbeddingController : Paso 1️: Recibir solicitud de eliminación masiva
+EmbeddingController -> RAGEmbeddingService : removeAllDocuments()
+
+activate RAGEmbeddingService
+note right of RAGEmbeddingService : Paso 2️: Delegar al storage
+RAGEmbeddingService -> EmbeddingStorage : removeAll()
+
+note right of EmbeddingStorage : Paso 3️: Llamar al store bajo nivel
+EmbeddingStorage -> EmbeddingStore : removeAll()
+
+note right of EmbeddingStore : Paso 4️: Ejecutar TRUNCATE en la tabla de embeddings
+EmbeddingStore -> PostgreSQL : TRUNCATE TABLE embeddings
+PostgreSQL --> EmbeddingStore : OK
+
+EmbeddingStore --> EmbeddingStorage : Confirmación
+EmbeddingStorage --> RAGEmbeddingService : Confirmación
+deactivate RAGEmbeddingService
+
+note right of EmbeddingController : Paso 5️: Responder al cliente
+EmbeddingController --> Usuario : 200 OK\n"Embeddings eliminados correctamente"
+@enduml

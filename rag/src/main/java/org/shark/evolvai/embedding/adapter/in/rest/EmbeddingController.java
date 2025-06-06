@@ -70,16 +70,17 @@ public class EmbeddingController {
 
             Map<String, String> baseMetadata = new HashMap<>();
             Object input= null;
-            String docId ;
+
 
             // JSON estructurado
             if (filename.endsWith(".json")) {
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, Object> doc = mapper.readValue(file.getInputStream(), new TypeReference<>() {});
                 baseMetadata.putAll((Map<String, String>) doc.get("metadata"));
-                docId = baseMetadata.getOrDefault("documentId", filename);  // Usa el que vino o el nuevo UUID
+
                 input = doc.get("data");
             }
+
 
             // Forzar siempre documentId y originalFile al nombre del archivo subido
             baseMetadata.put("documentId", filename);

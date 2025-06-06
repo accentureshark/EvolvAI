@@ -1,4 +1,7 @@
 @startuml
+skinparam dpi 300
+skinparam maxMessageSize 120
+
 actor Usuario
 participant "Controller REST\n(InferenceController)" as Controller
 participant "InferenceService"

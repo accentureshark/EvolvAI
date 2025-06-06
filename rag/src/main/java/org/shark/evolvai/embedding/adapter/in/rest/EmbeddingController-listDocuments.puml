@@ -1,0 +1,28 @@
+@startuml
+skinparam dpi 300
+skinparam maxMessageSize 120
+
+actor Usuario
+boundary EmbeddingController
+control RAGEmbeddingService
+control EmbeddingStorage
+database PostgreSQL
+
+Usuario -> EmbeddingController : GET /api/embeddings/documents
+
+note right of EmbeddingController : Paso 1: Recibir solicitud para listar document_id
+EmbeddingController -> RAGEmbeddingService : listDocumentIds()
+
+activate RAGEmbeddingService
+note right of RAGEmbeddingService : Paso 2: Consultar almacenamiento
+RAGEmbeddingService -> EmbeddingStorage : findAllDocumentIds()
+
+note right of EmbeddingStorage : Ejecuta SELECT DISTINCT document_id\npara obtener todos los IDs únicos
+EmbeddingStorage -> PostgreSQL : SELECT DISTINCT document_id FROM tabla
+PostgreSQL --> EmbeddingStorage : List<String> ids
+EmbeddingStorage --> RAGEmbeddingService : List<String>
+deactivate RAGEmbeddingService
+
+note right of EmbeddingController : Paso 3: Devolver lista al cliente
+EmbeddingController --> Usuario : 200 OK + JSON [documentId1, documentId2, ...]
+@enduml

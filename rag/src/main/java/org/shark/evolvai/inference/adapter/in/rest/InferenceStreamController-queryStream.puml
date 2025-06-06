@@ -1,0 +1,53 @@
+@startuml
+skinparam dpi 300
+skinparam maxMessageSize 120
+
+actor Usuario
+boundary Controller as InferenceStreamController
+control InferenceUseCase as InferenceService
+control EmbeddingGenerator
+control EmbeddingStorage
+database PostgreSQL
+control ChatMemoryService
+entity OllamaAPI
+
+Usuario -> InferenceStreamController : POST /api/inference/query-stream\n(RagQueryRequest)
+InferenceStreamController -> InferenceService : queryStream(request)
+
+activate InferenceService
+
+note right of InferenceService : Paso 1: Preparar contexto de embedding
+InferenceService -> EmbeddingGenerator : generateEmbedding(request.query)
+EmbeddingGenerator --> InferenceService : embedding
+
+InferenceService -> EmbeddingStorage : findSimilar(embedding, filtros)
+EmbeddingStorage -> PostgreSQL : SELECT ... usando pgvector
+PostgreSQL --> EmbeddingStorage : List<EmbeddingMatchDto>
+EmbeddingStorage --> InferenceService : List<EmbeddingMatchDto>
+
+InferenceService -> ChatMemoryService : getConversationHistory(request.conversationId)
+ChatMemoryService --> InferenceService : List<ChatMessage>
+
+
+note right of InferenceService : Paso 2: Verificar si hay contexto
+alt No hay documentos relevantes
+    InferenceService --> InferenceStreamController : Flux.just("No hay información suficiente...")
+    InferenceStreamController --> Usuario : 200 OK + mensaje
+    deactivate InferenceService
+    return
+end
+
+note right of InferenceService : Paso 3: Preparar prompt final
+InferenceService -> InferenceService : construirPrompt(query, context)
+
+note right of InferenceService : Paso 4: Llamar a LLM en streaming
+InferenceService -> OllamaAPI : POST /api/generate\n(stream: true)
+OllamaAPI --> InferenceService : Flux<String> (fragmentos)
+
+note right of InferenceService : Paso 5: Transformar respuesta
+InferenceService -> InferenceService : groupFragmentsForUi()
+
+InferenceService --> InferenceStreamController : Flux<String>
+InferenceStreamController --> Usuario : 200 OK + stream SSE
+deactivate InferenceService
+@enduml

@@ -1,0 +1,84 @@
+@startuml
+skinparam dpi 300
+skinparam maxMessageSize 120
+
+actor "Cliente" as client
+boundary "EmbeddingController" as controller
+control "EmbeddingUseCase" as useCase
+control "RAGEmbeddingService" as service
+control "EmbeddingGeneratorFactory" as factory
+control "EmbeddingGenerator" as generator
+entity "PgVectorEmbeddingStorage" as storage
+database "PostgreSQL\n(pgvector)" as db
+
+client -> controller: GET /api/embeddings/search\n(query, maxResults?, minScore?)
+activate controller
+
+note right of controller
+Paso 1: Validar y asignar parámetros por defecto
+- maxResults ← request o config
+- minScore ← request o config
+end note
+
+controller -> useCase: findSimilarDocuments(query, results, score)
+activate useCase
+
+note right of useCase
+Paso 2: Buscar documentos similares
+- Generar embedding del query
+- Buscar embeddings cercanos
+end note
+
+useCase -> service: findSimilarDocuments(query, results, score)
+activate service
+
+note right of service
+Paso 3: Obtener generador y crear embedding
+end note
+
+service -> factory: get()
+activate factory
+factory --> service: EmbeddingGenerator
+deactivate factory
+
+service -> generator: generateEmbedding(query)
+activate generator
+
+note right of generator
+Paso 4: Convertir texto a vector
+- Preprocesar texto
+- Vectorizar con modelo LLM
+end note
+
+generator --> service: Embedding
+deactivate generator
+
+note right of service
+Paso 5: Buscar similitud en el storage
+end note
+service -> storage: findSimilar(embedding, maxResults, minScore)
+activate storage
+
+storage -> db: SELECT ... ORDER BY embedding <#> query\nLIMIT maxResults
+activate db
+db --> storage: List<resultados>
+deactivate db
+
+storage --> service: List<EmbeddingMatch>
+deactivate storage
+
+service --> useCase: List<String>
+deactivate service
+
+useCase --> controller: List<String>
+deactivate useCase
+
+note right of controller
+Paso 6: Devolver al cliente
+- Lista de IDs más similares
+- Ordenados por score
+end note
+
+controller --> client: 200 OK\n[List<String>]
+deactivate controller
+@enduml

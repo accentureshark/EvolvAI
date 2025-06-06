@@ -1,0 +1,55 @@
+@startuml
+skinparam dpi 300
+skinparam maxMessageSize 120
+
+actor Usuario
+boundary EmbeddingController
+control SmartChunkingService
+control RAGEmbeddingService
+control TextChunkingService
+control SemanticJsonChunkingService
+entity EmbeddingGenerator
+entity EmbeddingStorage
+database PostgreSQL
+
+Usuario -> EmbeddingController : POST /api/embeddings/upload\n(MultipartFile file)
+
+note right of EmbeddingController : Paso 1: Validar archivo y tipo
+EmbeddingController -> EmbeddingController : Leer nombre, tipo, contenido JSON
+EmbeddingController -> SmartChunkingService : chunk(input, baseMetadata)
+
+activate SmartChunkingService
+note right of SmartChunkingService : Paso 2: Elegir estrategia de chunking\n(texto plano o JSON)
+SmartChunkingService -> SmartChunkingService : Detectar tipo de input
+SmartChunkingService -> TextChunkingService : Si texto plano → chunk(text, metadata)
+SmartChunkingService -> SemanticJsonChunkingService : Si JSON → chunk(lista, metadata)
+SmartChunkingService --> EmbeddingController : List<TextSegment>
+deactivate SmartChunkingService
+
+note right of EmbeddingController : Paso 3: Verificar que haya fragmentos válidos
+alt Lista vacía
+    EmbeddingController --> Usuario : 400 Bad Request\n"No se generaron fragmentos"
+    return
+end
+
+EmbeddingController -> RAGEmbeddingService : index(List<TextSegment>)
+
+activate RAGEmbeddingService
+note right of RAGEmbeddingService : Paso 4: Generar embeddings y almacenar
+loop por cada fragmento
+    RAGEmbeddingService -> EmbeddingGenerator : generateEmbedding(prompt + text)
+    EmbeddingGenerator --> RAGEmbeddingService : Embedding
+
+    RAGEmbeddingService -> EmbeddingStorage : store(docId, embedding, text, metadata)
+    note right of EmbeddingStorage : Verifica existencia por document_id
+    EmbeddingStorage -> PostgreSQL : SELECT 1 FROM tabla WHERE document_id = ?
+
+    note right of EmbeddingStorage : Inserta nuevo embedding\ncon texto y metadatos
+    EmbeddingStorage -> PostgreSQL : INSERT INTO tabla (...) VALUES (...)
+end
+deactivate RAGEmbeddingService
+
+note right of EmbeddingController : Paso 5: Confirmar operación
+RAGEmbeddingService --> EmbeddingController : OK
+EmbeddingController --> Usuario : 200 OK\n"Documento procesado con N fragmentos"
+@enduml

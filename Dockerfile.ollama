@@ -1,8 +1,0 @@
-FROM ollama/ollama:latest
-
-USER root
-RUN apt-get update && apt-get install -y curl
-COPY download-models.sh /download-models.sh
-RUN chmod +x /download-models.sh
-
-ENTRYPOINT ["/download-models.sh"]

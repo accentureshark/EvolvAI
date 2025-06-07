@@ -1,0 +1,41 @@
+@startuml
+skinparam dpi 300
+skinparam maxMessageSize 120
+
+
+actor Usuario
+boundary EmbeddingController
+control RAGEmbeddingService
+control TextChunkingService
+control EmbeddingGenerator
+control EmbeddingStorage
+database "PostgreSQL\n(pgvector)" as db
+
+Usuario -> EmbeddingController : POST /api/embeddings/index\n(DocumentRequest)
+
+note right of EmbeddingController : Paso 1: Validar y obtener ID\ndesde el request o generar UUID
+EmbeddingController -> RAGEmbeddingService : indexDocument(id, text, customPrompt)
+
+activate RAGEmbeddingService
+note right of RAGEmbeddingService : Paso 2: Chunkificar texto\n(textChunkingService)
+RAGEmbeddingService -> TextChunkingService : chunk(text, baseMetadata)
+TextChunkingService --> RAGEmbeddingService : List<TextSegment>
+
+note right of RAGEmbeddingService : Paso 3: Generar embedding y almacenar
+loop por cada fragmento
+    RAGEmbeddingService -> EmbeddingGenerator : generateEmbedding(prompt + texto)
+    EmbeddingGenerator --> RAGEmbeddingService : Embedding
+
+    RAGEmbeddingService -> EmbeddingStorage : store(documentId, embedding, texto, metadata)
+    note right of EmbeddingStorage : Verifica existencia por document_id
+    EmbeddingStorage -> db : SELECT 1 FROM tabla WHERE document_id = ?
+
+    note right of EmbeddingStorage : Inserta nuevo embedding\ncon texto y metadatos
+    EmbeddingStorage -> db : INSERT INTO tabla (...) VALUES (...)
+end
+deactivate RAGEmbeddingService
+
+note right of EmbeddingController : Paso 4: Confirmar al cliente
+RAGEmbeddingService --> EmbeddingController : OK
+EmbeddingController --> Usuario : 200 OK
+@enduml

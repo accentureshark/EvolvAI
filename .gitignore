@@ -1,4 +1,3 @@
-/target/
-/models/
+target/
+models/
 /rag/src/main/resources/model/
-/pre-parser/target/

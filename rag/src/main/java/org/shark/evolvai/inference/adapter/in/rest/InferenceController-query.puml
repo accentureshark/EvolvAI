@@ -1,0 +1,55 @@
+@startuml
+skinparam dpi 300
+skinparam maxMessageSize 120
+
+actor Usuario
+boundary Controller as InferenceController
+control InferenceUseCase as InferenceService
+control EmbeddingGenerator
+control EmbeddingStorage
+database PostgreSQL
+control ChatMemoryService
+control LlmProvider
+
+Usuario -> InferenceController : POST /api/inference/query\n(RagQueryRequest)
+InferenceController -> InferenceService : query(request)
+
+activate InferenceService
+
+note right of InferenceService : Paso 1: Preparar contexto de embedding
+InferenceService -> EmbeddingGenerator : generateEmbedding(request.query)
+EmbeddingGenerator --> InferenceService : embedding
+
+InferenceService -> EmbeddingStorage : findSimilar(embedding, maxResults, minScore)
+EmbeddingStorage -> PostgreSQL : SELECT usando pgvector
+PostgreSQL --> EmbeddingStorage : List<EmbeddingMatchDto>
+EmbeddingStorage --> InferenceService : List<EmbeddingMatchDto>
+
+InferenceService -> ChatMemoryService : getConversationHistory(request.conversationId)
+ChatMemoryService --> InferenceService : List<ChatMessage>
+
+note right of InferenceService : Paso 2: Verificar si hay contexto
+alt No hay documentos relevantes
+    InferenceService --> InferenceController : QueryResponse("No hay información suficiente...")
+    InferenceController --> Usuario : 200 OK + mensaje
+    deactivate InferenceService
+    return
+end
+
+note right of InferenceService : Paso 3: Preparar prompt final
+InferenceService -> InferenceService : construirPrompt(query, context)
+
+note right of InferenceService : Paso 4: Generar respuesta del LLM
+InferenceService -> LlmProvider : generateResponse(historial, prompt)
+LlmProvider --> InferenceService : String respuesta
+
+note right of InferenceService : Paso 5: Guardar en memoria
+InferenceService -> ChatMemoryService : updateMessages(conversationId, [UserMessage, AiMessage])
+ChatMemoryService --> InferenceService : OK
+
+note right of InferenceService : Paso 6: Devolver respuesta
+InferenceService --> InferenceController : QueryResponse(respuesta, matches, conversationId)
+deactivate InferenceService
+
+InferenceController --> Usuario : 200 OK + respuesta JSON
+@enduml

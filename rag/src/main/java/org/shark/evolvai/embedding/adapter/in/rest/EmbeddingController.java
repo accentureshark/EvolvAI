@@ -2,7 +2,9 @@ package org.shark.evolvai.embedding.adapter.in.rest;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.shark.evolvai.config.RagProperties;
 import org.shark.evolvai.embedding.port.in.EmbeddingUseCase;
 import org.shark.evolvai.metrics.MonitoredEndpoint;
@@ -28,6 +30,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/embeddings")
+@Tag(name = "Embeddings API", description = "API para gestionar embeddings de documentos, incluyendo indexación, búsqueda y administración de vectores"
+)
 public class EmbeddingController {
 
     private static final Logger log = LoggerFactory.getLogger(EmbeddingController.class);
@@ -55,7 +59,8 @@ public class EmbeddingController {
             description = "Permite subir archivos .txt, .pdf o .json estructurados para ser indexados y embebidos en la base de datos de embeddings.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Documento procesado correctamente"),
-                    @ApiResponse(responseCode = "400", description = "Solicitud inválida o tipo de archivo no soportado")
+                    @ApiResponse(responseCode = "400", description = "Solicitud inválida o tipo de archivo no soportado"),
+                    @ApiResponse(responseCode = "500", description = "Error procesando el documento")
             }
     )
     @PostMapping("/upload")
@@ -70,17 +75,19 @@ public class EmbeddingController {
 
             Map<String, String> baseMetadata = new HashMap<>();
             Object input= null;
-
+            String docId ;
 
             // JSON estructurado
             if (filename.endsWith(".json")) {
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, Object> doc = mapper.readValue(file.getInputStream(), new TypeReference<>() {});
-                baseMetadata.putAll((Map<String, String>) doc.get("metadata"));
-
+                Object metadataObj = doc.get("metadata");
+                if (metadataObj instanceof Map) {
+                    baseMetadata.putAll((Map<String, String>) metadataObj);
+                }
+                docId = baseMetadata.getOrDefault("documentId", filename);
                 input = doc.get("data");
             }
-
 
             // Forzar siempre documentId y originalFile al nombre del archivo subido
             baseMetadata.put("documentId", filename);
@@ -103,7 +110,18 @@ public class EmbeddingController {
         }
     }
 
-
+    @Operation(
+            summary = "Indexa un documento como embeddings",
+            description = "Permite enviar un documento en texto plano para que sea fragmentado, convertido en embeddings y almacenado. Puede incluir un prompt personalizado",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    description = "Documento a indexar con texto plano y metadatos opcionales"
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Documento indexado correctamente"),
+                    @ApiResponse(responseCode = "500", description = "Error interno")
+            }
+    )
     @PostMapping("/index")
     @MonitoredEndpoint(name = "api.embedding.index" )
     public ResponseEntity<Void> indexDocument(@RequestBody DocumentRequest request) {
@@ -112,6 +130,19 @@ public class EmbeddingController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(
+            summary = "Buscar documentos similares por embedding",
+            description = "Genera un embedding a partir de la consulta y busca documentos previamente indexados que tengan una similitud vectorial alta",
+            parameters = {
+                    @Parameter(name = "query", required = true, description = "Texto base para generar el embedding y comparar"),
+                    @Parameter(name = "maxResults", required = false, description = "Máximo de resultados a devolver (opcional)"),
+                    @Parameter(name = "minScore", required = false, description = "Puntaje mínimo de similitud (opcional)")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de document IDs similares"),
+                    @ApiResponse(responseCode = "500", description = "Error interno al procesar la búsqueda")
+            }
+    )
     @GetMapping("/search")
     @MonitoredEndpoint(name = "api.embedding.search" )
     public ResponseEntity<List<String>> search(
@@ -124,6 +155,14 @@ public class EmbeddingController {
         return ResponseEntity.ok(resultsList);
     }
 
+    @Operation(
+            summary = "Listar todos los document_id indexados",
+            description = "Devuelve una lista de identificadores únicos de documentos que han sido previamente embebidos y almacenados en el sistema. Útil para auditar o recuperar metadatos.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de document_id únicos"),
+                    @ApiResponse(responseCode = "500", description = "Error al consultar los document_id")
+            }
+    )
     @GetMapping("/documents")
     @MonitoredEndpoint(name = "api.embedding.documents" )
     public ResponseEntity<List<String>> listDocuments() {
@@ -133,11 +172,15 @@ public class EmbeddingController {
         return ResponseEntity.ok(ids);
     }
 
-    @DeleteMapping("/remove-all")
     @Operation(
             summary = "Elimina todos los embeddings del almacenamiento",
-            description = "Borra todos los embeddings actualmente almacenados en PgVector u otro backend configurado."
+            description = "Borra todos los embeddings actualmente almacenados en la BD",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Todos los embeddings fueron eliminados correctamente"),
+                    @ApiResponse(responseCode = "500", description = "Error eliminando embeddings")
+            }
     )
+    @DeleteMapping("/remove-all")
     @MonitoredEndpoint(name = "api.embedding.remove-all" )
     public ResponseEntity<String> removeAllEmbeddings() {
         try {

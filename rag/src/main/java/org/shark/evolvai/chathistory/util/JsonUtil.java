@@ -21,7 +21,7 @@ public class JsonUtil {
         try {
             List<StoredMessage> stored = messages.stream()
                     .map(msg -> {
-                        if (msg instanceof UserMessage u) return new StoredMessage("user", u.text());
+                        if (msg instanceof UserMessage u) return new StoredMessage("user", u.singleText());
                         if (msg instanceof AiMessage a) return new StoredMessage("ai", a.text());
                         if (msg instanceof SystemMessage s) return new StoredMessage("system", s.text());
                         throw new IllegalArgumentException("Unsupported message type: " + msg.getClass());

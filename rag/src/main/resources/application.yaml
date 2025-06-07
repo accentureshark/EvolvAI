@@ -21,7 +21,7 @@ rag:
       tableName: embedding.embeddings
       dimensions: 1024 # Asegúrate de que coincida con el modelo de embeddings
     ollama:
-      base-url: http://localhost:11434
+      base-url: http://localhost:11434 #localhost fuera de dockercompose
       model: nomic-embed-text  # Más específico y liviano para embeddings
     tokenizer:
       path: classpath:tokenizer/tokenizer.json
@@ -31,23 +31,16 @@ rag:
   llm:
     provider: "ollama"
     prompt: |
-      Eres un asistente experto que responde únicamente con información extraída de documentos provistos.      
-      Sigue estas reglas estrictamente:      
-      1. Si la respuesta NO está explícitamente en los documentos, responde exactamente: "No hay información suficiente en los documentos".
-      2. No agregues opiniones, explicaciones, inferencias ni información que no esté textual en el contexto.
-      3. Responde SOLO con frases literales copiadas textualmente de los fragmentos relevantes.
-      4. Si la pregunta no tiene respuesta clara en el contexto, di la frase exacta mencionada en el punto 1.
-      5. No completes ni inventes nada.
-      
-      Aquí está la pregunta del usuario:
-      [CONSULTA DEL USUARIO]
-      {query}
-      
-      Aquí está el contexto disponible, formado por fragmentos extraídos de documentos:
-      [CONTEXT RELEVANTE]
-      {context}
-      
-      proporciona una respuesta clara y precisa usando solo el contexto.
+        Respondé **solo** utilizando los fragmentos del contexto provisto abajo.
+        Si no encontrás una respuesta literal en el contexto, respondé exactamente: "No hay información suficiente en los documentos".
+        No agregues información, opiniones, ni expandas las ideas. NO inventes ni completes por tu cuenta.
+        Usá únicamente frases textuales del contexto. Si es necesario, copiá textualmente los fragmentos relevantes.
+
+        [CONSULTA DEL USUARIO]
+        {query}
+
+        [CONTEXT RELEVANTE]
+        {context}
     ollama:
       base-url: "http://localhost:11434"
       model: "phi3:mini"
@@ -131,27 +124,20 @@ logging:
     org.hibernate.type.descriptor.sql: INFO
     org.hibernate.orm.jdbc.bind: INFO
     org.hibernate.engine.jdbc.spi: INFO
-    io.micrometer: INFO
-    org.springframework.boot.actuate: INFO
 
-
+# Configuración de Springdoc
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
 
 management:
   endpoints:
     web:
       exposure:
-        include: "health,info,metrics,prometheus"  # Habilita endpoints clave
-  endpoint:
-    prometheus:
-      enabled: true
-  metrics:
-    export:
-      dynatrace:
-        enabled: true
-        api-token: dummy-token   # Poné cualquier string para testeo
-        uri: http://localhost:14499/api/v2/metrics/ingest # O el que tengas apuntando a WireMock o Dynatrace
-        device-id: evolvai-dev
-        technology-type: spring-boot
-      prometheus:
-        enabled: true
-
+        include: "*"
+  cors:
+    allowed-origins: "*"
+    allowed-methods: "*"
+    allowed-headers: "*"

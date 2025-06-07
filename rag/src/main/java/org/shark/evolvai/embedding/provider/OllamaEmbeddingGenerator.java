@@ -1,5 +1,6 @@
 package org.shark.evolvai.embedding.provider;
 
+import org.shark.evolvai.embedding.exception.ModelNotFoundException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +31,7 @@ public class OllamaEmbeddingGenerator implements EmbeddingGenerator {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public OllamaEmbeddingGenerator(
-            @Value("${llm.ollama.base-url:http://localhost:11434}") String baseUrl,
+            @Value("${llm.ollama.base-url:http://ollama:11434}") String baseUrl,
             @Value("${llm.ollama.model:nomic-embed-text}") String model
     ) {
         this.baseUrl = baseUrl;
@@ -57,7 +58,11 @@ public class OllamaEmbeddingGenerator implements EmbeddingGenerator {
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                throw new RuntimeException("Error de Ollama: " + response.body());
+                String body = response.body();
+                if (body != null && body.contains("not found")) {
+                    throw new ModelNotFoundException("Modelo de Ollama no encontrado: " + body);
+                }
+                log.error("Error al generar embedding con : {} - {}", response.statusCode(), body);
             }
 
             OllamaEmbeddingResponse embeddingResponse = objectMapper.readValue(response.body(), OllamaEmbeddingResponse.class);

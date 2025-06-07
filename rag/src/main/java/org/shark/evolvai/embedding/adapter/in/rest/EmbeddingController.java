@@ -192,4 +192,6 @@ public class EmbeddingController {
             return ResponseEntity.status(500).body("Error eliminando embeddings: " + e.getMessage());
         }
     }
+
+
 }

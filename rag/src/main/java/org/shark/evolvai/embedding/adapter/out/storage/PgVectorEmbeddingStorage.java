@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component("pgVectorEmbeddingStorage")
+
 @ConditionalOnProperty(name = "rag.embedding.storage.type", havingValue = "pgVector")
 public class PgVectorEmbeddingStorage implements EmbeddingStorage {
 

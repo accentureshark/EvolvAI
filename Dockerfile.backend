@@ -1,16 +1,29 @@
-# Stage de build
+# Etapa de builder
 FROM maven:3.9-eclipse-temurin-21 AS builder
+
 WORKDIR /app
-# COPY .m2 /root/.m2   # Elimina o comenta esta línea
+
+# Copia solo los poms primero para aprovechar el cache de dependencias
+COPY pom.xml .
+COPY rag/pom.xml rag/pom.xml
+# (Agrega COPY para otros módulos si tenés más)
+
+# Baja dependencias (esto necesita la estructura de módulos)
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn dependency:go-offline
+
+# Ahora copiá el resto del código fuente
 COPY . .
 
-RUN mvn -B -f pom.xml clean install -DskipTests
+# Compila todo el multi-módulo, saltea tests para acelerar
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn clean package -DskipTests
 
-# Stage de runtime con glibc (basado en Debian, NO alpine ni slim)
+# Etapa final: sólo el jar ejecutable
 FROM eclipse-temurin:21-jre
+WORKDIR /app
 
-RUN apt-get update && apt-get install -y libc6 libstdc++6 && rm -rf /var/lib/apt/lists/*
-
+# Copia el jar final generado por el submódulo 'rag'
 COPY --from=builder /app/rag/target/*.jar /app/app.jar
 
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

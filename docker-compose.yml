@@ -71,15 +71,15 @@ services:
         echo 'Preloading embedding model'
         curl http://ollama:11434/api/embed -H 'Content-Type: application/json' -d '{"model":"nomic-embed-text"}'
 
-  webapp:
-    image: nginx:alpine
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
     container_name: evolvai_web
     ports:
       - "8080:80"
-    volumes:
-      - ./webapp/static:/usr/share/nginx/html:ro
     depends_on:
-      - pgvector
+      - backend
 
   backend:
     build:

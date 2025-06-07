@@ -1,11 +1,11 @@
-// websocket.js
-// Lógica de WebSocket/logs
-
 import { log } from './utils.js';
+
 import { BACKEND_URL } from './api.js';
 
 export function setupWebSocketLogs() {
-    const socket = new SockJS(`${BACKEND_URL}/ws`);
+    //const socket = new SockJS(`${BACKEND_URL}/ws`);
+    const socket = new SockJS("/ws");
+
     const stompClient = Stomp.over(socket);
     stompClient.connect({}, () => {
         log("🧩 Conectado al WebSocket de logs");

@@ -1,7 +1,9 @@
-// Llamadas a la API y funciones fetch
+
 import { log } from './utils.js';
 
-export const BACKEND_URL = "http://localhost:8081";
+/// export const BACKEND_URL = "http://localhost:8081";
+export const BACKEND_URL = "";
+
 
 export function loadUploadedFiles() {
     fetch(`${BACKEND_URL}/api/embeddings/documents`)

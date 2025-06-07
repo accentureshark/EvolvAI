@@ -1,6 +1,7 @@
 package org.shark.evolvai.embedding.config;
 
 import org.shark.evolvai.config.RagProperties;
+import org.shark.evolvai.embedding.adapter.out.storage.PgVectorEmbeddingStorage;
 import org.shark.evolvai.embedding.domain.service.TextChunkingService;
 import org.shark.evolvai.embedding.port.out.EmbeddingGenerator;
 import org.shark.evolvai.embedding.port.out.EmbeddingStorage;
@@ -20,6 +21,21 @@ public class EmbeddingConfig {
 
     public EmbeddingConfig(RagProperties ragProperties) {
         this.ragProperties = ragProperties;
+    }
+
+    @Bean
+    @Qualifier("pgVectorEmbeddingStorage")
+    public EmbeddingStorage pgVectorEmbeddingStorage() {
+        RagProperties.Embedding.Pgvector pg = ragProperties.getEmbedding().getPgvector();
+        return new PgVectorEmbeddingStorage(
+                pg.getHost(),
+                pg.getPort(),
+                pg.getDatabase(),
+                pg.getUser(),
+                pg.getPassword(),
+                pg.getTableName(),
+                pg.getDimensions()
+        );
     }
 
     @Bean

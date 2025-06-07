@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
+import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
 import org.shark.evolvai.embedding.port.out.EmbeddingStorage;
 import org.slf4j.Logger;
@@ -131,8 +132,14 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     public List<EmbeddingMatch<String>> findSimilar(Embedding embedding, int maxResults, double minScore) {
         float[] padded = padToDimension(embedding.vector(), targetDimension);
         Embedding paddedEmbedding = new Embedding(padded);
+        EmbeddingSearchRequest embeddingSearchRequest = EmbeddingSearchRequest.builder()
+                .queryEmbedding(paddedEmbedding)
+                .maxResults(maxResults)
+                .minScore(minScore)
+                .build();
 
-        List<EmbeddingMatch<String>> results = embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore)
+        List<EmbeddingMatch<String>> results = embeddingStore.search(embeddingSearchRequest)
+                .matches()
                 .stream()
                 .map(match -> new EmbeddingMatch<>(
                         match.score(),
@@ -151,11 +158,18 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     public List<EmbeddingMatch<String>> findSimilar(Embedding embedding, int maxResults, double minScore, Metadata filter) {
         float[] padded = padToDimension(embedding.vector(), targetDimension);
         Embedding paddedEmbedding = new Embedding(padded);
+        EmbeddingSearchRequest embeddingSearchRequest = EmbeddingSearchRequest.builder()
+                .queryEmbedding(paddedEmbedding)
+                .maxResults(maxResults)
+                .minScore(minScore)
+                .build();
 
         Map<String, Object> filterMap = new HashMap<>();
         filter.toMap().forEach(filterMap::put);
 
-        List<EmbeddingMatch<String>> filtered = embeddingStore.findRelevant(paddedEmbedding, maxResults, minScore).stream()
+        List<EmbeddingMatch<String>> filtered = embeddingStore.search(embeddingSearchRequest)
+                .matches()
+                .stream()
                 .filter(match -> {
                     Map<String, Object> meta = new HashMap<>();
                     match.embedded().metadata().toMap().forEach(meta::put);

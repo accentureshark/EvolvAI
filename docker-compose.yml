@@ -93,8 +93,12 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      - ollama
-      - pgvector
+      ollama:
+        condition: service_healthy
+      ollama-init:
+        condition: service_completed_successfully
+      pgvector:
+        condition: service_started
 
 volumes:
   pgvector-data:

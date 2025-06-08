@@ -11,7 +11,7 @@ rag:
       type: pgVector  # Opciones: inMemory, pgVector
     generator:
       provider: ollama
-      model: bge-large-en
+      model: nomic-embed-text
     pgvector:
       host: localhost
       port: 5432
@@ -31,29 +31,23 @@ rag:
   llm:
     provider: "ollama"
     prompt: |
-        Respondé **solo** utilizando los fragmentos del contexto provisto abajo.
-        Si no encontrás una respuesta literal en el contexto, respondé exactamente: "No hay información suficiente en los documentos".
-        No agregues información, opiniones, ni expandas las ideas. NO inventes ni completes por tu cuenta.
-        Usá únicamente frases textuales del contexto. Si es necesario, copiá textualmente los fragmentos relevantes.
+      Respondé **solo** utilizando los fragmentos del contexto provisto abajo.
+      Si no encontrás una respuesta literal en el contexto, respondé exactamente: "No hay información suficiente en los documentos".
+      No agregues información, opiniones, ni expandas las ideas. NO inventes ni completes por tu cuenta.
+      Usá únicamente frases textuales del contexto. Si es necesario, copiá textualmente los fragmentos relevantes.
+      
+      [CONSULTA DEL USUARIO]
+      {query}
+      
+      [CONTEXT RELEVANTE]
+      {context}
 
-        [CONSULTA DEL USUARIO]
-        {query}
-
-        [CONTEXT RELEVANTE]
-        {context}
     ollama:
       base-url: "http://localhost:11434"
       model: "phi3:mini"
       temperature: 0.2
       timeout-sec: 180
-    llama:
-      base-url: "http://localhost:8000/v1"
-      api-key: "test_api_key"
-      model: "llama2"
-      temperature: 0.7
-      max-tokens: 512
-      top-p: 0.95
-      top-k: 50
+
   inference:
     max-results: 5
     min-score: 0.7

@@ -44,4 +44,16 @@ public class PostgresChatMemoryStore implements ChatMemoryStore {
     public void deleteMessages(Object id) {
         repository.deleteById(id.toString());
     }
+
+
+    @Transactional
+    public List<ChatMessage> getAllMessages() {
+        // ver de agrupar por conversationId
+
+        return repository.findAll().stream()
+                .flatMap(entity -> JsonUtil.deserializeMessages(entity.getMemoryJson()).stream())
+                .toList();
+    }
+
+
 }

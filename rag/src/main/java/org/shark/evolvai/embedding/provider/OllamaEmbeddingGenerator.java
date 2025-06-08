@@ -31,8 +31,8 @@ public class OllamaEmbeddingGenerator implements EmbeddingGenerator {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public OllamaEmbeddingGenerator(
-            @Value("${llm.ollama.base-url:http://ollama:11434}") String baseUrl,
-            @Value("${llm.ollama.model:nomic-embed-text}") String model
+            @Value("${rag.embedding.ollama.base-url}") String baseUrl,
+            @Value("${rag.embedding.generator.model}") String model
     ) {
         this.baseUrl = baseUrl;
         this.model = model;

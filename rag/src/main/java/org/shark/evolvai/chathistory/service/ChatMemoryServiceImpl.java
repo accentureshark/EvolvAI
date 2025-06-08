@@ -29,7 +29,10 @@ public class ChatMemoryServiceImpl implements ChatMemoryService {
 
     @Override
     public List<ChatMessage> getAllMessages() {
-        return List.of();
+        if (chatMemoryStore instanceof org.shark.evolvai.chathistory.adapter.out.PostgresChatMemoryStore store) {
+            return store.getAllMessages();
+        }
+        throw new UnsupportedOperationException("No soportado para este tipo de ChatMemoryStore");
     }
 }
 

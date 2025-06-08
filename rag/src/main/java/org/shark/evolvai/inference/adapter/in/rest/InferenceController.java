@@ -57,6 +57,7 @@ public class InferenceController {
             @Parameter(description = "Datos de la consulta", required = true)
             @Valid @RequestBody RagQueryRequest request) {
         log.info("Recibida consulta RAG básica: {}", request.getQuery());
+        log.info("Recibida consulta RAG conversationID: {}", request.getConversationId());
         log.info("Recibida consulta RAG prompt: {}", request.getCustomPrompt());
         log.info("Recibida consulta RAG documentId : {}", request.getDocumentId());
         QueryResponse response = inferenceUseCase.query(request);

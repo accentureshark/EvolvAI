@@ -1,4 +1,5 @@
 // Lógica de memoria e historial
+// webapp/static/memory.js
 import { log } from './utils.js';
 import { BACKEND_URL } from './api.js';
 
@@ -11,12 +12,10 @@ export function loadChatMemory() {
         .then(memory => {
             const sidebar = document.getElementById("sidebar-memory");
             let html = "<h4>Memoria</h4>";
-            if (memory && typeof memory === "string") {
-                html += `<p>${memory}</p>`;
-            } else if (Array.isArray(memory)) {
-                html += "<ul>";
-                memory.forEach(item => {
-                    html += `<li>${item}</li>`;
+            if (Array.isArray(memory) && memory.length > 0) {
+                html += "<ul style='max-height:300px;overflow:auto;'>";
+                memory.forEach(msg => {
+                    html += `<li><b>${msg.role}:</b> ${msg.content}</li>`;
                 });
                 html += "</ul>";
             } else {

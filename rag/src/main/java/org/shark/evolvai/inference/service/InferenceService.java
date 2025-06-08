@@ -68,7 +68,7 @@ public class InferenceService implements InferenceUseCase {
 
     @Override
     public QueryResponse query(RagQueryRequest request) {
-        log.info("Iniciando consulta básica: {}", request.getQuery());
+        log.info("Iniciando consulta básica: {}", request );
 
         EmbeddingContext ctx = prepareEmbeddingContext(request);
 

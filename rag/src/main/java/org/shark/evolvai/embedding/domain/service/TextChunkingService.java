@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-@Slf4j
+
 public class TextChunkingService {
 
     private static final Logger log = LoggerFactory.getLogger(TextChunkingService.class);

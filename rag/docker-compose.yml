@@ -1,4 +1,3 @@
-
 services:
 
   pgvector:
@@ -14,17 +13,16 @@ services:
       - "5432:5432"
     volumes:
       - pgvector-data:/var/lib/postgresql/data
-      - ./rag/src/main/sql/initdb:/docker-entrypoint-initdb.d
-    depends_on:
-      - ollama
+      - ./src/main/sql/initdb:/docker-entrypoint-initdb.d
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres" ]
-      interval: 5s
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
+
   ollama:
     image: docker.io/ollama/ollama:latest
-    container_name: ollama
+    container_name: evolvai-ollama
     restart: unless-stopped
     deploy:
       resources:
@@ -71,36 +69,6 @@ services:
         echo 'Preloading embedding model'
         curl http://ollama:11434/api/embed -H 'Content-Type: application/json' -d '{"model":"nomic-embed-text"}'
 
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
-    container_name: evolvai_web
-    ports:
-      - "8080:80"
-    depends_on:
-      - backend
-
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    container_name: evolvai_backend
-    volumes:
-      - maven-repo:/root/.m2
-    ports:
-      - "8081:8081"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    depends_on:
-      ollama:
-        condition: service_healthy
-      ollama-init:
-        condition: service_completed_successfully
-      pgvector:
-        condition: service_started
-
 volumes:
   pgvector-data:
-  maven-repo:
   ollama-data:

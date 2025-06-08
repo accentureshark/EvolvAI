@@ -11,6 +11,7 @@ export function populateFileList(files) {
     fileList.innerHTML = "";
     if (!files || !files.length) {
         selectedDocumentId = null;
+        log("📂 No hay documentos disponibles.");
         return;
     }
     files.forEach(docId => {
@@ -23,6 +24,7 @@ export function populateFileList(files) {
     // Selecciona el primero por defecto si no hay uno seleccionado
     if (!selectedDocumentId && files.length > 0) {
         selectedDocumentId = files[0];
+        log(`📝 Documento seleccionado automáticamente: ${selectedDocumentId}`);
     }
     // Refleja la selección en el select
     fileList.value = selectedDocumentId;
@@ -38,7 +40,10 @@ export function populateFileList(files) {
 export function loadUploadedFiles() {
     fetch(`${BACKEND_URL}/api/embeddings/documents`)
         .then(res => res.json())
-        .then(files => populateFileList(files))
+        .then(files => {
+            log(`📄 Documentos cargados: ${files.length}`);
+            populateFileList(files);
+        })
         .catch(err => log("❌ Error listando archivos: " + err.message));
 }
 
@@ -147,6 +152,3 @@ export function setupFileUpload() {
             });
     };
 }
-
-// Exporta también para que otros módulos puedan refrescar archivos y saber el docId seleccionado
-// export { loadUploadedFiles };

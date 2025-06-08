@@ -1,8 +1,8 @@
 
 import { log } from './utils.js';
 
-/// export const BACKEND_URL = "http://localhost:8081";
-export const BACKEND_URL = "";
+export const BACKEND_URL = "http://localhost:8081";
+//export const BACKEND_URL = "";
 
 
 export function loadUploadedFiles() {

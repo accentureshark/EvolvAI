@@ -59,17 +59,14 @@ public class GenericLlmProvider implements LlmProvider {
     /**
      * Nuevo método: genera una respuesta usando una lista de ChatMessage como contexto.
      */
-    public String generateResponse(List<ChatMessage> context, String query, String customPrompt) {
+    public String generateResponse(List<ChatMessage> context, String query) {
         if (!isModelLoaded(modelName)) {
             throw new ModelNotLoadedException(modelName);
         }
         try {
-            String prompt = (customPrompt != null && !customPrompt.isBlank()) ? customPrompt : defaultPrompt;
-            log.info("Prompt usado para LLM: {}", prompt);
             // Construir la lista de mensajes: prompt como primer mensaje, luego contexto, luego query
             List<ChatMessage> messages = new java.util.ArrayList<>();
 
-            messages.add(new UserMessage(prompt));
             if (context != null && !context.isEmpty()) {
                 messages.addAll(context);
             }

@@ -11,7 +11,7 @@ rag:
       type: pgVector  # Opciones: inMemory, pgVector
     generator:
       provider: ollama
-      model: nomic-embed-text
+      model: ${OLLAMA_EMBEDDING_MODEL}
     pgvector:
       host: localhost
       port: 5432
@@ -22,7 +22,7 @@ rag:
       dimensions: 1024 # Asegúrate de que coincida con el modelo de embeddings
     ollama:
       base-url: http://localhost:11434 #localhost fuera de dockercompose
-      model: nomic-embed-text  # Más específico y liviano para embeddings
+      model: ${OLLAMA_EMBEDDING_MODEL}  # Más específico y liviano para embeddings
     tokenizer:
       path: classpath:tokenizer/tokenizer.json
       generator:
@@ -35,16 +35,16 @@ rag:
       Si no encontrás una respuesta literal en el contexto, respondé exactamente: "No hay información suficiente en los documentos".
       No agregues información, opiniones, ni expandas las ideas. NO inventes ni completes por tu cuenta.
       Usá únicamente frases textuales del contexto. Si es necesario, copiá textualmente los fragmentos relevantes.
-      
+
       [CONSULTA DEL USUARIO]
       {query}
-      
+
       [CONTEXT RELEVANTE]
       {context}
 
     ollama:
       base-url: "http://localhost:11434"
-      model: "phi3:mini"
+      model: ${OLLAMA_LLM_MODEL}
       temperature: 0.2
       timeout-sec: 180
 

@@ -1,74 +1,20 @@
+
 services:
+
   pgvector:
-    image: docker.io/pgvector/pgvector:pg17
-    container_name: evolvai-pgvector
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: evolvai
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres1234
-      PGDATA: /var/lib/postgresql/data/pgdata
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgvector-data:/var/lib/postgresql/data
-      - ./rag/src/main/sql/initdb:/docker-entrypoint-initdb.d
-    depends_on:
-      - ollama
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+    extends:
+      file: ./rag/docker-compose.yml
+      service: pgvector
+
   ollama:
-    image: docker.io/ollama/ollama:latest
-    container_name: ollama
-    restart: unless-stopped
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities:
-                - gpu
-    ports:
-      - "11434:11434"
-    environment:
-      CUDA_VISIBLE_DEVICES: 0
-      OLLAMA_KEEP_ALIVE: -1
-      OLLAMA_FLASH_ATTENTION: 1
-      OLLAMA_KV_CACHE_TYPE: q8_0
-      OLLAMA_DEBUG: 1
-    volumes:
-      - ollama-data:/root/.ollama
-    healthcheck:
-      test: ["CMD", "ollama", "--version"]
-      interval: 1h
-      timeout: 5s
-      retries: 1
-      start_period: 10s
+    extends:
+      file: ./rag/docker-compose.yml
+      service: ollama
 
   ollama-init:
-    image: docker.io/curlimages/curl:latest
-    container_name: evolvai-ollama-init
-    restart: no
-    depends_on:
-      ollama:
-        condition: service_healthy
-    entrypoint:
-      - /bin/sh
-      - -c
-      - |
-        echo 'Pulling LLM'
-        curl http://ollama:11434/api/pull -H 'Content-Type: application/json' -d '{"name":"phi3:mini"}'
-        echo 'Preloading LLM'
-        curl http://ollama:11434/api/generate -H 'Content-Type: application/json' -d '{"model":"phi3:mini"}'
-        echo 'Pulling embedding model'
-        curl http://ollama:11434/api/pull -H 'Content-Type: application/json' -d '{"name":"nomic-embed-text"}'
-        echo 'Preloading embedding model'
-        curl http://ollama:11434/api/embed -H 'Content-Type: application/json' -d '{"model":"nomic-embed-text"}'
-
+    extends:
+      file: ./rag/docker-compose.yml
+      service: ollama-init
 
   frontend:
     build:
@@ -83,7 +29,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.nginx
-    container_name: evolvai-nginx
+    container_name: nginx
     ports:
       - "8080:80"
     depends_on:
@@ -94,57 +40,24 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: evolvai_backend
+    container_name: backend
     volumes:
       - maven-repo:/root/.m2
     ports:
       - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - ./rag/.env
     depends_on:
+      pgvector:
+        condition: service_healthy
       ollama:
         condition: service_healthy
       ollama-init:
         condition: service_completed_successfully
-      pgvector:
-        condition: service_started
 
 volumes:
-  ollama-data:
   pgvector-data:
+  ollama-data:
   maven-repo:
-#  maven-cache:
-#    image: maven:3.9-eclipse-temurin-17-alpine
-#
-#    volumes:
-#      - maven-repo:/root/.m2
-#    command: tail -f /dev/null
-#
-#  backend:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile.backend
-#    container_name: evolvai_backend
-#    volumes:
-#      - maven-repo:/root/.m2
-#    ports:
-#      - "8081:8081"
-#    depends_on:
-#      pgvector:
-#        condition: service_healthy
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=docker
-#
-#
-#  webapp:
-#    image: nginx:alpine
-#    container_name: evolvai_web
-#    ports:
-#      - "8080:80"
-#    volumes:
-#      - ./webapp:/usr/share/nginx/html:ro
-#    depends_on:
-#      - backend
-
-
-

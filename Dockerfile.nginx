@@ -1,0 +1,4 @@
+FROM nginx:1.25
+# Elimina el default.conf que trae la imagen y suele causar conflictos
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf

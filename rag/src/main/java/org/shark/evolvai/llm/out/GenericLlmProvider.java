@@ -29,9 +29,9 @@ public class GenericLlmProvider implements LlmProvider {
 
     public GenericLlmProvider(
             ChatModel chatModel,
-            @Value("${llm.ollama.model:phi3:mini}") String modelName,
-            @Value("${llm.ollama.base-url:http://localhost:11434}") String ollamaBaseUrl,
-            @Value("${llm.default-prompt:Responde de manera clara y profesional:}") String defaultPrompt
+            @Value("${rag.llm.ollama.model}") String modelName,
+            @Value("${rag.llm.ollama.base-url}") String ollamaBaseUrl,
+            @Value("${rag.llm.prompt}") String defaultPrompt
     ) {
         this.chatModel = chatModel;
         this.modelName = modelName;

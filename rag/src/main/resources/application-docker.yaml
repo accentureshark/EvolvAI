@@ -2,6 +2,8 @@ rag:
   embedding:
     pgvector:
       host: pgvector
+    ollama:
+      base-url: http://ollama:11434
   llm:
     ollama:
       base-url: http://ollama:11434

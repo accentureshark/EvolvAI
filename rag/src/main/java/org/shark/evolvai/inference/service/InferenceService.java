@@ -84,7 +84,7 @@ public class InferenceService implements InferenceUseCase {
 
         log.info("Prompt final enviado a LLM:\n{}", finalPrompt);
 
-        String answer = llmProvider.generateResponse(ctx.conversationHistory(), finalPrompt, null);
+        String answer = llmProvider.generateResponse(ctx.conversationHistory(), finalPrompt);
 
         chatMemoryService.updateMessages(ctx.conversationId(), List.of(
                 new UserMessage(request.getQuery()),

@@ -8,7 +8,7 @@ public interface LlmProvider {
 
     ChatMessage send(List<ChatMessage> messages);
 
-    public String generateResponse(List<ChatMessage> context, String query, String customPrompt) ;
+    public String generateResponse(List<ChatMessage> context, String query) ;
 
     String getDefaultPrompt();
 }

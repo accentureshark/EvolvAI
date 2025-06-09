@@ -1,6 +1,4 @@
-
 services:
-
   pgvector:
     image: docker.io/pgvector/pgvector:pg17
     container_name: evolvai-pgvector
@@ -71,14 +69,25 @@ services:
         echo 'Preloading embedding model'
         curl http://ollama:11434/api/embed -H 'Content-Type: application/json' -d '{"model":"nomic-embed-text"}'
 
+
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
-    container_name: evolvai_web
+    expose:
+      - "80"
+    depends_on:
+      - backend
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: evolvai-nginx
     ports:
       - "8080:80"
     depends_on:
+      - frontend
       - backend
 
   backend:
@@ -101,6 +110,41 @@ services:
         condition: service_started
 
 volumes:
+  ollama-data:
   pgvector-data:
   maven-repo:
-  ollama-data:
+#  maven-cache:
+#    image: maven:3.9-eclipse-temurin-17-alpine
+#
+#    volumes:
+#      - maven-repo:/root/.m2
+#    command: tail -f /dev/null
+#
+#  backend:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile.backend
+#    container_name: evolvai_backend
+#    volumes:
+#      - maven-repo:/root/.m2
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      pgvector:
+#        condition: service_healthy
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#
+#
+#  webapp:
+#    image: nginx:alpine
+#    container_name: evolvai_web
+#    ports:
+#      - "8080:80"
+#    volumes:
+#      - ./webapp:/usr/share/nginx/html:ro
+#    depends_on:
+#      - backend
+
+
+

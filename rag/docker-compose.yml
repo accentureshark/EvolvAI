@@ -53,6 +53,8 @@ services:
     image: docker.io/curlimages/curl:latest
     container_name: evolvai-ollama-init
     restart: no
+    env_file:
+      - .env
     depends_on:
       ollama:
         condition: service_healthy
@@ -61,13 +63,13 @@ services:
       - -c
       - |
         echo 'Pulling LLM'
-        curl http://ollama:11434/api/pull -H 'Content-Type: application/json' -d '{"name":"phi3:mini"}'
+        curl http://ollama:11434/api/pull -H 'Content-Type: application/json' -d '{"name":"'"$${OLLAMA_LLM_MODEL}"'"}'
         echo 'Preloading LLM'
-        curl http://ollama:11434/api/generate -H 'Content-Type: application/json' -d '{"model":"phi3:mini"}'
+        curl http://ollama:11434/api/generate -H 'Content-Type: application/json' -d '{"model":"'"$${OLLAMA_LLM_MODEL}"'"}'
         echo 'Pulling embedding model'
-        curl http://ollama:11434/api/pull -H 'Content-Type: application/json' -d '{"name":"nomic-embed-text"}'
+        curl http://ollama:11434/api/pull -H 'Content-Type: application/json' -d '{"name":"'"$${OLLAMA_EMBEDDING_MODEL}"'"}'
         echo 'Preloading embedding model'
-        curl http://ollama:11434/api/embed -H 'Content-Type: application/json' -d '{"model":"nomic-embed-text"}'
+        curl http://ollama:11434/api/embed -H 'Content-Type: application/json' -d '{"model":"'"$${OLLAMA_EMBEDDING_MODEL}"'"}'
 
 volumes:
   pgvector-data:

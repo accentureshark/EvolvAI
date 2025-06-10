@@ -1,10 +1,12 @@
-
 import { log } from './utils.js';
 
-export const BACKEND_URL = "http://localhost:8081";
-//export const BACKEND_URL = "";
+// Esta línea es la clave: siempre usa el mismo origen que la página (local o Cloudflare)
+export const BACKEND_URL = window.location.origin;
 
+// Si preferís, podés dejarlo así para rutas relativas puras (también funciona en la mayoría de los casos):
+// export const BACKEND_URL = "";
 
+// Carga los archivos subidos
 export function loadUploadedFiles() {
     fetch(`${BACKEND_URL}/api/embeddings/documents`)
         .then((res) => {
@@ -26,6 +28,7 @@ export function loadUploadedFiles() {
         });
 }
 
+// Obtiene el prompt por defecto
 export function fetchDefaultPrompt() {
     return fetch(`${BACKEND_URL}/api/llm/prompt`)
         .then(res => res.ok ? res.text() : Promise.reject("No se pudo obtener el prompt por defecto"));

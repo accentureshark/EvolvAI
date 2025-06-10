@@ -17,8 +17,10 @@ check_and_pull() {
   fi
 }
 
-check_and_pull "phi3:mini"
-check_and_pull "nomic-embed-text"
+source ./rag/.env
+
+check_and_pull "$OLLAMA_LLM_MODEL"
+check_and_pull "$OLLAMA_EMBEDDING_MODEL"
 
 kill $OLLAMA_PID
 wait $OLLAMA_PID

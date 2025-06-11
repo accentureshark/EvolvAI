@@ -1,0 +1,46 @@
+.dialog {
+    height: 45vh;
+    width: 50vw;
+  }
+
+.actuator-list {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    gap: 10px;
+    margin-bottom: 1.8rem;
+    margin-top: 0;
+    list-style-type: disc;
+    padding-left: 1.5rem;
+}
+
+.actuator-link {
+  color: #5e2ca5;
+  cursor: pointer;
+  margin-bottom: 10px;
+  text-decoration: underline;
+}
+
+.actuator-link:hover {
+  color: #3e1b75;
+}
+
+.actuator-output-container {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  margin-top: 1rem;
+  max-height: 300px;
+  min-height: 50px;
+  overflow-y: auto;
+  padding: 1rem;
+  position: relative;
+}
+
+.actuator-output {
+  margin: 0;
+  font-family: monospace;
+  font-size: 13px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

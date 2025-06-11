@@ -1,0 +1,33 @@
+.header-container {
+    align-items: center;
+    background: #efe6fe;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 16px 24px;
+
+    .header-logo {
+        align-items: center;
+        display: flex;
+        gap: 18px;
+    }
+
+    .header-button-item {
+        background: transparent;
+        border: none;
+        color: #4c1d95;
+        cursor: pointer;
+        font-size: 20px;
+        margin-left: auto;
+        transition: transform 0.2s ease;
+    
+        &:hover {
+            transform: rotate(30deg);
+        }
+    }
+}

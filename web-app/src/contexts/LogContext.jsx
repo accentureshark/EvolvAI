@@ -11,8 +11,8 @@ export const LogProvider = ({ children }) => {
 
     const log = (message, type = "info") => {        
         setLogs((prevLogs) => [
-            ...prevLogs,
-            { message, type }
+            { message, type },
+            ...prevLogs
         ]);
     }
 

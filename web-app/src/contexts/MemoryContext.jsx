@@ -15,7 +15,7 @@ export const MemoryProvider = ({children}) => {
     const fetchMemory = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${BACKEND_URL}/chat-memory`);
+            const res = await fetch(`${BACKEND_URL}/api/chat-memory`);
             if (!res.ok) {
                 throw new Error("No se pudo obtener la memoria");
             }

@@ -2,6 +2,8 @@ import { FileUpload } from 'primereact/fileupload';
 import { useDocument } from '../../contexts/DocumentContext';
 import { useLog } from '../../contexts/LogContext';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 export const FileUploader = () => {
   const { fetchDocuments } = useDocument();
   const {log} = useLog();
@@ -9,9 +11,11 @@ export const FileUploader = () => {
   const handleUpload = async ({ files }) => {
     const formData = new FormData();
     formData.append('file', files[0]);
+    log(`Subiendo archivo: ${files[0].name}`, "info");
+    
 
     try {
-      const res = await fetch('http://localhost:8081/api/embeddings/upload', {
+      const res = await fetch(`${BACKEND_URL}/api/embeddings/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -41,7 +45,6 @@ export const FileUploader = () => {
         className: 'p-button-rounded p-button-danger',
       }}
       customUpload
-      multiple
       uploadHandler={handleUpload}
       accept=".txt,.pdf,.json,.xml"
       maxFileSize={10000000}

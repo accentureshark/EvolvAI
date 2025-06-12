@@ -57,23 +57,26 @@ export const useChat = () => {
             return;
         }
 
-        // if (!selectedDocument) {
-        //     alert("Debes seleccionar un documento primero");
-        //     return;
-        // }
+        if (!selectedDocument) {
+            alert("Debes seleccionar un documento primero");
+            return;
+        }
+
+        console.log(selectedDocument);
+        
 
         addMessage({ text, type: 'user' });
 
         const payload = 
         { 
             query: text,
-            // documentId: selectedDocument.id,
+            documentId: selectedDocument,
             conversationId,
             customPrompt 
         };
         const url = `${BACKEND_URL}/api/inference/${useStreaming ? "query-stream" : "query"}`;
 
-        log(`➡️ Enviando consulta a: ${url} | documentId: selectedDocument.id}`, "info");
+        log(`➡️ Enviando consulta a: ${url} | documentId: ${selectedDocument}`, "info");
         setIsLoading(true);
 
         try {

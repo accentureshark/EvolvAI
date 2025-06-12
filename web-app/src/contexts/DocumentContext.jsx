@@ -15,6 +15,11 @@ export const DocumentProvider = ({ children }) => {
   const fetchDocuments = async () => {
     try {
       const res = await fetch(`${BACKEND_URL}/api/embeddings/documents`);
+
+      if(!res.ok) {
+        throw new Error(`Error al cargar documentos: ${res.status} ${res.statusText}`);
+      }
+
       const data = await res.json();
       setDocuments(data);
       if (!selectedDocument && data.length > 0) {

@@ -48,7 +48,7 @@ export const FileUploader = () => {
       uploadHandler={handleUpload}
       accept=".txt,.pdf,.json,.xml"
       maxFileSize={10000000}
-      emptyTemplate={<p className="m-0">Sube acá tus documentos</p>}
+      emptyTemplate={<p>Sube acá tus documentos</p>}
     />
   );
 }

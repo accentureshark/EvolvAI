@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
         conversationId = uuidv4();
         chatStarted = true;
         messages.innerHTML = '';
-        addMessage("¿En qué te puedo ayudar pequeño Sharkcamonte?", "bot");
+        addMessage("¿En qué te puedo ayudar pequeño Tiburoncin?", "bot");
         userInput.disabled = false;
         sendBtn.disabled = false;
         userInput.focus();

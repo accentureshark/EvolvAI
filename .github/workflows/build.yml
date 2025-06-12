@@ -40,5 +40,5 @@ jobs:
         run: mvn clean install
 
       - name: pre-parser compile
-        working-directory: preparser
+        working-directory: pre-parser
         run: mvn clean install

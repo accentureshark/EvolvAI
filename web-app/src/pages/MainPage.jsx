@@ -8,6 +8,7 @@ import { DocumentProvider } from '../contexts/DocumentContext'
 import { LogProvider } from '../contexts/LogContext'
 import { PromptProvider } from '../contexts/PromptContext'
 import { MemoryProvider } from '../contexts/MemoryContext'
+import { useWebSocketLogs } from '../hooks/useWebSocketLogs'
 
 export const MainPage = () => {
   return (
@@ -15,6 +16,7 @@ export const MainPage = () => {
       <DocumentProvider>
         <PromptProvider>
           <MemoryProvider>
+          <WebSocketLogger />
             <div className="main-page">
               <Header />
               <div className="main-page-container">
@@ -30,3 +32,8 @@ export const MainPage = () => {
     </LogProvider>
   )
 }
+
+const WebSocketLogger = () => {
+  useWebSocketLogs();
+  return null;
+};

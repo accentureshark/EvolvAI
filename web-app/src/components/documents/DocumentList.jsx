@@ -6,7 +6,6 @@ export const DocumentList = () => {
 
   return (
     <div className='document-list-container'>
-      <FileUploader  />
       {documents.length > 0 && (
         <>
           <p className='document-uploaded-title'>Documentos cargados</p>
@@ -23,6 +22,7 @@ export const DocumentList = () => {
           </select>
         </>
       )}
+      <FileUploader  />
     </div>
   );
 };

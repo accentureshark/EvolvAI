@@ -15,5 +15,6 @@ body {
     .main-page-container {
         display: flex;
         gap: 20px;
+        min-height: 70vh;
     }
 }

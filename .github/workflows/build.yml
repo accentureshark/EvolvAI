@@ -1,4 +1,4 @@
-name: rag and pre-parser build
+name: parent build
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
       - 'docs/**'
       - '**.txt'
       - '**.puml'
+      - '.github/workflows/**'
       - '.gitignore'
   pull_request:
     branches:
@@ -18,6 +19,7 @@ on:
       - 'docs/**'
       - '**.txt'
       - '**.puml'
+      - '.github/workflows/**'
       - '.gitignore'
   workflow_dispatch:
 
@@ -35,10 +37,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: rag compile
-        working-directory: rag
+      # ---------- COMPILE ----------
+
+      - name: parent compile
+        working-directory: .
         run: mvn clean install
 
-      - name: pre-parser compile
-        working-directory: pre-parser
-        run: mvn clean install
+

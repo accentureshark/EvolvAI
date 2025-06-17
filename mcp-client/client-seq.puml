@@ -1,0 +1,30 @@
+@startuml
+actor Usuario
+participant MovieMcpClient
+participant LlmCaller
+participant MCP_Server as MCP
+participant LLM_API
+
+Usuario -> MovieMcpClient: Inicia aplicación
+MovieMcpClient -> MCP: GET /mcp/metadata/short
+MCP --> MovieMcpClient: Esquema de base de datos
+
+loop Por cada consulta NQL
+    Usuario -> MovieMcpClient: Ingresa pregunta
+    MovieMcpClient -> LlmCaller: Genera prompt para LLM
+    LlmCaller -> LLM_API: POST /api/generate (prompt)
+    LLM_API --> LlmCaller: Respuesta JSON (tabla, filtro)
+    LlmCaller --> MovieMcpClient: JSON (tabla, filtro)
+    MovieMcpClient -> MCP: GET /mcp/chunks?table=...&filter=...
+    MCP --> MovieMcpClient: Lista de chunks
+    alt chunks encontrados
+        MovieMcpClient -> LlmCaller: Prompt final con contexto
+        LlmCaller -> LLM_API: POST /api/generate (respuesta final)
+        LLM_API --> LlmCaller: Respuesta final
+        LlmCaller --> MovieMcpClient: Respuesta final
+        MovieMcpClient -> Usuario: Muestra respuesta final
+    else sin chunks
+        MovieMcpClient -> Usuario: Muestra "No relevant information found."
+    end
+end
+@enduml

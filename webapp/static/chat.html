@@ -24,8 +24,16 @@
                         <input accept=".txt,.pdf,.json,.xml" id="file-input" type="file" style="display:none;"/>
                     </div>
                 </div>
-                <!-- Cambio aquí: de ul a select para lista desplegable -->
                 <select id="file-list" size="5" style="width: 100%; cursor: pointer;"></select>
+                <!-- NUEVO: Subpanel MCP Server -->
+                <div id="mcp-server-panel" style="margin-top:16px; background: #f4f4ff; border-radius: 10px; padding: 8px;">
+                    <div style="font-weight: bold; color: #4c1d95;">MCP Server</div>
+                    <label for="mcp-table-select">Tabla</label>
+                    <select id="mcp-table-select" style="width:90%; margin-bottom:4px;"></select>
+                    <label for="mcp-limit-input">Limite</label>
+                    <input id="mcp-limit-input" type="number" value="10" min="1" max="100" style="width:60px;"/>
+                    <div style="font-size:11px; color:#a2a2c0;">Servidor: <b id="mcp-server-label">http://localhost:8090</b></div>
+                </div>
             </div>
         </div>
         <!-- PANEL DE CHAT CENTRAL ESTILO WHATSAPP -->

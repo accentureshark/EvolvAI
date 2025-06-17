@@ -11,6 +11,27 @@ import { v4 as uuidv4 } from 'https://cdn.jsdelivr.net/npm/uuid@9.0.0/+esm';
 
 let conversationId = null;
 let chatStarted = false;
+const MCP_SERVER_URL = "http://localhost:8090";
+
+// Cargar tablas MCP al iniciar o refrescar
+async function loadMcpTables() {
+    try {
+        const res = await fetch(`${MCP_SERVER_URL}/mcp/metadata`);
+        const data = await res.json();
+        const select = document.getElementById('mcp-table-select');
+        if (!select) return;
+        select.innerHTML = '';
+        data.tables.forEach(tabla => {
+            const option = document.createElement('option');
+            option.value = tabla.name;
+            option.textContent = tabla.name;
+            select.appendChild(option);
+        });
+    } catch (err) {
+        log("❌ Error cargando tablas MCP: " + err.message);
+    }
+}
+document.addEventListener('DOMContentLoaded', loadMcpTables);
 
 document.addEventListener("DOMContentLoaded", () => {
     const promptPanel = document.getElementById("prompt-panel");
@@ -57,23 +78,32 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         const msg = userInput.value.trim();
         if (!msg) return;
-        if (!selectedDocumentId) {
-            alert("Seleccioná un documento antes de consultar.");
-            return;
-        }
+
+        // --- NUEVO: MCP SERVER PANEL ---
+        const mcpTable = document.getElementById('mcp-table-select')?.value;
+        const mcpLimit = parseInt(document.getElementById('mcp-limit-input')?.value, 10) || 10;
+
         addMessage(msg, "user");
         userInput.value = "";
 
+        // Payload usando MCP_SERVER como source
         const payload = {
             query: msg,
-            documentId: selectedDocumentId,
             conversationId: getConversationId(),
-            customPrompt: customPrompt?.value || ''
+            customPrompt: customPrompt?.value || '',
+            source: {
+                type: "MCP_SERVER",
+                id: MCP_SERVER_URL,
+                params: {
+                    table: mcpTable,
+                    limit: mcpLimit
+                }
+            }
         };
 
         const useStreaming = document.getElementById("stream-toggle")?.checked;
         const url = `${BACKEND_URL}/api/inference/${useStreaming ? "query-stream" : "query"}`;
-        log(`➡️ Enviando consulta a: ${url} | documentId: ${selectedDocumentId}`);
+        log(`➡️ Enviando consulta a: ${url} | tabla: ${mcpTable} | limite: ${mcpLimit}`);
 
         try {
             if (useStreaming) {

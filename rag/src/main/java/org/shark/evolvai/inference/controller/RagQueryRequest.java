@@ -1,14 +1,18 @@
 package org.shark.evolvai.inference.controller;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Map;
+
+import org.shark.evolvai.inference.model.DataSourceInfo;
 
 @Data
 @NoArgsConstructor
@@ -44,4 +48,8 @@ public class RagQueryRequest {
     @Schema(description = "Metadatos adicionales para filtrar los documentos relevantes", example = "{\"organizacion\":\"Accenture\"}")
     private Map<String, String> contextMetadata;
 
+    @NotNull(message = "La fuente de datos no puede ser nula")
+    @Valid
+    @Schema(description = "Información de la fuente de datos (VECTOR_DB, MCP_SERVER, etc.)", required = true)
+    private DataSourceInfo source;
 }

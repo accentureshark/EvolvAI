@@ -1,5 +1,7 @@
 package org.shark.evolvai.embedding.domain.service;
 
+import dev.langchain4j.data.document.Document;
+import dev.langchain4j.data.document.splitter.DocumentBySentenceSplitter;
 import dev.langchain4j.data.segment.TextSegment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,19 @@ public class SmartChunkingService {
      * - lista JSON con campos "texto"
      */
     public List<TextSegment> chunk(Object input, Map<String, String> baseMetadata) {
+        if (input instanceof Document document) {
+            // Valores hardcodeados temporalmente, se podrían utilizar las propiedades:
+            // - rag.embedding.chunking.size
+            // - rag.embedding.chunking.overlap
+            // Falta determinar que hacer con TextChunkingService
+            DocumentBySentenceSplitter splitter = new DocumentBySentenceSplitter(500, 0);
+            List<TextSegment> chunks = splitter.split(document);
+            for (TextSegment chunk : chunks) {
+                chunk.metadata().put("documentId", baseMetadata.get("documentId"));
+            }
+            return chunks;
+        }
+
         if (input instanceof String plainText) {
             log.info("Usando chunking por palabras para texto plano. documentId={}", baseMetadata.get("documentId"));
             // ¡Asegura que textChunkingService NO pise el documentId!

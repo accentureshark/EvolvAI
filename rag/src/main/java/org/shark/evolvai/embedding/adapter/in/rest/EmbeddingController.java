@@ -19,6 +19,10 @@ import java.util.List;
 import java.util.UUID;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import dev.langchain4j.data.document.DocumentParser;
+import dev.langchain4j.data.document.parser.apache.pdfbox.ApachePdfBoxDocumentParser;
+import dev.langchain4j.data.document.parser.apache.tika.ApacheTikaDocumentParser;
 import dev.langchain4j.data.segment.TextSegment;
 
 import org.shark.evolvai.embedding.domain.service.SmartChunkingService;
@@ -74,8 +78,12 @@ public class EmbeddingController {
             }
 
             Map<String, String> baseMetadata = new HashMap<>();
-            Object input= null;
-            String docId ;
+            List<TextSegment> chunks = List.of();
+            Object input = null;
+
+            // Forzar siempre documentId y originalFile al nombre del archivo subido
+            baseMetadata.put("documentId", filename);
+            baseMetadata.put("originalFile", filename);
 
             // JSON estructurado
             if (filename.endsWith(".json")) {
@@ -85,15 +93,15 @@ public class EmbeddingController {
                 if (metadataObj instanceof Map) {
                     baseMetadata.putAll((Map<String, String>) metadataObj);
                 }
-                docId = baseMetadata.getOrDefault("documentId", filename);
                 input = doc.get("data");
+            } else {
+                DocumentParser parser = filename.endsWith(".pdf")
+                        ? new ApachePdfBoxDocumentParser()
+                        : new ApacheTikaDocumentParser();
+                input = parser.parse(file.getInputStream());
             }
 
-            // Forzar siempre documentId y originalFile al nombre del archivo subido
-            baseMetadata.put("documentId", filename);
-            baseMetadata.put("originalFile", filename);
-
-            List<TextSegment> chunks = smartChunkingService.chunk(input, baseMetadata);
+            chunks = smartChunkingService.chunk(input, baseMetadata);
 
             if (chunks.isEmpty()) {
                 log.warn("No se generaron chunks para el documento {}", filename);

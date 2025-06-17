@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-
+import { CustomButton } from "./CustomButton";
 import { Dialog } from "primereact/dialog";
-import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 import "../../styles/modal.css";
@@ -64,7 +63,7 @@ return (
           ))}
         </ul>
         <div className="actuator-output-container">
-          <Button
+          <CustomButton
             icon="pi pi-copy"
             className="p-button-sm p-button-text"
             style={{ position: 'absolute', top: 5, right: 8 }}

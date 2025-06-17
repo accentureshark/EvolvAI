@@ -1,8 +1,8 @@
+import {useState} from 'react';
+import { usePrompt } from '../../contexts/PromptContext';
 import {InputField} from '../ui/InputField';
 import {Checkbox} from '../ui/Checkbox';
-import {useState} from 'react';
-import { Button } from 'primereact/button';
-import { usePrompt } from '../../contexts/PromptContext';
+import {CustomButton} from '../ui/CustomButton';
 
 export const ChatInputBar = (
   {
@@ -37,14 +37,14 @@ export const ChatInputBar = (
 
   return (
     <form onSubmit={handleSubmit} className='chat-form'>
-        <Button 
+        <CustomButton 
           label='New'
           className='p-button-sm p-button-rounded'
           onClick={() => startNewChat()} 
         />
         <InputField disabled={!chatStarted} value={message} onChange={(e) => setMessage(e.target.value)}/>
         <Checkbox onChange={(e) => setUseStreaming(e.target.checked)} checked={useStreaming} />
-        <Button
+        <CustomButton
           disabled={!chatStarted || message.trim() === ''}
           type="submit"
           icon="pi pi-send"

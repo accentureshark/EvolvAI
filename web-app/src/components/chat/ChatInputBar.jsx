@@ -39,10 +39,17 @@ export const ChatInputBar = (
     <form onSubmit={handleSubmit} className='chat-form'>
         <CustomButton 
           label='New'
-          className='p-button-sm p-button-rounded'
+          className='p-button p-button-rounded'
           onClick={() => startNewChat()} 
         />
-        <InputField disabled={!chatStarted} value={message} onChange={(e) => setMessage(e.target.value)}/>
+        <InputField
+          className="input-message"
+          placeholder="Escribe un mensaje..."
+          id="send-message"
+          disabled={!chatStarted}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
         <CustomCheckbox 
           onChange={(e) => setUseStreaming(e.target.checked)}
           checked={useStreaming}
@@ -53,7 +60,7 @@ export const ChatInputBar = (
           disabled={!chatStarted || message.trim() === ''}
           type="submit"
           icon="pi pi-send"
-          className="p-button-sm p-button-rounded p-button-outlined"
+          className="p-button p-button-rounded p-button-outlined"
           label='Enviar'
         />
     </form>

@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import { usePrompt } from '../../contexts/PromptContext';
 import {InputField} from '../ui/InputField';
-import {Checkbox} from '../ui/Checkbox';
+import {CustomCheckbox} from '../ui/CustomCheckbox'
 import {CustomButton} from '../ui/CustomButton';
 
 export const ChatInputBar = (
@@ -43,7 +43,12 @@ export const ChatInputBar = (
           onClick={() => startNewChat()} 
         />
         <InputField disabled={!chatStarted} value={message} onChange={(e) => setMessage(e.target.value)}/>
-        <Checkbox onChange={(e) => setUseStreaming(e.target.checked)} checked={useStreaming} />
+        <CustomCheckbox 
+          onChange={(e) => setUseStreaming(e.target.checked)}
+          checked={useStreaming}
+          className="checkbox"
+          label="Streaming"
+          />
         <CustomButton
           disabled={!chatStarted || message.trim() === ''}
           type="submit"

@@ -203,6 +203,13 @@
   font-size: 12px;
 }
 
+.checkbox {
+  .p-checkbox-box {
+    border-radius: 5px;
+    border: 1.5px solid #757575;
+  }
+}
+
 .spinner-message {
   align-items: center;
   background-color: #f0f0f0;

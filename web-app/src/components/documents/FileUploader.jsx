@@ -46,7 +46,7 @@ export const FileUploader = () => {
       }}
       customUpload
       uploadHandler={handleUpload}
-      accept=".txt,.pdf,.json,.xml"
+      accept=".txt,.pdf,.json,.xml,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.html,.md"
       maxFileSize={10000000}
       emptyTemplate={<p>Sube acá tus documentos</p>}
     />

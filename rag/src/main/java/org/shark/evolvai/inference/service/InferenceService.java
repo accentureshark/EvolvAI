@@ -16,10 +16,10 @@ import org.shark.evolvai.inference.controller.RagQueryRequest;
 import org.shark.evolvai.inference.port.input.InferenceUseCase;
 import org.shark.evolvai.inference.util.EnrichmentUtil;
 import org.shark.evolvai.llm.port.out.LlmProvider;
+import org.shark.evolvai.llm.port.out.StreamingLlmProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.*;
@@ -33,28 +33,24 @@ public class InferenceService implements InferenceUseCase {
     private final EmbeddingGenerator embeddingGenerator;
     private final EmbeddingStorage embeddingStorage;
     private final LlmProvider llmProvider;
+    private final StreamingLlmProvider streamingLlmProvider;
     private final ChatMemoryService chatMemoryService;
     private final RagProperties ragProperties;
-    private final WebClient webClient;
 
     public InferenceService(
             EmbeddingGenerator embeddingGenerator,
             EmbeddingStorage embeddingStorage,
             LlmProvider llmProvider,
+            StreamingLlmProvider streamingLlmProvider,
             ChatMemoryService chatMemoryService,
             RagProperties ragProperties
     ) {
         this.embeddingGenerator = embeddingGenerator;
         this.embeddingStorage = embeddingStorage;
         this.llmProvider = llmProvider;
+        this.streamingLlmProvider = streamingLlmProvider;
         this.chatMemoryService = chatMemoryService;
         this.ragProperties = ragProperties;
-
-        String baseUrl = ragProperties.getLlm().getOllama().getBaseUrl();
-        if (baseUrl.endsWith("/")) {
-            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
-        }
-        this.webClient = WebClient.create(baseUrl);
     }
 
     private record EmbeddingContext(
@@ -110,33 +106,13 @@ public class InferenceService implements InferenceUseCase {
             return Flux.just("No hay información suficiente para responder a esa pregunta.");
         }
 
-        Map<String, Object> body = new HashMap<>();
-        var ollama = ragProperties.getLlm().getOllama();
-
-        body.put("model", ollama.getModel());
-
         String promptTemplate = Optional.ofNullable(request.getCustomPrompt()).orElse(ragProperties.getLlm().getPrompt());
         String combinedPrompt = promptTemplate.replace("{query}", request.getQuery())
                 .replace("{context}", ctx.context());
 
         log.info("Prompt combinado enviado a Ollama (streaming):\n{}", combinedPrompt);
 
-        body.put("prompt", combinedPrompt);
-        body.put("stream", true);
-
-        if (ollama.getTemperature() > 0) {
-            body.put("temperature", ollama.getTemperature());
-        }
-
-        return webClient.post()
-                .uri("/api/generate")
-                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
-                .bodyValue(body)
-                .retrieve()
-                .bodyToFlux(String.class)
-                .doOnSubscribe(sub -> log.info("Enviando request streaming a Ollama"))
-                .doOnNext(chunk -> log.debug("Chunk recibido: {}", chunk))
-                .doOnError(e -> log.error("Error en streaming Ollama", e))
+        return streamingLlmProvider.streamResponse(ctx.conversationHistory(), combinedPrompt)
                 .transform(this::groupFragmentsForUi);
     }
 

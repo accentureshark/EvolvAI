@@ -4,8 +4,6 @@ import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.data.document.Metadata;
-import dev.langchain4j.store.embedding.EmbeddingMatch;
 import org.shark.evolvai.chathistory.port.in.ChatMemoryService;
 import org.shark.evolvai.config.RagProperties;
 import org.shark.evolvai.embedding.port.out.EmbeddingGenerator;
@@ -14,6 +12,7 @@ import org.shark.evolvai.inference.controller.EmbeddingMatchDto;
 import org.shark.evolvai.inference.controller.QueryResponse;
 import org.shark.evolvai.inference.controller.RagQueryRequest;
 import org.shark.evolvai.inference.port.input.InferenceUseCase;
+import org.shark.evolvai.inference.port.out.ContextSource;
 import org.shark.evolvai.inference.util.EnrichmentUtil;
 import org.shark.evolvai.llm.port.out.LlmProvider;
 import org.shark.evolvai.llm.port.out.StreamingLlmProvider;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class InferenceService implements InferenceUseCase {
@@ -32,6 +30,7 @@ public class InferenceService implements InferenceUseCase {
 
     private final EmbeddingGenerator embeddingGenerator;
     private final EmbeddingStorage embeddingStorage;
+    private final List<ContextSource> contextSources;
     private final LlmProvider llmProvider;
     private final StreamingLlmProvider streamingLlmProvider;
     private final ChatMemoryService chatMemoryService;
@@ -40,6 +39,7 @@ public class InferenceService implements InferenceUseCase {
     public InferenceService(
             EmbeddingGenerator embeddingGenerator,
             EmbeddingStorage embeddingStorage,
+            List<ContextSource> contextSources,
             LlmProvider llmProvider,
             StreamingLlmProvider streamingLlmProvider,
             ChatMemoryService chatMemoryService,
@@ -47,6 +47,7 @@ public class InferenceService implements InferenceUseCase {
     ) {
         this.embeddingGenerator = embeddingGenerator;
         this.embeddingStorage = embeddingStorage;
+        this.contextSources = contextSources;
         this.llmProvider = llmProvider;
         this.streamingLlmProvider = streamingLlmProvider;
         this.chatMemoryService = chatMemoryService;
@@ -145,48 +146,21 @@ public class InferenceService implements InferenceUseCase {
             throw new IllegalArgumentException("Dimensiones del embedding incompatibles con configuración de pgvector.");
         }
 
-        List<EmbeddingMatch<String>> matches;
         Map<String, String> contextMap = request.getContextMetadata();
-
         log.info("Usando metadata para búsqueda de embeddings: {}", contextMap);
 
-        if ((contextMap != null && !contextMap.isEmpty()) ||
-                (request.getDocumentId() != null && !request.getDocumentId().isBlank())) {
-
-            Map<String, Object> combinedMap = new HashMap<>();
-            if (contextMap != null) {
-                combinedMap.putAll(contextMap);
+        List<EmbeddingMatchDto> matchDtos = new ArrayList<>();
+        for (ContextSource source : contextSources) {
+            try {
+                List<EmbeddingMatchDto> partial = source.fetchMatches(queryEmbedding, request);
+                log.info("{} retornó {} coincidencias", source.getClass().getSimpleName(), partial.size());
+                matchDtos.addAll(partial);
+            } catch (Exception e) {
+                log.error("Error consultando {}", source.getClass().getSimpleName(), e);
             }
-            if (request.getDocumentId() != null && !request.getDocumentId().isBlank()) {
-                combinedMap.put("documentId", request.getDocumentId());
-            }
-            Metadata contextMetadata = Metadata.from(combinedMap);
-
-            log.info("Realizando búsqueda findSimilar con filtro: {}", contextMetadata);
-
-            matches = embeddingStorage.findSimilar(queryEmbedding,
-                    ragProperties.getInference().getMaxResults(),
-                    ragProperties.getInference().getMinScore(),
-                    contextMetadata);
-        } else {
-            log.info("Realizando búsqueda findSimilar sin filtro");
-            matches = embeddingStorage.findSimilar(queryEmbedding,
-                    ragProperties.getInference().getMaxResults(),
-                    ragProperties.getInference().getMinScore());
         }
 
-        log.info("Se encontraron {} embeddings similares.", matches.size());
-        matches.stream().limit(3).forEach(m -> log.debug("Match: score={}, id={}, text={}", m.score(), m.embeddingId(), m.embedded().substring(0, Math.min(m.embedded().length(), 100))));
-
-        List<EmbeddingMatchDto> matchDtos = matches.stream()
-                .map(m -> new EmbeddingMatchDto(
-                        m.score(),
-                        m.embeddingId(),
-                        m.embedding().vector(),
-                        m.embedded(),
-                        EnrichmentUtil.extractMetadata(m)
-                ))
-                .collect(Collectors.toList());
+        log.info("Total de coincidencias obtenidas: {}", matchDtos.size());
 
         String context = EnrichmentUtil.rebuildContextFromMatches(matchDtos);
         log.info("Contexto generado para el prompt:\n{}", context);

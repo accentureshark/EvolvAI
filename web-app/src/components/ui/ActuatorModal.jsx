@@ -70,6 +70,7 @@ return (
             onClick={copyOutput}
             disabled={!output}
             tooltip="Copiar resultado"
+            ariaLabel="Copiar resultado"
           />
           <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} className="actuator-output">{output}</pre>
         </div>

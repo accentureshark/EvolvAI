@@ -123,18 +123,6 @@ Podés encontrarlos en el directorio `/scripts` del repositorio o cargarlos en t
 
 ## 🤖 Inferencia personalizada
 
-### `InferenceConfiguration`
-
-* Define configuraciones específicas de inferencia por contexto:
-
-    * `contextType`: `USER`, `AREA`, `ORGANIZATION`
-    * `contextId`: referencia a la entidad destino
-    * `aiRole`: rol de la IA en el contexto (`ASSISTANT`, `AUDITOR`, etc.)
-* Asociada a:
-
-    * Una lista de `Prompt`
-    * Una lista de `EmbeddingSource`
-
 ### `EmbeddingSource`
 
 * Define documentos o fuentes que nutren la IA.

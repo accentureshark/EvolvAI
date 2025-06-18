@@ -27,6 +27,8 @@
         <langchain4j-ollama.version>1.0.1-beta6</langchain4j-ollama.version>
         <langchain4j-pgvector.version>1.0.1-beta6</langchain4j-pgvector.version>
         <langchain4j-embeddings.version>1.0.1-beta6</langchain4j-embeddings.version>
+        <langchain4j-document-parser-apache-pdfbox.version>1.0.1-beta6</langchain4j-document-parser-apache-pdfbox.version>
+        <langchain4j-document-parser-apache-tika.version>1.0.1-beta6</langchain4j-document-parser-apache-tika.version>
         <onnxruntime.version>1.20.0</onnxruntime.version>
         <jackson.version>2.15.2</jackson.version>
         <mapdb.version>3.0.9</mapdb.version>
@@ -115,6 +117,16 @@
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-embeddings</artifactId>
             <version>${langchain4j-embeddings.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-document-parser-apache-pdfbox</artifactId>
+            <version>${langchain4j-document-parser-apache-pdfbox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-document-parser-apache-tika</artifactId>
+            <version>${langchain4j-document-parser-apache-tika.version}</version>
         </dependency>
 
         <!-- Micrometer/Actuator -->

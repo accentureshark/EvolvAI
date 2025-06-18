@@ -54,8 +54,6 @@ public class InferenceService implements InferenceUseCase {
     }
 
     private record EmbeddingContext(
-            String enrichedQuery,
-            String enrichedQueryWithContext,
             String context,
             List<EmbeddingMatchDto> matchDtos,
             String conversationId,
@@ -117,7 +115,6 @@ public class InferenceService implements InferenceUseCase {
     }
 
     private EmbeddingContext prepareEmbeddingContext(RagQueryRequest request) {
-        String enrichedQuery = request.getQuery();
 
         if (request.getContextMetadata() == null && request.getDocumentId() != null) {
             Optional<Map<String, Object>> maybeMetadata = embeddingStorage.findMetadataByDocumentId(request.getDocumentId());
@@ -133,7 +130,7 @@ public class InferenceService implements InferenceUseCase {
             }
         }
 
-        Embedding queryEmbedding = embeddingGenerator.generateEmbedding(enrichedQuery);
+        Embedding queryEmbedding = embeddingGenerator.generateEmbedding(request.getQuery());
         log.info("Vector embedding consulta (primeros 5 valores): {}", Arrays.toString(Arrays.copyOf(queryEmbedding.vector(), Math.min(5, queryEmbedding.vector().length))));
 
         int actualDimensions = queryEmbedding.vector().length;
@@ -191,7 +188,6 @@ public class InferenceService implements InferenceUseCase {
                 ))
                 .collect(Collectors.toList());
 
-        enrichedQuery = EnrichmentUtil.smartEnrichQuery(request.getQuery(), matchDtos);
         String context = EnrichmentUtil.rebuildContextFromMatches(matchDtos);
         log.info("Contexto generado para el prompt:\n{}", context);
 
@@ -201,12 +197,7 @@ public class InferenceService implements InferenceUseCase {
 
         List<ChatMessage> conversationHistory = chatMemoryService.getMessages(conversationId);
 
-        String enrichedQueryWithContext = enrichedQuery + "\n\nContexto relevante:\n" + context;
-        log.info("Query enriquecida con contexto embebido:\n{}", enrichedQueryWithContext);
-
         return new EmbeddingContext(
-                enrichedQuery,
-                enrichedQueryWithContext,
                 context,
                 matchDtos,
                 conversationId,

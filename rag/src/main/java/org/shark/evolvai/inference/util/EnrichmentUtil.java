@@ -12,36 +12,6 @@ import org.shark.evolvai.inference.controller.EmbeddingMatchDto;
 
 public class EnrichmentUtil {
 
-    public static String smartEnrichQuery(String originalQuery, List<EmbeddingMatchDto> matches) {
-        String normalized = originalQuery.toLowerCase(Locale.ROOT);
-
-        String nivel = inferFromText(normalized, "level\\s*(\\d+)");
-        String area = matches.stream()
-                .flatMap(m -> m.getMetadata().entrySet().stream())
-                .filter(e -> e.getKey().equalsIgnoreCase("area"))
-                .map(Map.Entry::getValue)
-                .map(Object::toString)
-                .distinct()
-                .filter(a -> normalized.contains(a.toLowerCase()))
-                .findFirst()
-                .orElse(null);
-
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("texto", originalQuery);
-        if (nivel != null) variables.put("nivel", nivel);
-        if (area != null) variables.put("area", area);
-
-        Optional<String> enrichPattern = matches.stream()
-                .map(EmbeddingMatchDto::getMetadata)
-                .map(m -> safeCast(m.get("estructuraContent"), Map.class))
-                .filter(Objects::nonNull)
-                .map(m -> m.get("enrichText"))
-                .filter(String.class::isInstance)
-                .map(String.class::cast)
-                .findFirst();
-
-        return enrichPattern.map(pattern -> replaceVariables(pattern, variables)).orElse(originalQuery);
-    }
 
     public static String rebuildContextFromMatches(List<EmbeddingMatchDto> matches) {
         return matches.stream()

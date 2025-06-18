@@ -20,7 +20,7 @@ public class McpEvolvaiIntegrationTest {
         Response mcpMeta = RestAssured
                 .given()
                 .when()
-                .get(MCP_SERVER_URL + "/mcp/metadata")
+                .get(MCP_SERVER_URL + "/mcp/metadata/short")
                 .then()
                 .statusCode(200)
                 .extract()

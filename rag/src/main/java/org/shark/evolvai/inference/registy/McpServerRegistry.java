@@ -17,8 +17,9 @@ public class McpServerRegistry {
     private final Map<String, RagProperties.Mcp> mcpMap;
 
     public McpServerRegistry(RagProperties ragProperties) {
-        // Index MCP servers by their unique ID
-        this.mcpMap = ragProperties.getMcps().stream()
+        List<RagProperties.Mcp> mcps = ragProperties.getMcps();
+        if (mcps == null) mcps = List.of();
+        this.mcpMap = mcps.stream()
                 .collect(java.util.stream.Collectors.toMap(
                         RagProperties.Mcp::getId,
                         mcp -> mcp

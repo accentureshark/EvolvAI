@@ -12,6 +12,14 @@ import org.shark.evolvai.inference.controller.EmbeddingMatchDto;
 
 public class EnrichmentUtil {
 
+    public static String smartEnrichQuery(String query, List<EmbeddingMatchDto> matches) {
+        // Implementación básica: concatena el contexto de los matches al query
+        StringBuilder sb = new StringBuilder(query);
+        for (EmbeddingMatchDto match : matches) {
+            sb.append(" ").append(match.getText());
+        }
+        return sb.toString();
+    }
 
     public static String rebuildContextFromMatches(List<EmbeddingMatchDto> matches) {
         return matches.stream()

@@ -1,0 +1,56 @@
+name: parent build
+
+on:
+  push:
+    branches:
+      - '**'
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '**.txt'
+      - '**.puml'
+      - '.github/workflows/**'
+      - '.gitignore'
+  pull_request:
+    branches:
+      - '**'
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '**.txt'
+      - '**.puml'
+      - '.github/workflows/**'
+      - '.gitignore'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # ---------- COMPILE ----------
+
+      - name: parent compile
+        working-directory: .
+        run: mvn clean install
+
+      # ---------- CHECKSTYLE ----------
+
+      - name: Checkstyle (parent + submodules)
+        working-directory: .
+        run: mvn checkstyle:check
+
+      # ---------- PMD ----------
+
+      - name: PMD (parent + submodules)
+        working-directory: .
+        run: mvn pmd:check

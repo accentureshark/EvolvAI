@@ -1,9 +1,9 @@
 package org.shark.evolvai.embedding.port.out;
 
+import java.util.List;
+
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
-
-import java.util.List;
 
 public interface EmbeddingGenerator {
 
@@ -18,12 +18,12 @@ public interface EmbeddingGenerator {
     Embedding generateEmbedding(TextSegment segment);
 
     /**
+     * Genera un embedding a partir de vectores tokenizados manualmente.     *
+     */
+    Embedding generateEmbedding(int[] inputIds, int[] attentionMask);
+
+    /**
      * Genera múltiples embeddings a partir de múltiples segmentos.
      */
     List<Embedding> generateEmbeddings(List<TextSegment> segments);
-
-    /**
-     * Genera un embedding a partir de vectores tokenizados manualmente     *
-     */
-    Embedding generateEmbedding(int[] inputIds, int[] attentionMask);
 }

@@ -1,6 +1,15 @@
-
-export const InputField = ({value, onChange, disabled}) => {
+import { InputText } from 'primereact/inputtext';
+        
+export const InputField = ({value, onChange, disabled, className, id, placeholder}) => {
   return (
-    <input className="input-message" disabled={disabled} value={value} onChange={onChange} type="text" id='send-message' placeholder='Escribe un mensaje...' />
+    <InputText
+      className={className}
+      disabled={disabled}
+      value={value}
+      onChange={onChange}
+      id={id}
+      placeholder={placeholder}
+      type="text"
+    />
   )
 }

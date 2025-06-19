@@ -13,7 +13,7 @@ export const Header = () => {
         <h1 className="header-title">EvolvAI Chat</h1>
       </div>
       <div className="header-button">
-        <button title='Estado del sistema' onClick={() => setModalVisible(true)} className="header-button-item">⚙️</button>
+        <button title='Estado del sistema' aria-label='Estado del sistema' onClick={() => setModalVisible(true)} className="header-button-item">⚙️</button>
       </div>
       <ActuatorModal visible={modalVisible} onHide={() => setModalVisible(false)} />
     </header>

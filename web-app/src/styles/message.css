@@ -176,9 +176,7 @@
     display: flex;
     flex-grow: 1;
     gap: 0;
-    margin-top: 10px;
-    margin-bottom: 6px;
-    margin-left: 6px;
+    margin-left: 12px;
     padding: 10px 8px;
     transition: box-shadow 0.2s;
 }
@@ -201,6 +199,13 @@
 .checkbox-label {
   color: #333;
   font-size: 12px;
+}
+
+.checkbox {
+  .p-checkbox-box {
+    border-radius: 5px;
+    border: 1.5px solid #757575;
+  }
 }
 
 .spinner-message {

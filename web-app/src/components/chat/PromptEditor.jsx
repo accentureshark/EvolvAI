@@ -2,6 +2,7 @@ import '../../styles/message.css'
 
 import { usePrompt } from '../../contexts/PromptContext';
 import { useState } from 'react';
+import { TextareaField } from '../ui/TextareaField';
 
 export const PromptEditor = () => {
   const { prompt, setPrompt } = usePrompt();
@@ -19,10 +20,12 @@ export const PromptEditor = () => {
         <span className="arrow">{isActive ? '▼' : '▶'}</span>
       </div>
       {isActive && (
-        <textarea
+        <TextareaField
+          name="custom-prompt"
           placeholder="Escribe tu prompt..."
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
+          rows={4}
         />
       )}
     </div>

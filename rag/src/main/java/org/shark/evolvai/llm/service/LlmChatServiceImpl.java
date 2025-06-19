@@ -1,12 +1,12 @@
 package org.shark.evolvai.llm.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dev.langchain4j.data.message.ChatMessage;
 import org.shark.evolvai.llm.port.in.LlmChatService;
 import org.shark.evolvai.llm.port.out.LlmProvider;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class LlmChatServiceImpl implements LlmChatService {

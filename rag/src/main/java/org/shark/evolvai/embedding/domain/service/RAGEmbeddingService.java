@@ -1,5 +1,12 @@
 package org.shark.evolvai.embedding.domain.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
@@ -11,12 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Primary
@@ -39,22 +40,69 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
     }
 
     @Override
+    @SuppressWarnings("PMD.EmptyControlStatement")
     public void indexDocument(String id, String text, String customPrompt) {
         log.info("Indexando documento con id: {}", id);
-        String prompt = (customPrompt != null && !customPrompt.isBlank()) ? customPrompt : DEFAULT_PROMPT;
+        String prompt = customPrompt != null && !customPrompt.isBlank()
+            ? customPrompt
+            : DEFAULT_PROMPT;
 
         List<TextSegment> segments = textChunkingService.chunk(text, Map.of("documentId", id));
 
         for (TextSegment segment : segments) {
             String promptFragment = prompt + "\n" + segment.text();
-            Embedding embedding = embeddingGenerator.generateEmbedding(new TextSegment(promptFragment, segment.metadata()));
+            Embedding embedding = embeddingGenerator.generateEmbedding(
+                new TextSegment(promptFragment, segment.metadata())
+            );
 
             String docName = id;
-            if (segment.metadata() != null && segment.metadata().toMap().containsKey("chunkIndex")) {
+
+            // TODO: Eliminar este bloque en futuras versiones
+            if (
+                segment.metadata() != null && segment.metadata().toMap().containsKey("chunkIndex")
+            ) {
                 //docName += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
             }
 
             embeddingStorage.store(id, embedding, segment.text(), segment.metadata());
+            log.info("Fragmento almacenado con id: {}", docName);
+        }
+
+        log.info("Documento indexado correctamente: {}", id);
+    }
+
+    @Override
+    @SuppressWarnings("PMD.EmptyControlStatement")
+    public void indexDocument(
+        String id, String text, String customPrompt, Map<String, String> extraMetadata
+    ) {
+        log.info("Indexando documento con id: {}", id);
+        String prompt = (customPrompt != null && !customPrompt.isBlank())
+            ? customPrompt
+            : DEFAULT_PROMPT;
+
+        // Agregamos documentId por defecto
+        Map<String, String> baseMetadata = new HashMap<>(extraMetadata);
+        baseMetadata.putIfAbsent("documentId", id);
+
+        List<TextSegment> segments = textChunkingService.chunk(text, baseMetadata);
+
+        for (TextSegment segment : segments) {
+            String promptFragment = prompt + "\n" + segment.text();
+            Embedding embedding = embeddingGenerator.generateEmbedding(
+                new TextSegment(promptFragment, segment.metadata())
+            );
+
+            String docName = id;
+
+            //TODO: Eliminar este bloque en futuras versiones
+            if (
+                segment.metadata() != null && segment.metadata().toMap().containsKey("chunkIndex")
+            ) {
+                //docName += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
+            }
+
+            embeddingStorage.store(docName, embedding, segment.text(), segment.metadata());
             log.info("Fragmento almacenado con id: {}", docName);
         }
 
@@ -68,9 +116,16 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
 
     @Override
     public List<String> findSimilarDocuments(String query, int maxResults, double minScore) {
-        log.info("Buscando documentos similares para query: '{}', maxResults: {}, minScore: {}", query, maxResults, minScore);
+        log.info(
+            "Buscando documentos similares para query: '{}', maxResults: {}, minScore: {}",
+            query,
+            maxResults,
+            minScore
+        );
         Embedding queryEmbedding = embeddingGenerator.generateEmbedding(query);
-        List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(queryEmbedding, maxResults, minScore);
+        List<EmbeddingMatch<String>> matches = embeddingStorage.findSimilar(
+            queryEmbedding, maxResults, minScore
+        );
         log.info("Se encontraron {} documentos similares.", matches.size());
         return matches.stream()
                 .map(EmbeddingMatch::embedded)
@@ -94,34 +149,9 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
         log.warn("Eliminando todos los documentos indexados.");
         embeddingStorage.removeAll();
     }
-    @Override
-    public void indexDocument(String id, String text, String customPrompt, Map<String, String> extraMetadata) {
-        log.info("Indexando documento con id: {}", id);
-        String prompt = (customPrompt != null && !customPrompt.isBlank()) ? customPrompt : DEFAULT_PROMPT;
-
-        // Agregamos documentId por defecto
-        Map<String, String> baseMetadata = new HashMap<>(extraMetadata);
-        baseMetadata.putIfAbsent("documentId", id);
-
-        List<TextSegment> segments = textChunkingService.chunk(text, baseMetadata);
-
-        for (TextSegment segment : segments) {
-            String promptFragment = prompt + "\n" + segment.text();
-            Embedding embedding = embeddingGenerator.generateEmbedding(new TextSegment(promptFragment, segment.metadata()));
-
-            String docName = id;
-            if (segment.metadata() != null && segment.metadata().toMap().containsKey("chunkIndex")) {
-                //docName += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
-            }
-
-            embeddingStorage.store(docName, embedding, segment.text(), segment.metadata());
-            log.info("Fragmento almacenado con id: {}", docName);
-        }
-
-        log.info("Documento indexado correctamente: {}", id);
-    }
 
     @Override
+    @SuppressWarnings("PMD.EmptyControlStatement")
     public void index(List<TextSegment> segments) {
         log.info("Indexando lista de {} fragmentos manuales.", segments.size());
         for (TextSegment segment : segments) {
@@ -129,10 +159,16 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
                     .orElse(UUID.randomUUID().toString());
 
             String prompt = DEFAULT_PROMPT + "\n" + segment.text();
-            Embedding embedding = embeddingGenerator.generateEmbedding(new TextSegment(prompt, segment.metadata()));
+            Embedding embedding = embeddingGenerator.generateEmbedding(
+                new TextSegment(prompt, segment.metadata())
+            );
 
             String chunkId = docId;
-            if (segment.metadata() != null && segment.metadata().toMap().containsKey("chunkIndex")) {
+
+            // TODO: Eliminar este bloque en futuras versiones
+            if (
+                segment.metadata() != null && segment.metadata().toMap().containsKey("chunkIndex")
+            ) {
                 //chunkId += "/fragment-" + segment.metadata().asMap().get("chunkIndex");
             }
 
@@ -140,6 +176,4 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
             log.info("Fragmento almacenado con id: {}", chunkId);
         }
     }
-
-
 }

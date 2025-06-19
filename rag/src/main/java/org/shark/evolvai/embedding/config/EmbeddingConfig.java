@@ -1,5 +1,7 @@
 package org.shark.evolvai.embedding.config;
 
+import java.util.List;
+
 import org.shark.evolvai.config.RagProperties;
 import org.shark.evolvai.embedding.adapter.out.storage.PgVectorEmbeddingStorage;
 import org.shark.evolvai.embedding.domain.service.TextChunkingService;
@@ -10,8 +12,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-
-import java.util.List;
 
 @Configuration
 @EnableConfigurationProperties(RagProperties.class)
@@ -55,9 +55,15 @@ public class EmbeddingConfig {
             List<EmbeddingGenerator> generators) {
         String type = ragProperties.getEmbedding().getGenerator().getProvider();
         return generators.stream()
-                .filter(g -> g.getClass().getSimpleName().toLowerCase().contains(type.toLowerCase()))
+                .filter(g -> g.getClass()
+                    .getSimpleName()
+                    .toLowerCase()
+                    .contains(type.toLowerCase())
+                )
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("No se encontró un EmbeddingGenerator para: " + type));
+                .orElseThrow(() -> new IllegalStateException(
+                    "No se encontró un EmbeddingGenerator para: " + type)
+                );
     }
 
     @Bean

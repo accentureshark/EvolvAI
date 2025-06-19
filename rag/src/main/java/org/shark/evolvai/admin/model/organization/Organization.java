@@ -1,5 +1,7 @@
 package org.shark.evolvai.admin.model.organization;
 
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,8 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.shark.evolvai.admin.model.person.LegalPerson;
-
-import java.util.UUID;
 
 @Entity
 

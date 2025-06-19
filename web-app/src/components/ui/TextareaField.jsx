@@ -1,7 +1,26 @@
 import { InputTextarea } from 'primereact/inputtextarea';
 
-export const TextareaField = ({name, placeholder, value, onChange, rows}) => {
+export const TextareaField = ({
+  name,
+  placeholder,
+  value,
+  onChange,
+  rows,
+  autoResize = false,
+  onKeyDown,
+  className = ''
+}) => {
   return (
-      <InputTextarea name={name} placeholder={placeholder} value={value} onChange={onChange} rows={rows} />
+        <div className={`textarea-field ${className}`}>
+          <InputTextarea
+            name={name}
+            placeholder={placeholder}
+            value={value}
+            onChange={onChange}
+            rows={rows}
+            autoResize={autoResize}
+            onKeyDown={onKeyDown}
+          />
+        </div>
   )
 }

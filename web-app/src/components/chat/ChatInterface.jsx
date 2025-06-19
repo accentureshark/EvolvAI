@@ -10,8 +10,6 @@ export const ChatInterface = () => {
     const {
     messages,
     isLoading,
-    useStreaming,
-    setUseStreaming,
     startNewChat,
     handleSendMessage,
     messageListRef,
@@ -34,8 +32,6 @@ export const ChatInterface = () => {
         <ChatInputBar 
           onSendMessage={handleSendMessage}
           startNewChat={startNewChat}
-          useStreaming={useStreaming}
-          setUseStreaming={setUseStreaming}
           chatStarted={chatStarted}
         />
       </div>

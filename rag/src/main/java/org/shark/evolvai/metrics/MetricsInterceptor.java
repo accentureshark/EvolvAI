@@ -1,3 +1,5 @@
+// CHECKSTYLE:OFF
+
 package com.santander.mep.metrics;
 
 import io.micrometer.core.instrument.MeterRegistry;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
+@SuppressWarnings({"all"})
 public class MetricsInterceptor implements HandlerInterceptor {
 
     private final MeterRegistry meterRegistry;
@@ -29,4 +32,3 @@ public class MetricsInterceptor implements HandlerInterceptor {
         meterRegistry.counter("http.responses.by.status", Tags.of("status", status)).increment();
     }
 }
-

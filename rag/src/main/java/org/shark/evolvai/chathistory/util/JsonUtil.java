@@ -1,5 +1,8 @@
 package org.shark.evolvai.chathistory.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,9 +13,6 @@ import dev.langchain4j.data.message.UserMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class JsonUtil {
     private static final Logger logger = LoggerFactory.getLogger(JsonUtil.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -21,10 +21,18 @@ public class JsonUtil {
         try {
             List<StoredMessage> stored = messages.stream()
                     .map(msg -> {
-                        if (msg instanceof UserMessage u) return new StoredMessage("user", u.singleText());
-                        if (msg instanceof AiMessage a) return new StoredMessage("ai", a.text());
-                        if (msg instanceof SystemMessage s) return new StoredMessage("system", s.text());
-                        throw new IllegalArgumentException("Unsupported message type: " + msg.getClass());
+                        if (msg instanceof UserMessage u) {
+                            return new StoredMessage("user", u.singleText());
+                        }
+                        if (msg instanceof AiMessage a) {
+                            return new StoredMessage("ai", a.text());
+                        }
+                        if (msg instanceof SystemMessage s) {
+                            return new StoredMessage("system", s.text());
+                        }
+                        throw new IllegalArgumentException(
+                                "Unsupported message type: " + msg.getClass()
+                        );
                     })
                     .toList();
 
@@ -47,11 +55,13 @@ public class JsonUtil {
             });
             List<ChatMessage> result = stored.stream()
                     .map(s -> switch (s.type) {
-                        case "user" -> new UserMessage(s.text);
-                        case "ai" -> new AiMessage(s.text);
-                        case "system" -> new SystemMessage(s.text);
-                        default -> throw new IllegalArgumentException("Tipo desconocido: " + s.type);
-                    })
+                            case "user" -> new UserMessage(s.text);
+                            case "ai" -> new AiMessage(s.text);
+                            case "system" -> new SystemMessage(s.text);
+                            default -> throw new IllegalArgumentException(
+                                    "Tipo desconocido: " + s.type
+                            );
+                        })
                     .toList();
             logger.debug("Deserialización exitosa: {} mensajes", result.size());
             return result;

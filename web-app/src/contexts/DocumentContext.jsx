@@ -42,3 +42,5 @@ export const DocumentProvider = ({ children }) => {
     </DocumentContext.Provider>
   );
 };
+
+export {DocumentContext};

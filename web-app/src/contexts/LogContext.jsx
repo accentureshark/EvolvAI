@@ -22,3 +22,5 @@ export const LogProvider = ({ children }) => {
         </LogContext.Provider>
     );
 };
+
+export {LogContext};

@@ -1,6 +1,7 @@
 import '../../styles/message.css';
 
 import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import botAvatar from '../../assets/shark-ia.png';
 import userAvatar from '../../assets/logo.png';
 
@@ -23,7 +24,7 @@ export const MessageItem = ({
     <li className={`message-item-container ${type}`}>
       <img src={currentAvatar} height={20} width={20} alt={avatarAlt} className="avatar" />
       <div className="text">
-        {displayText}
+        <ReactMarkdown>{displayText}</ReactMarkdown>
         {isLong && (
           <button className="show-more-btn" onClick={() => setExpanded(!expanded)}>
             {expanded ? 'Ver menos' : 'Ver más'}

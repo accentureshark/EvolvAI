@@ -13,7 +13,6 @@ export const useChat = () => {
     const [conversationId, setConversationId] = useState(null);
     const [chatStarted, setChatStarted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [useStreaming, setUseStreaming] = useState(false);
 
     const messageListRef = useRef(null);
 
@@ -62,9 +61,6 @@ export const useChat = () => {
             return;
         }
 
-        console.log(selectedDocument);
-        
-
         addMessage({ text, type: 'user' });
 
         const payload = 
@@ -74,15 +70,13 @@ export const useChat = () => {
             conversationId,
             customPrompt 
         };
-        const url = `${BACKEND_URL}/api/inference/${useStreaming ? "query-stream" : "query"}`;
+        const url = `${BACKEND_URL}/api/inference/query-stream`;
 
         log(`➡️ Enviando consulta a: ${url} | documentId: ${selectedDocument}`, "info");
         setIsLoading(true);
 
         try {
-            useStreaming
-                ? await handleStreamingResponse(url, payload)
-                : await handleRegularResponse(url, payload);
+            handleStreamingResponse(url, payload);
         } catch (err) {
             log(`Error: ${err.message}`, "error");
             addMessage({ text: `Error de conexión: ${err.message}`, type: 'bot' });
@@ -91,69 +85,50 @@ export const useChat = () => {
         }
     };
 
-    const handleRegularResponse = async (url, payload) => {
-        const res = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) {
-            const msg = await res.text();
-            log(`Error del backend: ${msg}`, "error");
-            addMessage({ text: `Error del backend: ${msg}`, type: 'bot' });
-            return;
-        }
-
-        const result = await res.json();
-        addMessage({ text: result.answer, type: 'bot' });
-    };
 
     const handleStreamingResponse = async (url, payload) => {
         addMessage({ text: "", type: 'bot' });
 
-        const res = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
+        try {
+            const res = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
 
-        if (!res.ok) {
-            const msg = await res.text();
-            updateLastBotMessage(`Error del backend: ${msg}`, true);
-            return;
-        }
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = "";
+            let partial = "";
 
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-        let partial = "";
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
 
-        while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
 
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop() || '';
-
-            for (let line of lines) {
-                line = line.replace(/^data:\s*/, '').trim();
-                if (line) {
-                partial += partial.endsWith(" ") || /^[.,;:?!]/.test(line) ? line : ` ${line}`;
+                for (let line of lines) {
+                    line = line.replace(/^data:\s*/, '').trim();
+                    if (line) {
+                    partial += partial.endsWith(" ") || /^[.,;:?!]/.test(line) ? line : ` ${line}`;
+                    }
+                    updateLastBotMessage(partial);
                 }
-                updateLastBotMessage(partial);
             }
-        }
 
-        updateLastBotMessage(partial.replace(/\\n/g, "\n"), true);
+            updateLastBotMessage(partial.replace(/\\n/g, "\n"), true);
+        } catch (err) {
+            log(`Error: ${err.message}`, "error");
+            updateLastBotMessage(`Error del backend: ${err.message}`, true);
+            return
+        }
     };
 
     return {
         messages,
         isLoading,
-        useStreaming,
-        setUseStreaming,
         startNewChat,
         handleSendMessage,
         messageListRef,

@@ -1,20 +1,24 @@
 import {useState} from 'react';
 import { usePrompt } from '../../contexts/PromptContext';
-import {InputField} from '../ui/InputField';
-import {CustomCheckbox} from '../ui/CustomCheckbox'
+import {TextareaField} from '../ui/TextareaField'
 import {CustomButton} from '../ui/CustomButton';
 
 export const ChatInputBar = (
   {
     onSendMessage,
     startNewChat,
-    useStreaming,
-    setUseStreaming,
     chatStarted,
   }
 ) => {
   const [message, setMessage] = useState('');
   const { prompt } = usePrompt();
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -24,7 +28,7 @@ export const ChatInputBar = (
     const messageData = {
       text: message,
       type: 'user',
-      useStreaming: useStreaming,
+      useStreaming: true,
       customPrompt: prompt
     };
 
@@ -32,7 +36,6 @@ export const ChatInputBar = (
     
     onSendMessage(messageData);
     setMessage('');
-    setUseStreaming(false); 
   }
 
   return (
@@ -42,20 +45,16 @@ export const ChatInputBar = (
           className='p-button p-button-rounded'
           onClick={() => startNewChat()} 
         />
-        <InputField
-          className="input-message"
+        <TextareaField
           placeholder="Escribe un mensaje..."
-          id="send-message"
-          disabled={!chatStarted}
+          name="send-message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
+          autoResize={true}
+          disabled={!chatStarted}
+          className="chat-textarea"
         />
-        <CustomCheckbox 
-          onChange={(e) => setUseStreaming(e.target.checked)}
-          checked={useStreaming}
-          className="checkbox"
-          label="Streaming"
-          />
         <CustomButton
           disabled={!chatStarted || message.trim() === ''}
           type="submit"

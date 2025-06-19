@@ -1,13 +1,18 @@
 package org.shark.evolvai.inference.util;
 
-import dev.langchain4j.store.embedding.EmbeddingMatch;
-
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import dev.langchain4j.store.embedding.EmbeddingMatch;
 import org.shark.evolvai.inference.controller.EmbeddingMatchDto;
 
 public class EnrichmentUtil {
@@ -40,26 +45,37 @@ public class EnrichmentUtil {
                 .map(String.class::cast)
                 .findFirst();
 
-        return enrichPattern.map(pattern -> replaceVariables(pattern, variables)).orElse(originalQuery);
+        return enrichPattern.map(
+            pattern -> replaceVariables(pattern, variables))
+            .orElse(originalQuery
+            );
     }
 
     public static String rebuildContextFromMatches(List<EmbeddingMatchDto> matches) {
         return matches.stream()
                 .map(match -> {
                     Map<String, Object> metadata = match.getMetadata();
-                    Map<String, Object> estructura = safeCast(metadata.get("estructuraContent"), Map.class);
-                    String enrich = estructura != null ? Objects.toString(estructura.get("enrichText"), "{texto}") : "{texto}";
+                    Map<String, Object> estructura = safeCast(
+                        metadata.get("estructuraContent"),
+                        Map.class
+                    );
+                    String enrich = estructura != null
+                        ? Objects.toString(estructura.get("enrichText"), "{texto}")
+                        : "{texto}";
                     return replaceVariables(enrich, buildVariablesMap(metadata, match.getText()));
                 })
                 .collect(Collectors.joining("\n"));
     }
 
-    private static Map<String, Object> buildVariablesMap(Map<String, Object> metadata, String texto) {
+    private static Map<String, Object> buildVariablesMap(
+        Map<String, Object> metadata, String texto
+    ) {
         Map<String, Object> variables = new HashMap<>(metadata);
         variables.put("texto", texto);
         return variables;
     }
 
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public static Map<String, Object> extractMetadata(EmbeddingMatch<String> match) {
         try {
             Field field = match.getClass().getDeclaredField("metadata");

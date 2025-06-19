@@ -60,6 +60,9 @@
                 <version>3.21.2</version>
                 <configuration>
                     <printFailingErrors>true</printFailingErrors>
+                    <rulesets>
+                        <ruleset>ruleset-pmd.xml</ruleset>
+                    </rulesets>
                 </configuration>
                 <executions>
                     <execution>

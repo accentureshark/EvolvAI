@@ -44,15 +44,21 @@ public class InferenceController {
             summary = "Consulta RAG básica",
             description = "Realiza una consulta simple usando RAG con configuración predeterminada",
             responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Consulta procesada correctamente",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = QueryResponse.class))
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Consulta procesada correctamente",
+                        content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = QueryResponse.class)
+                        )
                     ),
-                    @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+                @ApiResponse(
+                    responseCode = "400",
+                    description = "Solicitud inválida"
+                    )
             }
     )
-    @MonitoredEndpoint(name = "api.inference.query" )
+    @MonitoredEndpoint(name = "api.inference.query")
     public ResponseEntity<QueryResponse> query(
             @Parameter(description = "Datos de la consulta", required = true)
             @Valid @RequestBody RagQueryRequest request) {
@@ -70,21 +76,30 @@ public class InferenceController {
             summary = "Consulta RAG avanzada",
             description = "Realiza una consulta RAG con opciones de configuración avanzadas",
             responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Consulta procesada correctamente",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = QueryResponse.class))
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Consulta procesada correctamente",
+                        content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = QueryResponse.class)
+                        )
                     ),
-                    @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+                @ApiResponse(
+                    responseCode = "400",
+                    description = "Solicitud inválida"
+                    )
             }
     )
-    @MonitoredEndpoint(name = "api.inference.advancedQuery" )
+    @MonitoredEndpoint(name = "api.inference.advancedQuery")
     public ResponseEntity<QueryResponse> advancedQuery(
             @Parameter(description = "Datos de la consulta avanzada", required = true)
             @Valid @RequestBody RagQueryRequest request) {
         log.info("Recibida consulta RAG avanzada: {}", request.getQuery());
         QueryResponse response = inferenceUseCase.advancedQuery(request);
-        log.info("Respuesta generada para consulta RAG avanzada: {}", response.getAnswer().toLowerCase());
+        log.info(
+            "Respuesta generada para consulta RAG avanzada: {}",
+            response.getAnswer().toLowerCase()
+        );
         return ResponseEntity.ok(response);
     }
 }

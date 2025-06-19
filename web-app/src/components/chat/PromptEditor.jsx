@@ -26,6 +26,7 @@ export const PromptEditor = () => {
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           rows={4}
+          className='custom-prompt'
         />
       )}
     </div>

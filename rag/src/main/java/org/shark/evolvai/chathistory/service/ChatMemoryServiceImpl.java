@@ -1,12 +1,13 @@
 package org.shark.evolvai.chathistory.service;
 
 
+import java.util.List;
+
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
+import org.shark.evolvai.chathistory.adapter.out.PostgresChatMemoryStore;
 import org.shark.evolvai.chathistory.port.in.ChatMemoryService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ChatMemoryServiceImpl implements ChatMemoryService {
@@ -29,7 +30,7 @@ public class ChatMemoryServiceImpl implements ChatMemoryService {
 
     @Override
     public List<ChatMessage> getAllMessages() {
-        if (chatMemoryStore instanceof org.shark.evolvai.chathistory.adapter.out.PostgresChatMemoryStore store) {
+        if (chatMemoryStore instanceof PostgresChatMemoryStore store) {
             return store.getAllMessages();
         }
         throw new UnsupportedOperationException("No soportado para este tipo de ChatMemoryStore");

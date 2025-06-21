@@ -1,13 +1,13 @@
 package org.shark.evolvai.llm.config;
 
+import java.time.Duration;
+
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import org.shark.evolvai.config.RagProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.time.Duration;
 
 @Configuration
 public class LlmConfig {

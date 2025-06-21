@@ -1,18 +1,19 @@
 package org.shark.evolvai.embedding.domain.service;
 
-import dev.langchain4j.data.document.Metadata;
-import dev.langchain4j.data.segment.TextSegment;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import dev.langchain4j.data.document.Metadata;
+import dev.langchain4j.data.segment.TextSegment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+
+@SuppressWarnings("PMD.UnusedPrivateField")
 public class TextChunkingService {
 
     private static final Logger log = LoggerFactory.getLogger(TextChunkingService.class);
@@ -20,13 +21,19 @@ public class TextChunkingService {
 
     private final int chunkSize;
     private final int overlap;
+    // TODO: Revisar esta unused variable en futuras versiones
     private final List<String> enrichKeys;
 
     public TextChunkingService(int chunkSize, int overlap, List<String> enrichKeys) {
         this.chunkSize = chunkSize;
         this.overlap = overlap;
         this.enrichKeys = enrichKeys;
-        log.info("TextChunkingService inicializado con chunkSize={} overlap={} enrichKeys={}", chunkSize, overlap, enrichKeys);
+        log.info(
+            "TextChunkingService inicializado con chunkSize={} overlap={} enrichKeys={}",
+            chunkSize,
+            overlap,
+            enrichKeys
+        );
     }
 
     public List<TextSegment> chunk(String text, String documentId) {
@@ -39,7 +46,11 @@ public class TextChunkingService {
             return new ArrayList<>();
         }
 
-        log.info("Iniciando chunking de texto de longitud {}: '{}'", text.length(), text.replaceAll("\\s+", " ").trim());
+        log.info(
+            "Iniciando chunking de texto de longitud {}: '{}'",
+            text.length(),
+            text.replaceAll("\\s+", " ").trim()
+        );
 
         List<String> words = Arrays.stream(text.split("\\s+"))
                 .filter(w -> !w.isBlank())
@@ -73,7 +84,10 @@ public class TextChunkingService {
 
                 log.debug("Fragmento #{} generado: '{}'", chunkCount, chunkText);
             } else {
-                log.warn("Fragmento ignorado por estar vacío o en blanco (chunkIndex={})", chunkCount);
+                log.warn(
+                    "Fragmento ignorado por estar vacío o en blanco (chunkIndex={})",
+                    chunkCount
+                );
             }
 
             chunkCount++;

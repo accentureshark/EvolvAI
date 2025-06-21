@@ -1,14 +1,14 @@
 package org.shark.evolvai.chathistory.adapter.out;
 
+import java.util.Collections;
+import java.util.List;
+
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import org.shark.evolvai.chathistory.util.JsonUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collections;
-import java.util.List;
 
 @Component
 @ConditionalOnProperty(name = "chatmemory-persistence.provider", havingValue = "jpa")
@@ -45,7 +45,6 @@ public class PostgresChatMemoryStore implements ChatMemoryStore {
         repository.deleteById(id.toString());
     }
 
-
     @Transactional
     public List<ChatMessage> getAllMessages() {
         // ver de agrupar por conversationId
@@ -54,6 +53,4 @@ public class PostgresChatMemoryStore implements ChatMemoryStore {
                 .flatMap(entity -> JsonUtil.deserializeMessages(entity.getMemoryJson()).stream())
                 .toList();
     }
-
-
 }

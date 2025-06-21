@@ -13,7 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 @RestController
@@ -32,25 +35,32 @@ public class InferenceStreamController {
 
     @Operation(
             summary = "Consulta RAG en streaming",
-            description = "Realiza una consulta RAG y devuelve la respuesta fragmentada en tiempo real usando Server-Sent Events (SSE). ")
+            description = """
+                Realiza una consulta RAG y devuelve la respuesta fragmentada en 
+                tiempo real usando Server-Sent Events (SSE). 
+                """
+    )
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Stream de respuesta iniciado correctamente",
-                    content = @Content(
-                            mediaType = MediaType.TEXT_EVENT_STREAM_VALUE,
-                            schema = @Schema(
-                                    type = "string",
-                                    description = "Fragmentos de texto de la respuesta en formato SSE")
-                    )
+        @ApiResponse(
+                responseCode = "200",
+                description = "Stream de respuesta iniciado correctamente",
+                content = @Content(
+                        mediaType = MediaType.TEXT_EVENT_STREAM_VALUE,
+                        schema = @Schema(
+                                type = "string",
+                                description = "Fragmentos de texto de la respuesta en formato SSE")
+                )
             ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Solicitud inválida - El cuerpo de la petición es inválido o falta información requerida"
+        @ApiResponse(
+                responseCode = "400",
+                description = """
+                    Solicitud inválida - El cuerpo de la petición es inválido o falta 
+                    información requerida
+                    """
             ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Error interno del servidor al procesar la consulta"
+        @ApiResponse(
+                responseCode = "500",
+                description = "Error interno del servidor al procesar la consulta"
             )
     })
     @PostMapping(value = "/query-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

@@ -1,5 +1,20 @@
 package org.shark.evolvai.embedding.adapter.out.storage;
 
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
@@ -11,12 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
-
-import java.sql.*;
-import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
 
 
 @ConditionalOnProperty(name = "rag.embedding.storage.type", havingValue = "pgVector")
@@ -68,7 +77,10 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         String fragmentId = documentId + "/" + hash;
 
         if (existsDocumentId(fragmentId)) {
-            log.warn("Ya existe un documento con document_id={}. No se insertará nuevamente.", fragmentId);
+            log.warn(
+                "Ya existe un documento con document_id={}. No se insertará nuevamente.",
+                fragmentId
+            );
             return;
         }
 
@@ -86,13 +98,18 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         metadata.toMap().forEach(metaMap::put);
 
         insertEmbedding(UUID.randomUUID(), padded, documentId, text, metaMap);
-        log.info("Embedding almacenado en PgVector con document_id={}, dimensiones={}, metadatos={}", fragmentId, padded.length, metadata);
+        log.info(
+            "Embedding almacenado en PgVector con document_id={}, dimensiones={}, metadatos={}",
+            fragmentId,
+            padded.length,
+            metadata
+        );
     }
 
     private boolean existsDocumentId(String documentId) {
         String sql = "SELECT 1 FROM " + tableName + " WHERE document_id = ?";
         try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+            PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, documentId);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
@@ -103,10 +120,19 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         }
     }
 
-    private void insertEmbedding(UUID embeddingId, float[] embedding, String documentId, String text, Map<String, Object> metadata) {
-        String sql = "INSERT INTO " + tableName + " (embedding_id, embedding, document_id, text, metadata) VALUES (?, ?, ?, ?, ?::jsonb)";
+    private void insertEmbedding(
+        UUID embeddingId,
+        float[] embedding,
+        String documentId,
+        String text,
+        Map<String,
+        Object> metadata
+    ) {
+        String sql = "INSERT INTO " + tableName
+            + " (embedding_id, embedding, document_id, text, metadata) "
+            + "VALUES (?, ?, ?, ?, ?::jsonb)";
         try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+            PreparedStatement ps = conn.prepareStatement(sql)) {
 
             Float[] floatObjects = new Float[embedding.length];
             for (int i = 0; i < embedding.length; i++) {
@@ -129,7 +155,9 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     }
 
     @Override
-    public List<EmbeddingMatch<String>> findSimilar(Embedding embedding, int maxResults, double minScore) {
+    public List<EmbeddingMatch<String>> findSimilar(
+        Embedding embedding, int maxResults, double minScore
+    ) {
         float[] padded = padToDimension(embedding.vector(), targetDimension);
         Embedding paddedEmbedding = new Embedding(padded);
         EmbeddingSearchRequest embeddingSearchRequest = EmbeddingSearchRequest.builder()
@@ -149,13 +177,25 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
                 ))
                 .collect(Collectors.toList());
 
-        log.info("findSimilar sin filtro: resultados={}, minScore={}, maxResults={}", results.size(), minScore, maxResults);
-        results.forEach(match -> log.debug("Match: id={}, score={}, snippet={}", match.embeddingId(), match.score(), match.embedded().substring(0, Math.min(50, match.embedded().length()))));
+        log.info(
+            "findSimilar sin filtro: resultados={}, minScore={}, maxResults={}",
+            results.size(),
+            minScore,
+            maxResults
+        );
+        results.forEach(match -> log.debug(
+            "Match: id={}, score={}, snippet={}",
+            match.embeddingId(),
+            match.score(),
+            match.embedded().substring(0, Math.min(50, match.embedded().length())))
+        );
         return results;
     }
 
     @Override
-    public List<EmbeddingMatch<String>> findSimilar(Embedding embedding, int maxResults, double minScore, Metadata filter) {
+    public List<EmbeddingMatch<String>> findSimilar(
+        Embedding embedding, int maxResults, double minScore, Metadata filter
+    ) {
         float[] padded = padToDimension(embedding.vector(), targetDimension);
         Embedding paddedEmbedding = new Embedding(padded);
         EmbeddingSearchRequest embeddingSearchRequest = EmbeddingSearchRequest.builder()
@@ -175,7 +215,10 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
                     match.embedded().metadata().toMap().forEach(meta::put);
                     return filterMap.entrySet().stream()
                             .allMatch(e -> e.getValue().toString().equals(
-                                    Optional.ofNullable(meta.get(e.getKey())).map(Object::toString).orElse(null)));
+                                    Optional.ofNullable(meta.get(e.getKey()))
+                                        .map(Object::toString)
+                                        .orElse(null))
+                            );
                 })
                 .map(match -> new EmbeddingMatch<>(
                         match.score(),
@@ -185,7 +228,13 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
                 ))
                 .collect(Collectors.toList());
 
-        log.info("findSimilar con filtro: resultados={}, minScore={}, maxResults={}, filtro={}", filtered.size(), minScore, maxResults, filter);
+        log.info(
+            "findSimilar con filtro: resultados={}, minScore={}, maxResults={}, filtro={}",
+            filtered.size(),
+            minScore,
+            maxResults,
+            filter
+        );
         return filtered;
     }
 
@@ -194,8 +243,8 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         String sql = "SELECT DISTINCT document_id FROM " + tableName;
         List<String> ids = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 ids.add(rs.getString(1));
             }
@@ -236,7 +285,7 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     public Optional<Map<String, Object>> findMetadataByDocumentId(String documentId) {
         String sql = "SELECT metadata FROM " + tableName + " WHERE document_id LIKE ? LIMIT 1";
         try (Connection conn = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+            PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, documentId + "/%");
             try (ResultSet rs = ps.executeQuery()) {
@@ -248,7 +297,11 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
                 }
             }
         } catch (Exception e) {
-            log.error("Error extrayendo metadata desde PgVector para document_id={}", documentId, e);
+            log.error(
+                "Error extrayendo metadata desde PgVector para document_id={}",
+                documentId,
+                e
+            );
         }
         return Optional.empty();
     }

@@ -1,25 +1,28 @@
 package org.shark.evolvai.embedding.port.in;
 
-import dev.langchain4j.data.embedding.Embedding;
-import dev.langchain4j.data.segment.TextSegment;
-
 import java.util.List;
 import java.util.Map;
 
-    public interface EmbeddingUseCase {
+import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.data.segment.TextSegment;
 
-        void indexDocument(String id, String text, String customPrompt);
-        void indexDocument(String id, String text, String customPrompt, Map<String, String> extraMetadata);
+public interface EmbeddingUseCase {
 
-        void index(List<TextSegment> segments);
+    void indexDocument(String id, String text, String customPrompt);
 
-        List<String> listDocumentIds();
+    void indexDocument(
+        String id, String text, String customPrompt, Map<String, String> extraMetadata
+    );
 
-        List<String> findSimilarDocuments(String query, int maxResults, double minScore);
+    void index(List<TextSegment> segments);
 
-        Embedding generateEmbedding(String text);
+    List<String> listDocumentIds();
 
-        Embedding generateEmbedding(int[] inputIds, int[] attentionMask);
+    List<String> findSimilarDocuments(String query, int maxResults, double minScore);
 
-        void removeAllDocuments();
-    }
+    Embedding generateEmbedding(String text);
+
+    Embedding generateEmbedding(int[] inputIds, int[] attentionMask);
+
+    void removeAllDocuments();
+}

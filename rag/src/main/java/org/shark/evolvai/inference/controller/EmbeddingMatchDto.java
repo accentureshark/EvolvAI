@@ -1,9 +1,9 @@
 package org.shark.evolvai.inference.controller;
 
-import lombok.Getter;
-
 import java.util.Collections;
 import java.util.Map;
+
+import lombok.Getter;
 
 @Getter
 public class EmbeddingMatchDto {
@@ -14,7 +14,14 @@ public class EmbeddingMatchDto {
     private final Map<String, Object> metadata;
 
     // Constructor principal con metadatos
-    public EmbeddingMatchDto(double score, String embeddingId, float[] embedding, String text, Map<String, Object> metadata) {
+    public EmbeddingMatchDto(
+        double score,
+        String embeddingId,
+        float[] embedding,
+        String text,
+        Map<String,
+        Object> metadata
+    ) {
         this.score = score;
         this.embeddingId = embeddingId;
         this.embedding = embedding;

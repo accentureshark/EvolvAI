@@ -1,11 +1,14 @@
 package org.shark.evolvai.embedding.domain.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.segment.TextSegment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Slf4j
 @Service
@@ -15,7 +18,9 @@ public class SemanticJsonChunkingService {
      * Divide una lista de entradas JSON (cada una con "texto") en TextSegments.
      * Usa siempre el documentId que viene de baseMetadata.
      */
-    public List<TextSegment> chunk(List<Map<String, Object>> data, Map<String, String> baseMetadata) {
+    public List<TextSegment> chunk(
+        List<Map<String, Object>> data, Map<String, String> baseMetadata
+    ) {
         List<TextSegment> segments = new ArrayList<>();
         int chunkIndex = 0;
 
@@ -45,7 +50,11 @@ public class SemanticJsonChunkingService {
             });
 
             // ¡NO toques el documentId! Solo loguealo para auditar
-            log.debug("Creando chunk index={} documentId={}", chunkIndex, metadata.get("documentId"));
+            log.debug(
+                "Creando chunk index={} documentId={}",
+                chunkIndex,
+                metadata.get("documentId")
+            );
 
             segments.add(new TextSegment(text, Metadata.from(metadata)));
             chunkIndex++;

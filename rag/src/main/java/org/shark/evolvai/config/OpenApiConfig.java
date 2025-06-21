@@ -13,6 +13,8 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("API RAG EvolvAI")
                         .version("1.0")
-                        .description("API para consultas con Generación Aumentada por Recuperación"));
+                        .description(
+                                "API para consultas con Generación Aumentada por Recuperación")
+                );
     }
 }

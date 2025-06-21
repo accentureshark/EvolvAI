@@ -1,12 +1,14 @@
 package org.shark.evolvai.config;
 
+import java.util.List;
+
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import java.util.List;
 
 /**
  * Centraliza todas las propiedades de configuración bajo el prefijo "rag".
- * Esta clase se mapea automáticamente a partir de application.yaml gracias a @ConfigurationProperties.
+ * Esta clase se mapea automáticamente a partir de
+ * application.yaml gracias a @ConfigurationProperties.
  */
 @Data
 @ConfigurationProperties(prefix = "rag")
@@ -20,7 +22,8 @@ public class RagProperties {
 
     /**
      * Configuración para el proveedor LLM (Large Language Model).
-     * Permite elegir entre distintos backends (Ollama, Llama) y ajustar parámetros como temperatura.
+     * Permite elegir entre distintos backends (Ollama, Llama)
+     * y ajustar parámetros como temperatura.
      */
     private Llm llm;
 
@@ -63,7 +66,7 @@ public class RagProperties {
         private Generator generator;
 
         /**
-         * Parámetros de conexión para pgVector (almacenamiento en PostgreSQL con extensión pgvector).
+         * Parámetros de conexión para pgVector(almacenamiento en PostgreSQL con extensión pgvector)
          * Incluye host, puerto, credenciales, nombre de tabla y dimensión del vector.
          */
         private Pgvector pgvector;

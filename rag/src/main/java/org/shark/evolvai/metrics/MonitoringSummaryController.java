@@ -18,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/monitoring")
 @RequiredArgsConstructor
+@SuppressWarnings({"all"})
 public class MonitoringSummaryController {
 
     private final MeterRegistry meterRegistry;

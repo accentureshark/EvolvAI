@@ -1,10 +1,18 @@
 package org.shark.evolvai.inference.service;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import org.shark.evolvai.chathistory.port.in.ChatMemoryService;
 import org.shark.evolvai.config.RagProperties;
@@ -21,9 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class InferenceService implements InferenceUseCase {
@@ -68,15 +73,21 @@ public class InferenceService implements InferenceUseCase {
 
     @Override
     public QueryResponse query(RagQueryRequest request) {
-        log.info("Iniciando consulta básica: {}", request );
+        log.info("Iniciando consulta básica: {}", request);
 
         EmbeddingContext ctx = prepareEmbeddingContext(request);
 
         if (ctx.matchDtos().isEmpty()) {
-            return new QueryResponse("No hay información suficiente para responder a esa pregunta.", null, ctx.conversationId());
+            return new QueryResponse(
+                "No hay información suficiente para responder a esa pregunta.",
+                null, ctx.conversationId()
+            );
         }
 
-        String promptTemplate = Optional.ofNullable(request.getCustomPrompt()).orElse(ragProperties.getLlm().getPrompt());
+        String promptTemplate = Optional.ofNullable(
+            request.getCustomPrompt())
+            .orElse(ragProperties.getLlm().getPrompt()
+            );
 
         // Reemplazo manual de placeholders
         String finalPrompt = promptTemplate.replace("{query}", request.getQuery())
@@ -91,7 +102,10 @@ public class InferenceService implements InferenceUseCase {
                 new AiMessage(answer)
         ));
 
-        return new QueryResponse(answer, request.isIncludeMatches() ? ctx.matchDtos() : null, ctx.conversationId());
+        return new QueryResponse(
+            answer,
+            request.isIncludeMatches() ? ctx.matchDtos() : null, ctx.conversationId()
+        );
     }
 
     @Override
@@ -115,7 +129,10 @@ public class InferenceService implements InferenceUseCase {
 
         body.put("model", ollama.getModel());
 
-        String promptTemplate = Optional.ofNullable(request.getCustomPrompt()).orElse(ragProperties.getLlm().getPrompt());
+        String promptTemplate = Optional.ofNullable(
+            request.getCustomPrompt())
+            .orElse(ragProperties.getLlm().getPrompt()
+            );
         String combinedPrompt = promptTemplate.replace("{query}", request.getQuery())
                 .replace("{context}", ctx.context());
 
@@ -144,7 +161,8 @@ public class InferenceService implements InferenceUseCase {
         String enrichedQuery = request.getQuery();
 
         if (request.getContextMetadata() == null && request.getDocumentId() != null) {
-            Optional<Map<String, Object>> maybeMetadata = embeddingStorage.findMetadataByDocumentId(request.getDocumentId());
+            Optional<Map<String, Object>> maybeMetadata =
+                embeddingStorage.findMetadataByDocumentId(request.getDocumentId());
             if (maybeMetadata.isPresent()) {
                 Map<String, String> contextMap = new HashMap<>();
                 maybeMetadata.get().forEach((k, v) -> {
@@ -158,7 +176,11 @@ public class InferenceService implements InferenceUseCase {
         }
 
         Embedding queryEmbedding = embeddingGenerator.generateEmbedding(enrichedQuery);
-        log.info("Vector embedding consulta (primeros 5 valores): {}", Arrays.toString(Arrays.copyOf(queryEmbedding.vector(), Math.min(5, queryEmbedding.vector().length))));
+        log.info(
+            "Vector embedding consulta (primeros 5 valores): {}",
+            Arrays.toString(
+                Arrays.copyOf(queryEmbedding.vector(), Math.min(5, queryEmbedding.vector().length)))
+        );
 
         int actualDimensions = queryEmbedding.vector().length;
         int expectedDimensions = ragProperties.getEmbedding().getPgvector().getDimensions();
@@ -168,8 +190,15 @@ public class InferenceService implements InferenceUseCase {
             queryEmbedding = new Embedding(padded);
             log.info("Query embedding padded a {} dimensiones", expectedDimensions);
         } else if (actualDimensions > expectedDimensions) {
-            log.error("El embedding generado tiene más dimensiones ({}) que las esperadas ({}). Verificá el modelo configurado.", actualDimensions, expectedDimensions);
-            throw new IllegalArgumentException("Dimensiones del embedding incompatibles con configuración de pgvector.");
+            log.error(
+                "El embedding generado tiene más dimensiones ({}) que las esperadas ({}). "
+                    + "Verificá el modelo configurado.",
+                actualDimensions,
+                expectedDimensions
+            );
+            throw new IllegalArgumentException(
+                "Dimensiones del embedding incompatibles con configuración de pgvector."
+            );
         }
 
         List<EmbeddingMatch<String>> matches;
@@ -177,8 +206,8 @@ public class InferenceService implements InferenceUseCase {
 
         log.info("Usando metadata para búsqueda de embeddings: {}", contextMap);
 
-        if ((contextMap != null && !contextMap.isEmpty()) ||
-                (request.getDocumentId() != null && !request.getDocumentId().isBlank())) {
+        if ((contextMap != null && !contextMap.isEmpty())
+            || (request.getDocumentId() != null && !request.getDocumentId().isBlank())) {
 
             Map<String, Object> combinedMap = new HashMap<>();
             if (contextMap != null) {
@@ -203,7 +232,13 @@ public class InferenceService implements InferenceUseCase {
         }
 
         log.info("Se encontraron {} embeddings similares.", matches.size());
-        matches.stream().limit(3).forEach(m -> log.debug("Match: score={}, id={}, text={}", m.score(), m.embeddingId(), m.embedded().substring(0, Math.min(m.embedded().length(), 100))));
+        matches.stream().limit(3).forEach(m ->
+            log.debug(
+                "Match: score={}, id={}, text={}",
+                m.score(),
+                m.embeddingId(),
+                m.embedded().substring(0, Math.min(m.embedded().length(), 100)))
+        );
 
         List<EmbeddingMatchDto> matchDtos = matches.stream()
                 .map(m -> new EmbeddingMatchDto(

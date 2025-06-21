@@ -1,5 +1,11 @@
 package org.shark.evolvai.llm.out;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatModel;
@@ -10,12 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
 
 @Component
 public class GenericLlmProvider implements LlmProvider {
@@ -41,7 +41,10 @@ public class GenericLlmProvider implements LlmProvider {
 
     @Override
     public ChatMessage send(List<ChatMessage> messages) {
-        log.warn("⚠️ Método send(.{}.) fue invocado directamente. Esto omite el uso de prompt del YAML.",messages.toString());
+        log.warn(
+            "⚠️ Método send(.{}.) fue invocado directamente. Esto omite el uso de prompt del YAML.",
+            messages.toString()
+        );
         if (!isModelLoaded(modelName)) {
             throw new ModelNotLoadedException(modelName);
         }
@@ -64,7 +67,7 @@ public class GenericLlmProvider implements LlmProvider {
             throw new ModelNotLoadedException(modelName);
         }
         try {
-            // Construir la lista de mensajes: prompt como primer mensaje, luego contexto, luego query
+            // Construir lista de mensajes: prompt como primer mensaje, luego contexto, luego query
             List<ChatMessage> messages = new java.util.ArrayList<>();
 
             if (context != null && !context.isEmpty()) {
@@ -95,7 +98,10 @@ public class GenericLlmProvider implements LlmProvider {
             conn.setConnectTimeout(2000);
             conn.setReadTimeout(2000);
 
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+            try (
+                BufferedReader in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()))
+            ) {
                 String response = in.lines().reduce("", (a, b) -> a + b);
                 boolean loaded = response.contains("\"" + modelName + "\"");
                 log.debug("¿Modelo '{}' cargado en Ollama?: {}", modelName, loaded);

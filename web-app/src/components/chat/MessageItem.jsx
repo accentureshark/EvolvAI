@@ -42,13 +42,15 @@ export const MessageItem = ({
               </button>
             )}
           </div>
-          <CustomButton
-            icon="pi pi-copy"
-            className="p-button-sm p-button-text copy-btn"
-            onClick={handleCopy}
-            tooltip="Copiar mensaje"
-            ariaLabel="Copiar mensaje"
-          />
+          { text.trim().length > 0 && (
+            <CustomButton
+              icon="pi pi-copy"
+              className="p-button-sm p-button-text copy-btn"
+              onClick={handleCopy}
+              tooltip="Copiar mensaje"
+              ariaLabel="Copiar mensaje"
+            />
+          )}
         </div>
       </li>
     </>

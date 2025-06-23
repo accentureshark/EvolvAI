@@ -25,6 +25,7 @@
         <spring-boot.version>3.4.1</spring-boot.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
+        <pmd.ruleset.location>..\ruleset-pmd.xml</pmd.ruleset.location>
     </properties>
 
     <build>
@@ -61,7 +62,7 @@
                 <configuration>
                     <printFailingErrors>true</printFailingErrors>
                     <rulesets>
-                        <ruleset>ruleset-pmd.xml</ruleset>
+                        <ruleset>{pmd.ruleset.location}</ruleset>
                     </rulesets>
                 </configuration>
                 <executions>

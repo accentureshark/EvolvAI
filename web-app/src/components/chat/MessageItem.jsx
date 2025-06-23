@@ -4,8 +4,8 @@ import { useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import botAvatar from '../../assets/shark-ia.png';
 import userAvatar from '../../assets/logo.png';
-import { Toast } from "primereact/toast";
 import { CustomButton } from '../ui/CustomButton';
+import { useToast } from '../../contexts/ToastContext'; 
 
 export const MessageItem = ({ 
   text = "Esto es un texto por defecto", 
@@ -13,7 +13,7 @@ export const MessageItem = ({
   avatar, 
 }) => {
   const [expanded, setExpanded] = useState(false);
-  const toast = useRef(null);
+  const toast = useToast();
   const MAX_LENGTH = 300;
 
   const currentAvatar = avatar || (type === 'bot' ? botAvatar : userAvatar);
@@ -30,7 +30,6 @@ export const MessageItem = ({
 
   return (
     <>
-      <Toast ref={toast} />
       <li className={`message-item-container ${type}`}>
         <img src={currentAvatar} height={20} width={20} alt={avatarAlt} className="avatar" />
         <div className="text">

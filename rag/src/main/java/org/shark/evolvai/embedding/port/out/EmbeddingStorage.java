@@ -24,5 +24,7 @@ public interface EmbeddingStorage {
 
     void removeAll();
 
+    void removeDocumentById(String documentId);
+
     Optional<Map<String, Object>> findMetadataByDocumentId(String documentId);
 }

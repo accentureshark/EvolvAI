@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 
 @ConditionalOnProperty(name = "rag.embedding.storage.type", havingValue = "pgVector")
@@ -39,6 +40,7 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     private final String dbPassword;
     private final String tableName;
     private final int targetDimension;
+    private final JdbcTemplate jdbcTemplate;
 
     public PgVectorEmbeddingStorage(
             @Value("${rag.embedding.pgvector.host}") String host,
@@ -47,7 +49,8 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
             @Value("${rag.embedding.pgvector.user}") String user,
             @Value("${rag.embedding.pgvector.password}") String password,
             @Value("${rag.embedding.pgvector.tableName}") String tableName,
-            @Value("${rag.embedding.pgvector.dimensions}") int dimensions
+            @Value("${rag.embedding.pgvector.dimensions}") int dimensions,
+            JdbcTemplate jdbcTemplate
     ) {
         this.embeddingStore = PgVectorEmbeddingStore.builder()
                 .host(host)
@@ -64,6 +67,7 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
         this.dbPassword = password;
         this.tableName = tableName;
         this.targetDimension = dimensions;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -258,6 +262,18 @@ public class PgVectorEmbeddingStorage implements EmbeddingStorage {
     public void removeAll() {
         embeddingStore.removeAll();
         log.warn("Todos los embeddings han sido eliminados de PgVector.");
+    }
+
+    @Override
+    public void removeDocumentById(String documentId) {
+        String sql = "DELETE FROM " + tableName + " WHERE document_id = ?";
+        try {
+            int deletedCount = jdbcTemplate.update(sql, documentId);
+            log.info("Eliminados {} embeddings del documento: {}", deletedCount, documentId);
+        } catch (Exception e) {
+            log.error("Error eliminando embeddings del documento: {}", documentId, e);
+            throw new RuntimeException("Error eliminando documento: " + documentId, e);
+        }
     }
 
     private float[] padToDimension(float[] input, int dim) {

@@ -151,6 +151,12 @@ public class RAGEmbeddingService implements EmbeddingUseCase {
     }
 
     @Override
+    public void removeDocumentById(String documentId) {
+        log.warn("Eliminando documento con id: " + documentId);
+        embeddingStorage.removeDocumentById(documentId);
+    }
+
+    @Override
     @SuppressWarnings("PMD.EmptyControlStatement")
     public void index(List<TextSegment> segments) {
         log.info("Indexando lista de {} fragmentos manuales.", segments.size());

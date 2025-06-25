@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -278,6 +279,21 @@ public class EmbeddingController {
             log.error("Error eliminando embeddings", e);
             return ResponseEntity.status(500).body(
                 "Error eliminando embeddings: " + e.getMessage()
+            );
+        }
+    }
+
+    @DeleteMapping("/remove/{id}")
+    @MonitoredEndpoint(name = "api.embedding.remove-by-id")
+    public ResponseEntity<String> removeEmbeddingById(@PathVariable String id) {
+        try {
+            embeddingUseCase.removeDocumentById(id);
+            log.warn("Eliminamdo documento via endpoint con id: " + id);
+            return ResponseEntity.ok("El documento fue eliminado correctamente, id: " + id);
+        } catch (Exception e) {
+            log.error("Error eliminando documento con id: " + id);
+            return ResponseEntity.status(500).body(
+                "Error eliminando documento: " + e.getMessage()
             );
         }
     }

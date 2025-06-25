@@ -9,27 +9,31 @@ import { LogProvider } from '../contexts/LogContext'
 import { PromptProvider } from '../contexts/PromptContext'
 import { MemoryProvider } from '../contexts/MemoryContext'
 import { useWebSocketLogs } from '../hooks/useWebSocketLogs'
+import { ToastProvider } from '../contexts/ToastContext'
 
 export const MainPage = () => {
   return (
-    <LogProvider>
-      <DocumentProvider>
-        <PromptProvider>
-          <MemoryProvider>
-          <WebSocketLogger />
-            <div className="main-page">
-              <Header />
-              <div className="main-page-container">
-                <DocumentPanel />
-                <MessagePanel />
-                <MemoryPanel />
-              </div>
-              <LogDisplay />
-            </ div>
-          </MemoryProvider>
-        </PromptProvider>
-      </DocumentProvider>
-    </LogProvider>
+    <ToastProvider>
+
+      <LogProvider>
+        <DocumentProvider>
+          <PromptProvider>
+            <MemoryProvider>
+            <WebSocketLogger />
+              <div className="main-page">
+                <Header />
+                <div className="main-page-container">
+                  <DocumentPanel />
+                  <MessagePanel />
+                  <MemoryPanel />
+                </div>
+                <LogDisplay />
+              </ div>
+            </MemoryProvider>
+          </PromptProvider>
+        </DocumentProvider>
+      </LogProvider>
+    </ToastProvider>
   )
 }
 

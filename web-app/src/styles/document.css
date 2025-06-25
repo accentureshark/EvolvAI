@@ -13,11 +13,7 @@
     .document-list-container {
         display: flex;
         flex-direction: column;
-        gap: 12px;
-
-        .document-uploaded-title {
-            margin-bottom: 0;
-        }
+        gap: 0px;
 
         .document-select {
             background-color: rgba(255, 255, 255, 0.7);
@@ -27,6 +23,10 @@
             outline: none;
             padding: 6px 8px;
         }
+    }
+
+    .document-list-container > *:nth-child(2) {
+        margin-bottom: 12px;
     }
 
     .p-fileupload {
@@ -86,5 +86,16 @@
             }
         }
 
+    }
+
+    .document-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        button {
+            height: 30px;
+            width: 30px;
+        }
     }
 }

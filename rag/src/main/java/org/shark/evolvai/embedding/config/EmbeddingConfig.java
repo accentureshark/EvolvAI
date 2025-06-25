@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
 @EnableConfigurationProperties(RagProperties.class)
@@ -25,7 +26,7 @@ public class EmbeddingConfig {
 
     @Bean
     @Qualifier("pgVectorEmbeddingStorage")
-    public EmbeddingStorage pgVectorEmbeddingStorage() {
+    public EmbeddingStorage pgVectorEmbeddingStorage(JdbcTemplate jdbcTemplate) {
         RagProperties.Embedding.Pgvector pg = ragProperties.getEmbedding().getPgvector();
         return new PgVectorEmbeddingStorage(
                 pg.getHost(),
@@ -34,7 +35,8 @@ public class EmbeddingConfig {
                 pg.getUser(),
                 pg.getPassword(),
                 pg.getTableName(),
-                pg.getDimensions()
+                pg.getDimensions(),
+                jdbcTemplate 
         );
     }
 

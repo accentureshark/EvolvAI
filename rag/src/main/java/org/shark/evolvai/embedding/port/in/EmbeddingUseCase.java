@@ -25,4 +25,7 @@ public interface EmbeddingUseCase {
     Embedding generateEmbedding(int[] inputIds, int[] attentionMask);
 
     void removeAllDocuments();
+    
+    void removeDocumentById(String documentId);
+
 }

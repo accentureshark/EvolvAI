@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { CustomButton } from "./CustomButton";
 import { Dialog } from "primereact/dialog";
-import { Toast } from "primereact/toast";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 import "../../styles/modal.css";
+import { useToast } from "../../contexts/ToastContext";
 
 const actuatorPaths = [
   { name: "actuator", path: "/actuator" },
@@ -13,7 +13,7 @@ const actuatorPaths = [
 
 export const ActuatorModal = ({ visible, onHide }) => {
   const [output, setOutput] = useState("");
-  const toast = useRef(null);
+  const toast = useToast();
 
   const loadActuator = async (path) => {
     try {
@@ -43,8 +43,6 @@ export const ActuatorModal = ({ visible, onHide }) => {
   }, [visible]);
 
 return (
-    <>
-      <Toast ref={toast} />
       <Dialog header="Endpoints Actuator" visible={visible} onHide={onHide} modal draggable={false} className="dialog">
         <ul className="actuator-list">
           {actuatorPaths.map(link => (
@@ -75,6 +73,5 @@ return (
           <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} className="actuator-output">{output}</pre>
         </div>
       </Dialog>
-    </>
   );
 }

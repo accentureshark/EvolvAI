@@ -9,6 +9,8 @@ import dev.langchain4j.data.document.splitter.DocumentBySentenceSplitter;
 import dev.langchain4j.data.segment.TextSegment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.shark.evolvai.config.RagProperties;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -18,19 +20,13 @@ public class SmartChunkingService {
 
     private final TextChunkingService textChunkingService;
     private final SemanticJsonChunkingService semanticJsonChunkingService;
+    private final RagProperties ragProperties;
 
-    /**
-     * Recibe un documento que puede ser:
-     * - texto plano
-     * - lista JSON con campos "texto".
-     */
     public List<TextSegment> chunk(Object input, Map<String, String> baseMetadata) {
         if (input instanceof Document document) {
-            // Valores hardcodeados temporalmente, se podrían utilizar las propiedades:
-            // - rag.embedding.chunking.size
-            // - rag.embedding.chunking.overlap
-            // Falta determinar que hacer con TextChunkingService
-            DocumentBySentenceSplitter splitter = new DocumentBySentenceSplitter(500, 0);
+            int size = ragProperties.getEmbedding().getChunking().getSize();
+            int overlap = ragProperties.getEmbedding().getChunking().getOverlap();
+            DocumentBySentenceSplitter splitter = new DocumentBySentenceSplitter(size, overlap);
             List<TextSegment> chunks = splitter.split(document);
             for (TextSegment chunk : chunks) {
                 chunk.metadata().put("documentId", baseMetadata.get("documentId"));

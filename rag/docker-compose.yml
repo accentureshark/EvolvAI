@@ -38,7 +38,8 @@ services:
       CUDA_VISIBLE_DEVICES: 0
       OLLAMA_KEEP_ALIVE: -1
       OLLAMA_FLASH_ATTENTION: 1
-      OLLAMA_KV_CACHE_TYPE: q8_0
+      OLLAMA_CONTEXT_LENGTH: 8192
+      OLLAMA_KV_CACHE_TYPE: q4_0
       OLLAMA_DEBUG: 1
     volumes:
       - ollama-data:/root/.ollama

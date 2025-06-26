@@ -26,8 +26,6 @@ vi.mock('../../../hooks/useChat', () => ({
       { id: 2, text: 'Hola humano', type: 'bot' }
     ],
     isLoading: true,
-    useStreaming: false,
-    setUseStreaming: vi.fn(),
     startNewChat: vi.fn(),
     handleSendMessage: vi.fn(),
     messageListRef: { current: null },
@@ -44,8 +42,4 @@ describe('ChatInterface', () => {
     expect(screen.getByTestId('chat-input-bar')).toBeInTheDocument();
   });
 
-  it('muestra TypingIndicator cuando está cargando y no usa streaming', () => {
-    render(<ChatInterface />);
-    expect(screen.getByTestId('typing-indicator')).toBeInTheDocument();
-  });
 });

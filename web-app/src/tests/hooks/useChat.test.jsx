@@ -22,7 +22,7 @@ describe('useChat', () => {
     global.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({ answer: 'Respuesta del backend' }),
+        json: () => Promise.resolve({ answer: 'Primera parte' }),
         text: () => Promise.resolve('Error simulado'),
         body: {
           getReader: () => ({
@@ -61,24 +61,6 @@ describe('useChat', () => {
     expect(result.current.chatStarted).toBe(true);
   });
 
-  it('agrega mensaje del usuario y del bot en modo no streaming', async () => {
-    const { result } = renderHook(() => useChat(), { wrapper });
-
-    act(() => {
-      result.current.startNewChat();
-    });
-
-    await act(async () => {
-      await result.current.handleSendMessage({
-        text: 'Hola',
-        customPrompt: 'Prompt de prueba',
-      });
-    });
-
-    const texts = result.current.messages.map(m => m.text);
-    expect(texts).toContain('Hola');
-    expect(texts).toContain('Respuesta del backend');
-  });
 
   it('no envía mensaje si no hay documento seleccionado', async () => {
     const { result } = renderHook(() => useChat(), {

@@ -4,6 +4,14 @@ import { ActuatorModal } from '../../../components/ui/ActuatorModal';
 
 global.fetch = vi.fn()
 
+vi.mock('../../../contexts/ToastContext', () => ({
+  useToast: () => ({
+    current: {
+      show: vi.fn(),
+    },
+  }),
+}));
+
 Object.assign(navigator, {
   clipboard: {
     writeText: vi.fn(),

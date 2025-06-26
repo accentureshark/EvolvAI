@@ -244,6 +244,16 @@ management:
 ```
 
 ---
+## 🎯 Cobertura de Tests
+
+### Frontend
+
+[![Coverage Status](https://coveralls.io/repos/github/accentureshark/EvolvAI/badge.svg)](https://coveralls.io/github/accentureshark/EvolvAI)
+
+> ¡Nuestro frontend está cubierto por tests que se ejecutan automáticamente en cada push por GitHub Actions!  
+> Consulta el badge para ver el estado actualizado de la cobertura.
+
+---
 
 ¿Querés ver ejemplos de integración con Prometheus, Grafana o alertas automáticas en base a latencia? También se puede adaptar a un `/actuator/rag-health` para devolver HTTP 503 si el modelo no está disponible.
 

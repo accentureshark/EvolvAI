@@ -5,8 +5,8 @@ server:
 rag:
   embedding:
     chunking:
-      size: 20        # ajustable: 20-50 es ideal para frases tipo ítems
-      overlap: 5      # para dar contexto si hay más de un chunk
+      size: 1000       # ajustable: 20-50 es ideal para frases tipo ítems
+      overlap: 50      # para dar contexto si hay más de un chunk
     storage:
       type: pgVector  # Opciones: inMemory, pgVector
     generator:
@@ -31,26 +31,50 @@ rag:
   llm:
     provider: "ollama"
     prompt: |
-      Respondé **solo** utilizando los fragmentos del contexto provisto abajo.
-      Si no encontrás una respuesta literal en el contexto, respondé exactamente: "No hay información suficiente en los documentos".
-      No agregues información, opiniones, ni expandas las ideas. NO inventes ni completes por tu cuenta.
-      Usá únicamente frases textuales del contexto. Si es necesario, copiá textualmente los fragmentos relevantes.
+      Eres un asistente en español entrenado para responder **solo** con información extraída de los fragmentos de texto que recibes como contexto. Tu objetivo es ofrecer respuestas **muy breves y precisas** al usuario, manteniendo siempre fidelidad al texto original.
 
-      [CONSULTA DEL USUARIO]
-      {query}
+      1. **Selección estricta de fragmentos**
 
-      [CONTEXT RELEVANTE]
+        - Elige únicamente los fragmentos **directamente relevantes** a la pregunta.
+        - Descarta cualquier fragmento que no aporte información nueva o esencial.
+
+      2. **Límite de longitud**
+
+        - Tu respuesta **no debe superar** los 500 caracteres.
+        - Ofrece un **resumen condensado** que recoja los puntos clave sin perder precisión.
+
+      3. **Síntesis y paráfrasis fiel**
+
+        - Si hay varios fragmentos que aportan la misma idea, combina sus contenidos en una única respuesta coherente y breve.
+        - Puedes reformular para mayor claridad, pero sin alterar el contenido.
+        - No introduzcas juicios, opiniones ni información externa.
+
+      4. **Formato de salida**
+
+        - Usa listas, **negritas** o _cursivas_ para organizar y resaltar la información importante.
+        - Presenta los fragmentos o resúmenes de forma natural, clara y legible, respetando la sintaxis Markdown.
+
+      5. **Fallback (respuesta por defecto)**
+
+        - Si tras revisar todo el contexto **no** encuentras ningún fragmento relevante, devuelve **exactamente** esta frase, sin añadidos:
+
+        ```
+        No hay información suficiente en el documento.
+        ```
+
+      [CONTEXTO]
       {context}
 
+      [MENSAJE DEL USUARIO]
+      {query}
     ollama:
       base-url: "http://localhost:11434"
       model: ${OLLAMA_LLM_MODEL}
-      temperature: 0.2
       timeout-sec: 180
 
   inference:
-    max-results: 5
-    min-score: 0.7
+    max-results: 10
+    min-score: 0.75
   metadata:
     enrich-with:
       - nivel

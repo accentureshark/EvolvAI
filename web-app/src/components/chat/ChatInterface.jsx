@@ -26,7 +26,7 @@ export const ChatInterface = () => {
             type={msg.type}
           />
         ))}
-        {isLoading && !useStreaming && <TypingIndicator />}
+        {isLoading && <TypingIndicator />}
       </ul>
       <div className='message-input'>
         <ChatInputBar 

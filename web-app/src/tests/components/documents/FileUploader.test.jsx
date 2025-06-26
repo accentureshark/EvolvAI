@@ -17,6 +17,14 @@ vi.mock('../../../contexts/LogContext', () => ({
   }),
 }));
 
+vi.mock('../../../contexts/ToastContext', () => ({
+  useToast: () => ({
+    current: {
+      show: vi.fn(),
+    },
+  }),
+}));
+
 vi.mock('primereact/fileupload', () => ({
   FileUpload: (props) => (
     <div>

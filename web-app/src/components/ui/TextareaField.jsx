@@ -8,7 +8,8 @@ export const TextareaField = ({
   rows,
   autoResize = false,
   onKeyDown,
-  className = ''
+  className = '',
+  disabled = false
 }) => {
   return (
         <div className={`textarea-field ${className}`}>
@@ -20,6 +21,7 @@ export const TextareaField = ({
             rows={rows}
             autoResize={autoResize}
             onKeyDown={onKeyDown}
+            disabled={disabled}
           />
         </div>
   )

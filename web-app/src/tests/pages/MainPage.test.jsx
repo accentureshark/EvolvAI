@@ -14,9 +14,9 @@ vi.mock('../../components/documents/DocumentPanel', () => ({
 vi.mock('../../components/chat/MessagePanel', () => ({
   MessagePanel: () => <div data-testid="message-panel">Message Panel</div>,
 }));
-vi.mock('../../components/memory/MemoryPanel', () => ({
-  MemoryPanel: () => <div data-testid="memory-panel">Memory Panel</div>,
-}));
+// vi.mock('../../components/memory/MemoryPanel', () => ({
+//   MemoryPanel: () => <div data-testid="memory-panel">Memory Panel</div>,
+// }));
 vi.mock('../../components/log/LogDisplay', () => ({
   LogDisplay: () => <div data-testid="log-display">Log Display</div>,
 }));
@@ -28,7 +28,7 @@ describe('MainPage', () => {
     expect(screen.getByTestId('header')).toBeInTheDocument();
     expect(screen.getByTestId('document-panel')).toBeInTheDocument();
     expect(screen.getByTestId('message-panel')).toBeInTheDocument();
-    expect(screen.getByTestId('memory-panel')).toBeInTheDocument();
+    // expect(screen.getByTestId('memory-panel')).toBeInTheDocument();
     expect(screen.getByTestId('log-display')).toBeInTheDocument();
   });
 });

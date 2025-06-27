@@ -25,7 +25,7 @@ export const MainPage = () => {
                 <div className="main-page-container">
                   <DocumentPanel />
                   <MessagePanel />
-                  <MemoryPanel />
+                  {/* <MemoryPanel /> */}
                 </div>
                 <LogDisplay />
               </ div>

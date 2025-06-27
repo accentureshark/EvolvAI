@@ -16,5 +16,6 @@ body {
         display: flex;
         gap: 20px;
         min-height: 70vh;
+        max-height: 100vh;
     }
 }

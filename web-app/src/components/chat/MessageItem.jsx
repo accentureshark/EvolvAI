@@ -1,6 +1,5 @@
 import '../../styles/message.css';
 
-import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import botAvatar from '../../assets/shark-ia.png';
 import userAvatar from '../../assets/logo.png';
@@ -12,15 +11,11 @@ export const MessageItem = ({
   type = "bot", 
   avatar, 
 }) => {
-  const [expanded, setExpanded] = useState(false);
   const toast = useToast();
-  const MAX_LENGTH = 300;
 
   const currentAvatar = avatar || (type === 'bot' ? botAvatar : userAvatar);
   const avatarAlt = type === 'bot' ? 'Bot' : 'Usuario';
 
-  const isLong = text.length > MAX_LENGTH;
-  const displayText = expanded || !isLong ? text : text.slice(0, MAX_LENGTH) + '...';
 
   const handleCopy = () => {
     navigator.clipboard.writeText(text)
@@ -33,12 +28,7 @@ export const MessageItem = ({
         <img src={currentAvatar} height={20} width={20} alt={avatarAlt} className="avatar" />
         <div className="text">
           <div className={`message-content ${type}`}>
-            <ReactMarkdown>{displayText}</ReactMarkdown>
-            {isLong && (
-              <button className="show-more-btn" onClick={() => setExpanded(!expanded)}>
-                {expanded ? 'Ver menos' : 'Ver más'}
-              </button>
-            )}
+            <ReactMarkdown>{text}</ReactMarkdown>
           </div>
           {text.trim().length > 0 && (
             <CustomButton

@@ -20,16 +20,4 @@ describe('MessageItem', () => {
     const avatar = screen.getByAltText('Bot');
     expect(avatar).toHaveAttribute('src', customAvatar);
   });
-
-  it('muestra texto truncado y permite expandirlo con botón "Ver más"', () => {
-    const longText = 'A'.repeat(350);
-    render(<MessageItem text={longText} />);
-
-    expect(screen.getByText(/\.{3}$/)).toBeInTheDocument();
-    expect(screen.getByText('Ver más')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByText('Ver más'));
-    expect(screen.getByText(longText)).toBeInTheDocument();
-    expect(screen.getByText('Ver menos')).toBeInTheDocument();
-  });
 });

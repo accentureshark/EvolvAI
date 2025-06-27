@@ -8,8 +8,7 @@ body {
 }
 
 .main-page {
-    max-width: 1200px;
-    margin: auto;
+    margin: 5px 30px 30px 30px;
     padding: 20px;
 
     .main-page-container {

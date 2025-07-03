@@ -1,7 +1,7 @@
 package org.shark.quizai.infrastructure;
 
-import org.shark.evolvai.inference.controller.RagQueryRequest;
-import org.shark.evolvai.inference.controller.QueryResponse;
+import org.shark.quizai.infrastructure.dto.RagQueryRequest;
+import org.shark.quizai.infrastructure.dto.QueryResponse;
 import org.shark.quizai.domain.model.QuizResponseRequest;
 import org.shark.quizai.domain.port.out.InferenceClient;
 import org.springframework.stereotype.Component;

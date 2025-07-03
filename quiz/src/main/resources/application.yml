@@ -1,0 +1,26 @@
+server:
+  port: 8082
+
+spring:
+  quiz:
+    datasource:
+      jdbc-url: jdbc:postgresql://localhost:5432/evolvai
+      username: postgres
+      password: postgres1234
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 5
+        minimum-idle: 2
+        pool-name: quiz-hikari-pool
+
+  jackson:
+    serialization:
+      indent_output: true
+    default-property-inclusion: non_null
+
+logging:
+  level:
+    com.zaxxer.hikari: DEBUG
+    org.shark.quizai: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

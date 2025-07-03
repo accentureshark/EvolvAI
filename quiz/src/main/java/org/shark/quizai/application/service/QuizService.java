@@ -33,7 +33,7 @@ public class QuizService {
     public String processResponse(QuizResponseRequest request) {
         // Si tienes una entidad para respuestas, aquí deberías guardarla.
         // quizRepository.saveResponse(request); // Solo si implementas esto.
-        return inferenceClient.inferirResultado(request);
+        return inferenceClient.inferResult(request);
     }
 
     public List<String> listDocumentIds() {

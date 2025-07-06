@@ -18,6 +18,7 @@
     <modules>
         <!--module>pre-parser</module-->
         <module>rag</module>
+        <module>quiz</module>
     </modules>
 
     <properties>

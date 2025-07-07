@@ -58,11 +58,18 @@
 }
 
 /* Estilos para el DataView */
+
+.quiz-list {
+    border-radius: 0px !important;
+    box-shadow: none !important;
+    padding: 0rem !important;
+}
+
 .quiz-list-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 1.5rem;
   border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   transition: background-color 0.2s;

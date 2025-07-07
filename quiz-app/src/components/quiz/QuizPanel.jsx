@@ -48,7 +48,7 @@ return (
           onClick={() => setModalVisible(true)}
         />
       </div>
-      <DataView value={quizzes} itemTemplate={itemTemplate} />
+      <DataView className="quiz-list" value={quizzes} itemTemplate={itemTemplate} />
     </Card>
     <Card title="Detalles del Quiz" className="quiz-detail-card">
       <QuizDetail quiz={selectedQuiz} />

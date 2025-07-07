@@ -1,0 +1,84 @@
+.user-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--background-color) 0%, #e2e8f0 100%);
+  gap: 1rem;
+}
+
+.user-dashboard-container h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+
+.user-dashboard-content {
+  padding: 1rem;
+  padding-top: 0rem;
+}
+
+.p-dataview.p-component {
+  background: var(--card-background);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 1rem;
+}
+
+.user-dashboard-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
+
+.quiz-item-info h5 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.user-dashboard-list-item .p-button {
+  background: var(--primary-color);
+  color: var(--text-on-primary);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  gap: 0.5rem;
+  transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.user-dashboard-list-item .p-button:hover {
+  background: var(--primary-hover-color);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .user-dashboard-container {
+    padding: 0.5rem;
+  }
+
+  .user-dashboard-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .user-dashboard-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .user-dashboard-list-item .p-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Header } from '../components/layout/Header';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Card } from 'primereact/card';
+import { Dialog } from 'primereact/dialog';
 import '../styles/QuizTaker.css';
+import { CustomButton } from '../components/ui/CustomButton';
 
 // Datos de ejemplo
 const exampleQuizzes = [
@@ -30,15 +32,27 @@ const exampleQuizzes = [
 
 const QuizTaker = () => {
   const { quizId } = useParams();
+  const navigate = useNavigate();
   const [quiz, setQuiz] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
 
   useEffect(() => {
     const foundQuiz = exampleQuizzes.find((q) => q.id === parseInt(quizId));
     setQuiz(foundQuiz);
   }, [quizId]);
+
+  useEffect(() => {
+    if (quiz) {
+      const allAnswered = quiz.questions.every(
+        (q) => answers[q.id] && answers[q.id].trim() !== ''
+      );
+      setAllQuestionsAnswered(allAnswered);
+    }
+  }, [answers, quiz]);
 
   const handleAnswerChange = (e) => {
     setAnswers({ ...answers, [currentQuestion.id]: e.target.value });
@@ -84,6 +98,19 @@ const QuizTaker = () => {
 
   const currentQuestion = quiz.questions[currentQuestionIndex];
 
+  const handleSubmitQuiz = () => {
+    setShowCompletionModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowCompletionModal(false);
+    navigate('/user-dashboard'); // Navigate to quiz selection page
+  };
+
+  const handleGoBack = () => {
+    navigate('/user-dashboard'); // Navigate to quiz selection page
+  };
+
   const footer = (
     <div className="navigation-buttons">
       <Button
@@ -93,13 +120,23 @@ const QuizTaker = () => {
         disabled={currentQuestionIndex === 0}
         severity="secondary"
       />
-      <Button
-        label="Siguiente"
-        icon="pi pi-arrow-right"
-        iconPos="right"
-        onClick={goToNextQuestion}
-        disabled={currentQuestionIndex === quiz.questions.length - 1}
-      />
+      {currentQuestionIndex < quiz.questions.length - 1 && (
+        <Button
+          label="Siguiente"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          onClick={goToNextQuestion}
+        />
+      )}
+      {currentQuestionIndex === quiz.questions.length - 1 && (
+        <Button
+          label="Enviar"
+          icon="pi pi-check"
+          onClick={handleSubmitQuiz}
+          className="p-button-success"
+          disabled={!allQuestionsAnswered}
+        />
+      )}
     </div>
   );
 
@@ -140,9 +177,27 @@ const QuizTaker = () => {
                 </li>
               ))}
             </ul>
+            <div className="back-button-container">
+              <CustomButton
+                label="Volver a Quizzes"
+                icon="pi pi-arrow-left"
+                onClick={handleGoBack}
+                className="back-button"
+              />
+            </div>
           </Card>
         </SplitterPanel>
       </Splitter>
+
+      <Dialog
+        header="Quiz Completado"
+        visible={showCompletionModal}
+        onHide={handleCloseModal}
+        modal
+        footer={<Button label="Aceptar" onClick={handleCloseModal} />}
+      >
+        <p>¡Has completado el quiz exitosamente!</p>
+      </Dialog>
     </div>
   );
 };

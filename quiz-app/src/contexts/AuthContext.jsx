@@ -16,7 +16,6 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Verificar si hay un usuario guardado en localStorage
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
@@ -24,25 +23,14 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   }, []);
 
-  const login = async (credentials) => {
+  const login = async (role) => {
     setIsLoading(true);
     try {
-      // Simular una llamada API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Validación simple (en producción esto sería contra un API real)
-      if (credentials.email === 'admin@example.com' && credentials.password === 'password') {
-        const userData = {
-          id: 1,
-          email: credentials.email,
-          name: 'Usuario Admin'
-        };
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-        return { success: true };
-      } else {
-        return { success: false, error: 'Credenciales inválidas' };
-      }
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const userData = { role };
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      return { success: true };
     } catch (error) {
       return { success: false, error: 'Error en el servidor' };
     } finally {

@@ -1,69 +1,64 @@
 import '../../styles/quiz.css'
 
 import { useState } from "react";
-import { CustomListBox } from "../ui/CustomListBox"
-import { CustomButton } from "../ui/CustomButton"
+import { DataView } from 'primereact/dataview';
+import { Button } from "primereact/button";
 import { QuizModal } from "../ui/QuizModal";
+import { QuizDetail } from "./QuizDetail";
+import { Card } from 'primereact/card'; // Import Card
 
 export const QuizPanel = () => {
-const [value, setValue] = useState(
-  [
-    {
-      "id": 1,
-      "title": "Hola",
-    },
-    {
-      "id": 2,
-      "title": "Chao",
-    },
-    {
-      "id": 3,
-      "title": "Hola",
-    },
-    {
-      "id": 4,
-      "title": "Hola",
-    },
-    {
-      "id": 5,
-      "title": "Hola",
-    },
-    {
-      "id": 6,
-      "title": "Hola",
-    },
-    {
-      "id": 7,
-      "title": "Hola",
-    },
-    {
-      "id": 8,
-      "title": "Hola",
-    },
-    {
-      "id": 9,
-      "title": "Hola",
-    },
-    {
-      "id": 10,
-      "title": "Hola",
-    },
-  ]
-  );
-const [modalVisible, setModalVisible] = useState(false);
+  const [quizzes, setQuizzes] = useState([
+    { id: 1, title: "Onboarding de Nuevos Talentos", questions: [{id: 1, value: "Pregunta 1"}, {id: 2, value: "Pregunta 2"}] },
+    { id: 2, title: "Evaluación de Habilidades Técnicas", questions: [{id: 1, value: "Pregunta A"}] },
+  ]);
+  const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
+  const handleSaveQuiz = (quizData) => {
+    const newQuiz = {
+      ...quizData,
+      id: quizzes.length + 1, // Simple ID generation
+    };
+    setQuizzes([...quizzes, newQuiz]);
+    setModalVisible(false);
+  };
 
-  return (
-    <div className="quiz-panel-container">
+  const itemTemplate = (quiz) => {
+    return (
+      <div className="quiz-list-item" onClick={() => setSelectedQuiz(quiz)}>
+        <div className="quiz-item-info">
+          <h5>{quiz.title}</h5>
+          <span>{quiz.questions.length} preguntas</span>
+        </div>
+        <Button icon="pi pi-chevron-right" className="p-button-rounded p-button-text" severity="secondary" />
+      </div>
+    );
+  };
+
+return (
+  <div className="quiz-panel-container">
+    <Card className="quiz-list-card">
       <div className="quiz-panel-header">
-        <h4>Listado de Quiz</h4>
-        <CustomButton
-          icon="pi pi-file-plus"
+        <h2 style={{ display: 'inline-block', marginRight: '10px' }}>Listado de Quiz</h2>
+        <Button
+          label="Crear Quiz"
+          icon="pi pi-plus"
+          severity="primary"
           onClick={() => setModalVisible(true)}
         />
       </div>
-      <CustomListBox className="quiz-panel-list" optionLabel={value => value.title} options={value} value={value => value.id} />
-      <QuizModal visible={modalVisible} onHide={() => setModalVisible(false)} />
-    </div>
-  )
+      <DataView value={quizzes} itemTemplate={itemTemplate} />
+    </Card>
+    <Card title="Detalles del Quiz" className="quiz-detail-card">
+      <QuizDetail quiz={selectedQuiz} />
+    </Card>
+    <QuizModal
+      visible={modalVisible}
+      onHide={() => setModalVisible(false)}
+      onSave={handleSaveQuiz}
+    />
+  </div>
+);
 }
+

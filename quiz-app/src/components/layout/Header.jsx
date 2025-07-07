@@ -24,15 +24,6 @@ export const Header = () => {
           icon="pi pi-sign-out"
           onClick={handleLogout}
           className="header-button-item"
-          style={{
-            background: 'rgba(168, 132, 250, 0.1)',
-            border: '2px solid rgba(168, 132, 250, 0.3)',
-            color: '#4c1d95',
-            padding: '0.75rem 1.5rem',
-            borderRadius: '8px',
-            fontWeight: '500',
-            fontSize: '14px'
-          }}
         />
       </div>
     </header>

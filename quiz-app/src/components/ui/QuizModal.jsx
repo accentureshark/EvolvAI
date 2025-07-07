@@ -1,10 +1,9 @@
-
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { InputField } from "./InputField";
 import { useState } from "react";
 
-export const QuizModal = ({ visible, onHide }) => {
+export const QuizModal = ({ visible, onHide, onSave }) => {
     const [quizTitle, setQuizTitle] = useState("");
     const [questions, setQuestions] = useState([{ id: 1, value: "" }]);
     const MAX_QUESTIONS = 5;
@@ -54,7 +53,7 @@ export const QuizModal = ({ visible, onHide }) => {
                         <i className="pi pi-bookmark" style={{ marginRight: '0.5rem' }}></i>
                         Título del Quiz
                     </label>
-                    <InputField 
+                    <InputField
                         id="quiz-title"
                         value={quizTitle}
                         onChange={(e) => setQuizTitle(e.target.value)}
@@ -86,8 +85,8 @@ export const QuizModal = ({ visible, onHide }) => {
                 ))}
                 
                 <div className="add-question-section">
-                    <Button 
-                        icon="pi pi-plus" 
+                    <Button
+                        icon="pi pi-plus"
                         label={`Agregar Pregunta ${questions.length < MAX_QUESTIONS ? `(${MAX_QUESTIONS - questions.length} restantes)` : ''}`}
                         className="p-button-outlined"
                         onClick={addQuestion}
@@ -102,24 +101,24 @@ export const QuizModal = ({ visible, onHide }) => {
                 </div>
 
                 <div className="modal-footer">
-                    <Button 
-                        label="Cancelar" 
-                        icon="pi pi-times" 
-                        className="p-button-text" 
-                        onClick={handleClose} 
+                    <Button
+                        label="Cancelar"
+                        icon="pi pi-times"
+                        className="p-button-outlined"
+                        onClick={handleClose}
                     />
-                    <Button 
-                        label="Guardar" 
-                        icon="pi pi-check" 
+                    <Button
+                        label="Guardar"
+                        icon="pi pi-check"
                         className="p-button-primary"
+                        severity="success" // Cambiado para mejor visibilidad
                         disabled={!quizTitle.trim() || questions.some(q => !q.value.trim())}
                         onClick={() => {
                             const quizData = {
                                 title: quizTitle,
                                 questions: questions.filter(q => q.value.trim())
                             };
-                            console.log('Quiz guardado:', quizData);
-                            // Aquí puedes manejar el guardado
+                            onSave(quizData); // Llama a la función onSave
                             handleClose();
                         }}
                     />

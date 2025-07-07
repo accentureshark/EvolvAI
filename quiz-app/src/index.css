@@ -1,3 +1,12 @@
+:root {
+  --primary-color: #b190ff;
+  --primary-hover-color: #8e6dd5;
+  --background-color: #f4f7f9;
+  --text-on-primary: #ffffff;
+  --card-background: #ffffff;
+  --text-color: #333333;
+  --border-color: #e0e0e0;
+}
 
 /* Reset básico */
 *, *::before, *::after {
@@ -14,6 +23,8 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 /* Eliminar estilos por defecto de elementos */

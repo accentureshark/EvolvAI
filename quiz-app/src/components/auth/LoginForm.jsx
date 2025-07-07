@@ -21,7 +21,7 @@ export const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!credentials.email || !credentials.password) {
       toast.current.show({
         severity: 'warn',
@@ -32,7 +32,7 @@ export const LoginForm = () => {
     }
 
     const result = await login(credentials);
-    
+
     if (result.success) {
       toast.current.show({
         severity: 'success',
@@ -64,7 +64,7 @@ export const LoginForm = () => {
           <h2>Iniciar Sesión</h2>
           <p>Ingresa tus credenciales para acceder</p>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <label htmlFor="email">Email</label>

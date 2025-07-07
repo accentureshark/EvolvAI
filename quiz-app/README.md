@@ -1,73 +1,79 @@
-# Welcome to your Lovable project
+# Quiz App Frontend
 
-## Project info
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+![PrimeReact](https://img.shields.io/badge/PrimeReact-10B981?style=for-the-badge&logo=primereact&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-**URL**: https://lovable.dev/projects/056d7c21-3428-48b1-82ad-a78fed21354f
+## 📚 Resumen
 
-## How can I edit this code?
+Este es el frontend de la Quiz App, una aplicación web construida con React. Proporciona una interfaz intuitiva para responder cuestionarios y, para los administradores, un panel para crearlos y gestionarlos.
 
-There are several ways of editing your application.
+La aplicación cuenta con un sistema basado en roles:
+- **Rol de Administrador**: Permite a los usuarios crear nuevos cuestionarios, añadir preguntas y gestionar los existentes.
+- **Rol de Usuario**: Permite a los usuarios navegar y responder los cuestionarios disponibles.
 
-**Use Lovable**
+Este proyecto está desarrollado para funcionar con su correspondiente [Backend en Spring Boot](link-to-your-backend-repo). *(Nota: Necesitarás actualizar este enlace)*
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/056d7c21-3428-48b1-82ad-a78fed21354f) and start prompting.
+## ✨ Características
 
-Changes made via Lovable will be committed automatically to this repo.
+-   **Autenticación de Usuarios**: Sistema de inicio de sesión seguro.
+-   **Control de Acceso Basado en Roles**: Vistas y funcionalidades separadas para administradores y usuarios.
+-   **Creación de Cuestionarios**: Los administradores pueden crear cuestionarios con múltiples preguntas y respuestas.
+-   **Resolución de Cuestionarios**: Los usuarios pueden seleccionar un cuestionario y responder a las preguntas.
+-   **Diseño Adaptable**: Una interfaz de usuario limpia y moderna que funciona en diferentes tamaños de pantalla, construida con PrimeReact y Tailwind CSS.
 
-**Use your preferred IDE**
+## 🛠️ Tecnologías Utilizadas
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+-   **Framework**: [React](https://reactjs.org/)
+-   **Herramienta de Construcción**: [Vite](https://vitejs.dev/)
+-   **Librería de UI**: [PrimeReact](https://primereact.org/)
+-   **Estilos**: [Tailwind CSS](https://tailwindcss.com/)
+-   **Enrutamiento**: [React Router DOM](https://reactrouter.com/)
+-   **Gestión de Estado/Datos**: [TanStack React Query](https://tanstack.com/query/latest)
+-   **Lenguaje**: JavaScript/TypeScript
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🚀 Cómo Empezar
 
-Follow these steps:
+Sigue estas instrucciones para obtener una copia del proyecto y ejecutarla en tu máquina local para desarrollo y pruebas.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Prerrequisitos
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Asegúrate de tener instalado lo siguiente:
+-   [Node.js](https://nodejs.org/) (v18 o superior recomendado)
+-   [npm](https://www.npmjs.com/) o cualquier otro gestor de paquetes como [yarn](https://yarnpkg.com/) o [bun](https://bun.sh/).
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Instalación
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+1.  **Clona el repositorio:**
+    ```bash
+    git clone https://your-repo-url.git
+    cd quiz-app
+    ```
+
+2.  **Instala las dependencias:**
+    ```bash
+    npm install
+    ```
+    *(O `yarn install`, `bun install`)*
+
+### Ejecutar la Aplicación
+
+Para iniciar el servidor de desarrollo, ejecuta:
+```bash
 npm run dev
 ```
+La aplicación estará disponible en `http://localhost:5173` (u otro puerto si el 5173 está ocupado).
 
-**Edit a file directly in GitHub**
+## 📜 Scripts Disponibles
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+En el directorio del proyecto, puedes ejecutar los siguientes comandos:
 
-**Use GitHub Codespaces**
+-   `npm run dev`: Ejecuta la aplicación en modo de desarrollo.
+-   `npm run build`: Compila la aplicación para producción en la carpeta `dist`.
+-   `npm run lint`: Analiza el código base con ESLint.
+-   `npm run preview`: Sirve la compilación de producción localmente para previsualizarla.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔗 Conexión con el Backend
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/056d7c21-3428-48b1-82ad-a78fed21354f) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Este frontend está diseñado para comunicarse con una API de backend. Asegúrate de que el servidor del backend se esté ejecutando y que el endpoint de la API esté correctamente configurado en la aplicación frontend.

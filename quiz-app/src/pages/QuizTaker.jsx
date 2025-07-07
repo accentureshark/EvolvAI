@@ -1,13 +1,12 @@
+import '../styles/quiz-taker.css'
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from 'primereact/button';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Header } from '../components/layout/Header';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
-import { Card } from 'primereact/card';
 import { Dialog } from 'primereact/dialog';
-import '../styles/QuizTaker.css';
+import { Header } from '../components/layout/Header';
 import { CustomButton } from '../components/ui/CustomButton';
+import { TextareaField } from '../components/ui/TextareaField';
+import { CustomCard } from '../components/ui/CustomCard';
 
 // Datos de ejemplo
 const exampleQuizzes = [
@@ -104,16 +103,16 @@ const QuizTaker = () => {
 
   const handleCloseModal = () => {
     setShowCompletionModal(false);
-    navigate('/user-dashboard'); // Navigate to quiz selection page
+    navigate('/user-dashboard');
   };
 
   const handleGoBack = () => {
-    navigate('/user-dashboard'); // Navigate to quiz selection page
+    navigate('/user-dashboard');
   };
 
   const footer = (
     <div className="navigation-buttons">
-      <Button
+      <CustomButton
         label="Anterior"
         icon="pi pi-arrow-left"
         onClick={goToPreviousQuestion}
@@ -121,7 +120,7 @@ const QuizTaker = () => {
         severity="secondary"
       />
       {currentQuestionIndex < quiz.questions.length - 1 && (
-        <Button
+        <CustomButton
           label="Siguiente"
           icon="pi pi-arrow-right"
           iconPos="right"
@@ -129,7 +128,7 @@ const QuizTaker = () => {
         />
       )}
       {currentQuestionIndex === quiz.questions.length - 1 && (
-        <Button
+        <CustomButton
           label="Enviar"
           icon="pi pi-check"
           onClick={handleSubmitQuiz}
@@ -145,7 +144,7 @@ const QuizTaker = () => {
       <Header />
       <Splitter className="quiz-taker-splitter">
         <SplitterPanel className="question-panel" size={70}>
-          <Card
+          <CustomCard
             title={quiz.title}
             subTitle={`Pregunta ${currentQuestionIndex + 1} de ${quiz.questions.length}`}
             footer={footer}
@@ -153,7 +152,7 @@ const QuizTaker = () => {
           >
             <div className={`question-transition ${isTransitioning ? 'changing' : ''}`}>
               <p className="question-text">{currentQuestion.value}</p>
-              <InputTextarea
+              <TextareaField
                 value={answers[currentQuestion.id] || ''}
                 onChange={handleAnswerChange}
                 rows={8}
@@ -162,10 +161,10 @@ const QuizTaker = () => {
                 className="answer-textarea"
               />
             </div>
-          </Card>
+          </CustomCard>
         </SplitterPanel>
         <SplitterPanel className="navigation-panel" size={30}>
-          <Card title="Preguntas" className="navigation-card">
+          <CustomCard title="Preguntas" className="navigation-card">
             <ul className="navigation-list">
               {quiz.questions.map((q, index) => (
                 <li
@@ -185,7 +184,7 @@ const QuizTaker = () => {
                 className="back-button"
               />
             </div>
-          </Card>
+          </CustomCard>
         </SplitterPanel>
       </Splitter>
 
@@ -194,7 +193,7 @@ const QuizTaker = () => {
         visible={showCompletionModal}
         onHide={handleCloseModal}
         modal
-        footer={<Button label="Aceptar" onClick={handleCloseModal} />}
+        footer={<CustomButton label="Aceptar" onClick={handleCloseModal} />}
       >
         <p>¡Has completado el quiz exitosamente!</p>
       </Dialog>

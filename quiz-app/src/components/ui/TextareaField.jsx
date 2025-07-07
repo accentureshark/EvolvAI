@@ -13,17 +13,16 @@ export const TextareaField = ({
   disabled = false
 }) => {
   return (
-        <div className={`textarea-field ${className}`}>
-          <InputTextarea
-            name={name}
-            placeholder={placeholder}
-            value={value}
-            onChange={onChange}
-            rows={rows}
-            autoResize={autoResize}
-            onKeyDown={onKeyDown}
-            disabled={disabled}
-          />
-        </div>
+    <InputTextarea
+      className={className}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        rows={rows}
+        autoResize={autoResize}
+        onKeyDown={onKeyDown}
+        disabled={disabled}
+    />
   )
 }

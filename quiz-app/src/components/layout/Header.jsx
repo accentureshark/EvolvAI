@@ -1,8 +1,8 @@
 
 import '../../styles/Header.css';
+import logo from '../../assets/shark-ia.png';
 import { useAuth } from '../../contexts/AuthContext';
 import { CustomButton } from '../ui/CustomButton';
-import logo from '../../assets/shark-ia.png';
 
 
 export const Header = () => {

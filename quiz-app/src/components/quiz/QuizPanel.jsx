@@ -2,10 +2,10 @@ import '../../styles/quiz.css'
 
 import { useState } from "react";
 import { DataView } from 'primereact/dataview';
-import { Button } from "primereact/button";
 import { QuizModal } from "../ui/QuizModal";
 import { QuizDetail } from "./QuizDetail";
-import { Card } from 'primereact/card'; // Import Card
+import { CustomButton } from '../ui/CustomButton';
+import { CustomCard } from '../ui/CustomCard';
 
 export const QuizPanel = () => {
   const [quizzes, setQuizzes] = useState([
@@ -18,7 +18,7 @@ export const QuizPanel = () => {
   const handleSaveQuiz = (quizData) => {
     const newQuiz = {
       ...quizData,
-      id: quizzes.length + 1, // Simple ID generation
+      id: quizzes.length + 1,
     };
     setQuizzes([...quizzes, newQuiz]);
     setModalVisible(false);
@@ -31,17 +31,17 @@ export const QuizPanel = () => {
           <h5>{quiz.title}</h5>
           <span>{quiz.questions.length} preguntas</span>
         </div>
-        <Button icon="pi pi-chevron-right" className="p-button-rounded p-button-text" severity="secondary" />
+        <CustomButton icon="pi pi-chevron-right" className="p-button-rounded p-button-text" severity="secondary" />
       </div>
     );
   };
 
 return (
   <div className="quiz-panel-container">
-    <Card className="quiz-list-card">
+    <CustomCard className="quiz-list-card">
       <div className="quiz-panel-header">
         <h2 style={{ display: 'inline-block', marginRight: '10px' }}>Listado de Quiz</h2>
-        <Button
+        <CustomButton
           label="Crear Quiz"
           icon="pi pi-plus"
           severity="primary"
@@ -49,10 +49,10 @@ return (
         />
       </div>
       <DataView className="quiz-list" value={quizzes} itemTemplate={itemTemplate} />
-    </Card>
-    <Card title="Detalles del Quiz" className="quiz-detail-card">
+    </CustomCard>
+    <CustomCard title="Detalles del Quiz" className="quiz-detail-card">
       <QuizDetail quiz={selectedQuiz} />
-    </Card>
+    </CustomCard>
     <QuizModal
       visible={modalVisible}
       onHide={() => setModalVisible(false)}

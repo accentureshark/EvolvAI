@@ -1,8 +1,8 @@
+import '../styles/user-dashboard.css';
 import { useNavigate } from 'react-router-dom';
 import { DataView } from 'primereact/dataview';
-import { Button } from 'primereact/button';
 import { Header } from '../components/layout/Header';
-import '../styles/user-dashboard.css';
+import { CustomButton } from '../components/ui/CustomButton';
 
 const exampleQuizzes = [
   { id: 1, title: 'Quiz de Bienvenida', questions: [{id: 1, value: "Pregunta 1"}] },
@@ -18,7 +18,7 @@ const UserDashboard = () => {
         <div className="quiz-item-info">
           <h5>{quiz.title}</h5>
         </div>
-        <Button label="Comenzar Quiz" icon="pi pi-arrow-right" />
+        <CustomButton label="Comenzar Quiz" icon="pi pi-arrow-right" />
       </div>
     );
   };

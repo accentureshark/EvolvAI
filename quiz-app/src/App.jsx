@@ -5,9 +5,8 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import QuizTaker from './pages/QuizTaker';
-import UserDashboard from './pages/UserDashboard'; // Importar UserDashboard
+import UserDashboard from './pages/UserDashboard';
 
-// Importar estilos de PrimeReact
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';

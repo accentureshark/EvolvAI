@@ -21,24 +21,6 @@ body {
   transition: all 0.3s ease;
 }
 
-/* .p-button.p-button-outlined {
-  border-color: #a884fa;
-}
-
-.p-button.p-button-outlined:hover {
-  background-color: #a884fa;
-  border-color: #a884fa; */
-/* } */
-
-/* .p-inputtext {
-  transition: all 0.3s ease;
-}
-
-.p-inputtext:focus {
-  border-color: #a884fa;
-  box-shadow: 0 0 0 0.2rem rgba(168, 132, 250, 0.25);
-} */
-
 .p-checkbox .p-checkbox-box {
   transition: all 0.3s ease;
 }

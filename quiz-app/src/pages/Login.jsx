@@ -1,12 +1,12 @@
+import '../styles/login-form.css'
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-import { Checkbox } from 'primereact/checkbox';
 import { Toast } from 'primereact/toast';
-import { Card } from 'primereact/card'; // Import Card
-import '../components/auth/LoginForm.css';
+import { CustomCard } from '../components/ui/CustomCard';
+import { CustomButton } from '../components/ui/CustomButton';
+import { CustomCheckbox } from '../components/ui/CustomCheckbox';
+import { InputField } from '../components/ui/InputField';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -38,7 +38,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <Toast ref={toast} />
-      <Card className="login-card">
+      <CustomCard className="login-card">
         <div className="login-header">
           <h2>Iniciar Sesión</h2>
           <p>Ingresa tus credenciales para acceder</p>
@@ -47,7 +47,7 @@ const Login = () => {
         <form onSubmit={(e) => e.preventDefault()} className="login-form">
           <div className="form-group">
             <label htmlFor="email">Email</label>
-            <InputText
+            <InputField
               id="email"
               type="email"
               placeholder="Ingresa tu email"
@@ -59,7 +59,7 @@ const Login = () => {
 
           <div className="form-group">
             <label htmlFor="password">Contraseña</label>
-            <InputText
+            <InputField
               id="password"
               type="password"
               placeholder="Ingresa tu contraseña"
@@ -71,15 +71,14 @@ const Login = () => {
 
           <div className="form-options">
             <div className="p-field-checkbox">
-                <Checkbox inputId="rememberMe" onChange={e => setRememberMe(e.checked)} checked={rememberMe} />
-                <label htmlFor="rememberMe">Recordarme</label>
+                <CustomCheckbox label="Recordame" inputId="rememberMe" onChange={e => setRememberMe(e.checked)} checked={rememberMe} />
             </div>
             <a href="#" className="forgot-password">
               ¿Olvidaste tu contraseña?
             </a>
           </div>
 
-          <Button
+          <CustomButton
             type="submit"
             label={isLoading ? "Ingresando..." : "Iniciar Sesión"}
             disabled={isLoading}
@@ -92,11 +91,11 @@ const Login = () => {
         <div className="login-footer">
           <p>O ingresa directamente como:</p>
           <div className="role-buttons">
-            <Button label="Admin" onClick={() => handleRoleLogin('Admin')} disabled={isLoading} severity="secondary" />
-            <Button label="Usuario" onClick={() => handleRoleLogin('User')} disabled={isLoading} severity="secondary" />
+            <CustomButton label="Admin" onClick={() => handleRoleLogin('Admin')} disabled={isLoading} severity="secondary" />
+            <CustomButton label="Usuario" onClick={() => handleRoleLogin('User')} disabled={isLoading} severity="secondary" />
           </div>
         </div>
-      </Card>
+      </CustomCard>
     </div>
   );
 };

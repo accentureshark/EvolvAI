@@ -5,13 +5,13 @@ import { useState } from "react";
 
 export const QuizModal = ({ visible, onHide, onSave }) => {
     const [quizTitle, setQuizTitle] = useState("");
-    const [questions, setQuestions] = useState([{ id: 1, value: "" }]);
+    const [questions, setQuestions] = useState([{ id: 1, value: "", options: ["Sí", "No"] }]);
     const MAX_QUESTIONS = 5;
 
     const addQuestion = () => {
         if (questions.length < MAX_QUESTIONS) {
             const newId = Math.max(...questions.map(q => q.id)) + 1;
-            setQuestions(prev => [...prev, { id: newId, value: "" }]);
+            setQuestions(prev => [...prev, { id: newId, value: "", options: ["Sí", "No"] }]);
         }
     };
 
@@ -29,10 +29,18 @@ export const QuizModal = ({ visible, onHide, onSave }) => {
         );
     };
 
+    const updateQuestionOptions = (id, options) => {
+        setQuestions(prev => 
+            prev.map(question => 
+                question.id === id ? { ...question, options } : question
+            )
+        );
+    };
+
     const handleClose = () => {
-        // Opcional: resetear todo al cerrar
-        // setQuizTitle("");
-        // setQuestions([{ id: 1, value: "" }]);
+        // Reset form when closing
+        setQuizTitle("");
+        setQuestions([{ id: 1, value: "", options: ["Sí", "No"] }]);
         onHide();
     };
 
@@ -81,6 +89,49 @@ export const QuizModal = ({ visible, onHide, onSave }) => {
                             placeholder={`Ingresa la pregunta ${index + 1}...`}
                             className="question-input"
                         />
+                        
+                        {/* Options section */}
+                        <div className="question-options">
+                            <label className="options-label">Opciones de respuesta:</label>
+                            <div className="options-container">
+                                {question.options.map((option, optIndex) => (
+                                    <div key={optIndex} className="option-input-container">
+                                        <InputField
+                                            value={option}
+                                            onChange={(e) => {
+                                                const newOptions = [...question.options];
+                                                newOptions[optIndex] = e.target.value;
+                                                updateQuestionOptions(question.id, newOptions);
+                                            }}
+                                            placeholder={`Opción ${optIndex + 1}`}
+                                            className="option-input"
+                                        />
+                                        {question.options.length > 2 && (
+                                            <Button
+                                                icon="pi pi-times"
+                                                className="p-button-rounded p-button-text p-button-danger p-button-sm"
+                                                onClick={() => {
+                                                    const newOptions = question.options.filter((_, i) => i !== optIndex);
+                                                    updateQuestionOptions(question.id, newOptions);
+                                                }}
+                                                tooltip="Eliminar opción"
+                                            />
+                                        )}
+                                    </div>
+                                ))}
+                                {question.options.length < 5 && (
+                                    <Button
+                                        icon="pi pi-plus"
+                                        label="Agregar opción"
+                                        className="p-button-outlined p-button-sm"
+                                        onClick={() => {
+                                            const newOptions = [...question.options, `Opción ${question.options.length + 1}`];
+                                            updateQuestionOptions(question.id, newOptions);
+                                        }}
+                                    />
+                                )}
+                            </div>
+                        </div>
                     </div>
                 ))}
                 
@@ -112,13 +163,16 @@ export const QuizModal = ({ visible, onHide, onSave }) => {
                         icon="pi pi-check"
                         className="p-button-primary"
                         severity="success" // Cambiado para mejor visibilidad
-                        disabled={!quizTitle.trim() || questions.some(q => !q.value.trim())}
+                        disabled={!quizTitle.trim() || questions.some(q => !q.value.trim() || q.options.some(opt => !opt.trim()))}
                         onClick={() => {
                             const quizData = {
                                 title: quizTitle,
-                                questions: questions.filter(q => q.value.trim())
+                                questions: questions.filter(q => q.value.trim()).map(q => ({
+                                    ...q,
+                                    options: q.options.filter(opt => opt.trim())
+                                }))
                             };
-                            onSave(quizData); // Llama a la función onSave
+                            onSave(quizData);
                             handleClose();
                         }}
                     />

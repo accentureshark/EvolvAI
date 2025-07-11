@@ -14,7 +14,7 @@
     <version>0.1-SNAPSHOT</version>
 
     <name>rag</name>
-
+    <packaging>jar</packaging>
     <properties>
         <java.version>17</java.version>
         <aws.sdk.version>2.29.43</aws.sdk.version>

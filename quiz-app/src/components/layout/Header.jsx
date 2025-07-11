@@ -1,5 +1,5 @@
 
-import '../../styles/Header.css';
+import '../../styles/header.css';
 import logo from '../../assets/shark-ia.png';
 import { useAuth } from '../../contexts/AuthContext';
 import { CustomButton } from '../ui/CustomButton';

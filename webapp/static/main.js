@@ -5,6 +5,7 @@ import { loadChatMemory } from './memory.js';
 import { loadDefaultPrompt, togglePrompt } from './prompt.js';
 import { setupWebSocketLogs } from './websocket.js';
 import { setupModal } from './modal.js';
+import { setupGitHubRepositories, getSelectedRepository } from './github.js';
 import { log, showSpinner } from './utils.js';
 import { BACKEND_URL } from './api.js';
 import { v4 as uuidv4 } from 'https://cdn.jsdelivr.net/npm/uuid@9.0.0/+esm';
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setupFileUpload();
     loadUploadedFiles();
+    setupGitHubRepositories();
     loadChatMemory();
     loadDefaultPrompt();
     setupWebSocketLogs();

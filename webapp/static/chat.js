@@ -9,6 +9,7 @@ import './memory.js';
 import './prompt.js';
 import './websocket.js';
 import './modal.js';
+import './github.js';
 import './main.js';
 
 // Exponer funciones globales para el HTML, si se usan en chat.html

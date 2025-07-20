@@ -159,3 +159,14 @@ management:
     allowed-origins: "*"
     allowed-methods: "*"
     allowed-headers: "*"
+
+# MCP (Model Control Protocol) Configuration
+mcp:
+  enabled: true
+  server-url: "http://localhost:8080"
+  connection-timeout: 30000
+  read-timeout: 60000
+  auth:
+    api-key: "${MCP_API_KEY:}"
+    username: "${MCP_USERNAME:}"
+    password: "${MCP_PASSWORD:}"
